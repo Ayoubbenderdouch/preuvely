@@ -66,9 +66,9 @@ Route::prefix('v1')->group(function () {
             Route::match(['put', 'patch'], 'profile', [AuthController::class, 'updateProfile']);
             Route::post('avatar', [AuthController::class, 'uploadAvatar']);
 
-            // Resend verification email (throttled: 3 per hour)
+            // Resend verification email (throttled: 10 per hour)
             Route::post('email/resend', [AuthController::class, 'resendVerificationEmail'])
-                ->middleware('throttle:3,60')
+                ->middleware('throttle:10,60')
                 ->name('verification.resend');
 
             // Verify email with OTP code (throttled: 5 per minute)
