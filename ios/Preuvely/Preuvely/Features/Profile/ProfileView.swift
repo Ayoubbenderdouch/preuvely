@@ -7,6 +7,7 @@ struct ProfileView: View {
     @State private var showAuth = false
     @State private var showLanguagePicker = false
     @State private var showEditProfile = false
+    @State private var showEmailVerification = false
     @State private var appearAnimation = false
 
     var body: some View {
@@ -50,6 +51,16 @@ struct ProfileView: View {
                                 await viewModel.loadData()
                             }
                         }
+                }
+            }
+            .sheet(isPresented: $showEmailVerification) {
+                if let email = viewModel.user?.email {
+                    EmailVerificationSheet(email: email) {
+                        // Refresh user data after verification
+                        Task {
+                            await viewModel.loadData()
+                        }
+                    }
                 }
             }
             .alert("Error", isPresented: $viewModel.showError) {
@@ -305,22 +316,42 @@ struct ProfileView: View {
                 }
             }
 
-            Button {
-                Task {
-                    await viewModel.resendVerificationEmail()
+            HStack(spacing: 10) {
+                // Enter Code button (primary)
+                Button {
+                    showEmailVerification = true
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "number.square.fill")
+                            .font(.system(size: 12, weight: .semibold))
+                        Text("Enter Code")
+                            .font(.subheadline.weight(.semibold))
+                    }
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(Color.orange)
+                    .cornerRadius(10)
                 }
-            } label: {
-                HStack(spacing: 6) {
-                    Image(systemName: "arrow.counterclockwise")
-                        .font(.system(size: 12, weight: .semibold))
-                    Text(L10n.Auth.resendEmail.localized)
-                        .font(.subheadline.weight(.semibold))
+
+                // Resend button (secondary)
+                Button {
+                    Task {
+                        await viewModel.resendVerificationEmail()
+                    }
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "arrow.counterclockwise")
+                            .font(.system(size: 12, weight: .semibold))
+                        Text(L10n.Auth.resendEmail.localized)
+                            .font(.subheadline.weight(.semibold))
+                    }
+                    .foregroundColor(.orange)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(Color.orange.opacity(0.15))
+                    .cornerRadius(10)
                 }
-                .foregroundColor(.white)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .background(Color.orange)
-                .cornerRadius(10)
             }
         }
         .padding(16)

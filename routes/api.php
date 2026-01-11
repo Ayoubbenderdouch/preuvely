@@ -70,6 +70,11 @@ Route::prefix('v1')->group(function () {
             Route::post('email/resend', [AuthController::class, 'resendVerificationEmail'])
                 ->middleware('throttle:3,60')
                 ->name('verification.resend');
+
+            // Verify email with OTP code (throttled: 5 per minute)
+            Route::post('email/verify-code', [AuthController::class, 'verifyEmailWithCode'])
+                ->middleware('throttle:5,1')
+                ->name('verification.verify-code');
         });
     });
 

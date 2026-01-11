@@ -672,6 +672,19 @@ extension APIClient: AuthServiceProtocol {
         try await postEmpty(.resendVerification)
     }
 
+    func verifyEmailWithCode(_ code: String) async throws -> User {
+        struct VerifyCodeRequest: Encodable {
+            let code: String
+        }
+        struct VerifyCodeResponse: Decodable {
+            let message: String
+            let user: User
+        }
+        let response: VerifyCodeResponse = try await post(.verifyEmailCode, body: VerifyCodeRequest(code: code))
+        currentUser = response.user
+        return response.user
+    }
+
     func socialLogin(provider: SocialProvider, idToken: String) async throws -> User {
         struct SocialLoginRequest: Encodable {
             let idToken: String

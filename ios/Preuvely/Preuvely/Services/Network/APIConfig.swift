@@ -64,6 +64,7 @@ enum APIEndpoint {
     case updateProfile
     case uploadAvatar
     case resendVerification
+    case verifyEmailCode
     case socialLogin(provider: String)
 
     // Categories
@@ -133,6 +134,8 @@ enum APIEndpoint {
             return "/auth/avatar"
         case .resendVerification:
             return "/auth/email/resend"
+        case .verifyEmailCode:
+            return "/auth/email/verify-code"
         case .socialLogin(let provider):
             return "/auth/social/\(provider)/callback"
 

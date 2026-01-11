@@ -8,12 +8,15 @@ use App\Http\Requests\Api\V1\RegisterRequest;
 use App\Http\Requests\Api\V1\UpdateProfileRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\Api\V1\UserResource;
+use App\Mail\VerificationCodeMail;
+use App\Models\EmailVerificationCode;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * @group Authentication
@@ -48,9 +51,9 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        // Send email verification notification
+        // Send email verification OTP code
         if ($user->email) {
-            $user->sendEmailVerificationNotification();
+            $this->sendVerificationCode($user);
         }
 
         $token = $user->createToken('api-token')->plainTextToken;
@@ -151,12 +154,12 @@ class AuthController extends Controller
     }
 
     /**
-     * Resend verification email
+     * Resend verification code
      *
-     * Resend the email verification notification.
+     * Resend the email verification OTP code.
      *
      * @authenticated
-     * @response {"message": "Verification email resent successfully"}
+     * @response {"message": "Verification code sent successfully"}
      * @response 400 {"message": "Email already verified"}
      */
     public function resendVerificationEmail(Request $request): JsonResponse
@@ -175,11 +178,78 @@ class AuthController extends Controller
             ], 400);
         }
 
-        $user->sendEmailVerificationNotification();
+        $this->sendVerificationCode($user);
 
         return response()->json([
-            'message' => 'Verification email resent successfully',
+            'message' => 'Verification code sent successfully',
         ]);
+    }
+
+    /**
+     * Verify email with OTP code
+     *
+     * Verify the user's email address using a 6-digit OTP code.
+     *
+     * @authenticated
+     * @bodyParam code string required The 6-digit verification code. Example: 123456
+     *
+     * @response {"message": "Email verified successfully", "user": {...}}
+     * @response 400 {"message": "Invalid or expired verification code"}
+     */
+    public function verifyEmailWithCode(Request $request): JsonResponse
+    {
+        $request->validate([
+            'code' => ['required', 'string', 'size:6'],
+        ]);
+
+        $user = $request->user();
+
+        if ($user->hasVerifiedEmail()) {
+            return response()->json([
+                'message' => 'Email already verified',
+            ], 400);
+        }
+
+        $verificationCode = EmailVerificationCode::where('user_id', $user->id)
+            ->where('code', $request->code)
+            ->first();
+
+        if (!$verificationCode) {
+            return response()->json([
+                'message' => 'Invalid verification code',
+            ], 400);
+        }
+
+        if ($verificationCode->isExpired()) {
+            $verificationCode->delete();
+            return response()->json([
+                'message' => 'Verification code has expired. Please request a new one.',
+            ], 400);
+        }
+
+        // Mark email as verified
+        $user->markEmailAsVerified();
+        event(new Verified($user));
+
+        // Delete the used code
+        $verificationCode->delete();
+
+        return response()->json([
+            'message' => 'Email verified successfully',
+            'user' => new UserResource($user->fresh()),
+        ]);
+    }
+
+    /**
+     * Send verification code to user's email
+     */
+    private function sendVerificationCode(User $user): void
+    {
+        $verificationCode = EmailVerificationCode::generateFor($user);
+
+        Mail::to($user->email)->send(
+            new VerificationCodeMail($verificationCode->code, $user->name)
+        );
     }
 
     /**
