@@ -349,7 +349,7 @@ final class APIClient: ObservableObject {
                 throw error
             }
         }
-        throw lastError ?? APIError.networkError
+        throw lastError ?? APIError.serverError
     }
 }
 
