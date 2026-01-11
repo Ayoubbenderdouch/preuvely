@@ -467,70 +467,78 @@ struct BannerCard: View {
     let banner: Banner
 
     var body: some View {
-        ZStack(alignment: .leading) {
-            // Background - Image or Color
-            if let url = URL(string: banner.imageUrl) {
-                AsyncImage(url: url) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    case .failure:
-                        backgroundGradient
-                    case .empty:
-                        backgroundGradient
-                            .overlay(
-                                ProgressView()
-                                    .tint(.white)
-                            )
-                    @unknown default:
-                        backgroundGradient
+        GeometryReader { geometry in
+            ZStack(alignment: .leading) {
+                // Background - Image or Color
+                if let url = URL(string: banner.imageUrl) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: geometry.size.width, height: geometry.size.height)
+                                .clipped()
+                        case .failure:
+                            backgroundGradient
+                                .frame(width: geometry.size.width, height: geometry.size.height)
+                        case .empty:
+                            backgroundGradient
+                                .frame(width: geometry.size.width, height: geometry.size.height)
+                                .overlay(
+                                    ProgressView()
+                                        .tint(.white)
+                                )
+                        @unknown default:
+                            backgroundGradient
+                                .frame(width: geometry.size.width, height: geometry.size.height)
+                        }
                     }
+                } else {
+                    backgroundGradient
+                        .frame(width: geometry.size.width, height: geometry.size.height)
                 }
-            } else {
-                backgroundGradient
-            }
 
-            // Content (only show if there's text)
-            if banner.title != nil || banner.subtitle != nil || banner.hasLink {
-                HStack(spacing: 16) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        if let title = banner.title, !title.isEmpty {
-                            Text(title)
-                                .font(.title3.weight(.bold))
-                                .foregroundColor(.white)
-                                .lineLimit(2)
-                                .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 1)
-                        }
-
-                        if let subtitle = banner.subtitle, !subtitle.isEmpty {
-                            Text(subtitle)
-                                .font(.subheadline)
-                                .foregroundColor(.white.opacity(0.9))
-                                .lineLimit(2)
-                                .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 1)
-                        }
-
-                        // Link indicator
-                        if banner.hasLink {
-                            HStack(spacing: 4) {
-                                Text("home_learn_more".localized)
-                                    .font(.caption.weight(.semibold))
-                                Image(systemName: "arrow.right")
-                                    .font(.caption)
+                // Content (only show if there's text)
+                if banner.title != nil || banner.subtitle != nil || banner.hasLink {
+                    HStack(spacing: 16) {
+                        VStack(alignment: .leading, spacing: 8) {
+                            if let title = banner.title, !title.isEmpty {
+                                Text(title)
+                                    .font(.title3.weight(.bold))
+                                    .foregroundColor(.white)
+                                    .lineLimit(2)
+                                    .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 1)
                             }
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(Color.white.opacity(0.2))
-                            .cornerRadius(12)
-                        }
-                    }
 
-                    Spacer()
+                            if let subtitle = banner.subtitle, !subtitle.isEmpty {
+                                Text(subtitle)
+                                    .font(.subheadline)
+                                    .foregroundColor(.white.opacity(0.9))
+                                    .lineLimit(2)
+                                    .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 1)
+                            }
+
+                            // Link indicator
+                            if banner.hasLink {
+                                HStack(spacing: 4) {
+                                    Text("home_learn_more".localized)
+                                        .font(.caption.weight(.semibold))
+                                    Image(systemName: "arrow.right")
+                                        .font(.caption)
+                                }
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(Color.white.opacity(0.2))
+                                .cornerRadius(12)
+                            }
+                        }
+
+                        Spacer()
+                    }
+                    .padding(20)
                 }
-                .padding(20)
             }
         }
         .clipShape(RoundedRectangle(cornerRadius: 20))
