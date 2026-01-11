@@ -247,24 +247,8 @@ struct ProfileView: View {
 
     @ViewBuilder
     private var userAvatarView: some View {
-        if let avatarURL = viewModel.user?.avatar, let url = URL(string: avatarURL) {
-            AsyncImage(url: url) { phase in
-                switch phase {
-                case .success(let image):
-                    image
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 56, height: 56)
-                        .clipShape(Circle())
-                case .failure:
-                    avatarFallback
-                case .empty:
-                    ProgressView()
-                        .frame(width: 56, height: 56)
-                @unknown default:
-                    avatarFallback
-                }
-            }
+        if let avatarURL = viewModel.user?.avatar, !avatarURL.isEmpty {
+            CachedAvatarImage(urlString: avatarURL, size: 56)
         } else {
             avatarFallback
         }
@@ -1084,6 +1068,99 @@ final class ProfileViewModel: ObservableObject {
         } catch {
             errorMessage = error.localizedDescription
             showError = true
+        }
+    }
+}
+
+// MARK: - Cached Avatar Image
+
+/// Custom avatar image view that loads images using URLSession
+/// and handles caching more reliably than AsyncImage
+struct CachedAvatarImage: View {
+    let urlString: String
+    let size: CGFloat
+
+    @State private var image: UIImage?
+    @State private var isLoading = true
+    @State private var loadFailed = false
+
+    var body: some View {
+        Group {
+            if let image = image {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: size, height: size)
+                    .clipShape(Circle())
+            } else if isLoading {
+                ProgressView()
+                    .frame(width: size, height: size)
+            } else {
+                // Show placeholder on failure
+                Circle()
+                    .fill(Color.gray.opacity(0.2))
+                    .frame(width: size, height: size)
+                    .overlay(
+                        Image(systemName: "person.fill")
+                            .foregroundColor(.gray)
+                    )
+            }
+        }
+        .id(urlString) // Force refresh when URL changes
+        .task(id: urlString) {
+            await loadImage()
+        }
+    }
+
+    private func loadImage() async {
+        guard let url = URL(string: urlString) else {
+            isLoading = false
+            loadFailed = true
+            return
+        }
+
+        isLoading = true
+        loadFailed = false
+        image = nil
+
+        // Create request with cache policy to bypass stale cache
+        var request = URLRequest(url: url)
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse,
+                  httpResponse.statusCode == 200 else {
+                #if DEBUG
+                print("[CachedAvatarImage] Failed to load: HTTP \((response as? HTTPURLResponse)?.statusCode ?? 0)")
+                #endif
+                isLoading = false
+                loadFailed = true
+                return
+            }
+
+            if let loadedImage = UIImage(data: data) {
+                await MainActor.run {
+                    self.image = loadedImage
+                    self.isLoading = false
+                }
+                #if DEBUG
+                print("[CachedAvatarImage] Successfully loaded image from: \(urlString)")
+                #endif
+            } else {
+                #if DEBUG
+                print("[CachedAvatarImage] Failed to create UIImage from data")
+                #endif
+                isLoading = false
+                loadFailed = true
+            }
+        } catch {
+            #if DEBUG
+            print("[CachedAvatarImage] Error loading image: \(error.localizedDescription)")
+            #endif
+            isLoading = false
+            loadFailed = true
         }
     }
 }

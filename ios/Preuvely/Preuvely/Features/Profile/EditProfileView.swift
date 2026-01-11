@@ -367,21 +367,19 @@ final class EditProfileViewModel: ObservableObject {
         isSaving = true
 
         do {
-            // Upload avatar first if changed
-            if profileImage != nil && profileImage != originalImage {
-                if let image = profileImage {
-                    _ = try await apiClient.uploadAvatar(image: image)
-                }
-            }
-
-            // Update profile (name and phone)
-            let updatedUser = try await apiClient.updateProfile(
+            // Update profile (name and phone) first
+            _ = try await apiClient.updateProfile(
                 name: name,
                 phone: phone.isEmpty ? nil : phone
             )
 
-            // Update local reference
-            apiClient.currentUser = updatedUser
+            // Upload avatar LAST so the final currentUser has the avatar URL
+            if profileImage != nil && profileImage != originalImage {
+                if let image = profileImage {
+                    let updatedUser = try await apiClient.uploadAvatar(image: image)
+                    apiClient.currentUser = updatedUser
+                }
+            }
 
             isSaving = false
             saveSuccess = true
