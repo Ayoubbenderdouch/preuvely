@@ -30,6 +30,11 @@ class UserResource extends JsonResource
             return null;
         }
 
+        // If avatar is a data URL (base64), return as-is
+        if (str_starts_with($this->avatar, 'data:')) {
+            return $this->avatar;
+        }
+
         // If avatar already starts with http, return as-is
         if (str_starts_with($this->avatar, 'http')) {
             return $this->avatar;
