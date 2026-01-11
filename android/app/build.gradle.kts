@@ -22,7 +22,7 @@ android {
             useSupportLibrary = true
         }
 
-        buildConfigField("String", "API_BASE_URL", "\"http://192.168.1.10:8000/api/v1/\"")
+        buildConfigField("String", "API_BASE_URL", "\"https://preuvely-main-p1qmvb.laravel.cloud/api/v1/\"")
     }
 
     buildTypes {
@@ -32,11 +32,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "API_BASE_URL", "\"https://api.preuvely.com/api/v1/\"")
+            buildConfigField("String", "API_BASE_URL", "\"https://preuvely-main-p1qmvb.laravel.cloud/api/v1/\"")
         }
         debug {
             isMinifyEnabled = false
-            buildConfigField("String", "API_BASE_URL", "\"http://192.168.1.10:8000/api/v1/\"")
+            buildConfigField("String", "API_BASE_URL", "\"https://preuvely-main-p1qmvb.laravel.cloud/api/v1/\"")
         }
     }
 

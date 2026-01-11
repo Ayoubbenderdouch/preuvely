@@ -15,8 +15,7 @@ enum APIEnvironment {
             // Use Mac's IP address for iOS Simulator access
             return URL(string: "http://192.168.1.8:8000/api/v1")!
         case .production:
-            // TODO: Replace with actual production URL when ready
-            return URL(string: "https://api.preuvely.com/api/v1")!
+            return URL(string: "https://preuvely-main-p1qmvb.laravel.cloud/api/v1")!
         }
     }
 
@@ -34,7 +33,7 @@ enum APIEnvironment {
 
 struct APIConfig {
     /// Current environment - CHANGE THIS LINE TO SWITCH ENVIRONMENTS
-    static let environment: APIEnvironment = .localhost
+    static let environment: APIEnvironment = .production
 
     /// Base URL for all API requests
     static var baseURL: URL {
