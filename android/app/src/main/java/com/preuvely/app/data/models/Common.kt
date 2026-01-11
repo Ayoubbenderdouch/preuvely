@@ -128,3 +128,7 @@ data class SocialAuthRequest(
     @SerializedName("code") val code: String? = null,
     @SerializedName("id_token") val idToken: String? = null
 )
+
+data class VerifyEmailRequest(
+    @SerializedName("code") val code: String
+)

@@ -31,6 +31,9 @@ interface ApiService {
     @POST("auth/email/resend")
     suspend fun resendVerificationEmail(): Response<MessageResponse>
 
+    @POST("auth/email/verify")
+    suspend fun verifyEmailWithCode(@Body request: VerifyEmailRequest): Response<UserResponse>
+
     @POST("auth/social/{provider}/callback")
     suspend fun socialAuth(
         @Path("provider") provider: String,

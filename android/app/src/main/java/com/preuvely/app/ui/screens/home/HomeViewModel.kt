@@ -23,7 +23,8 @@ data class HomeUiState(
     val topRatedStores: List<Store> = emptyList(),
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val hasCachedData: Boolean = false
 )
 
 @HiltViewModel
@@ -36,17 +37,52 @@ class HomeViewModel @Inject constructor(
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     init {
-        loadData()
+        // Load cached data immediately for instant display
+        loadCachedData()
+        // Then fetch fresh data from API
+        loadData(forceRefresh = false)
     }
 
-    fun loadData() {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+    /**
+     * Load cached data immediately for instant app launch experience
+     */
+    private fun loadCachedData() {
+        val cachedBanners = categoryRepository.getCachedBanners() ?: emptyList()
+        val cachedCategories = categoryRepository.getCachedCategories()?.filter { it.shouldShowOnHome } ?: emptyList()
+        val cachedTrending = storeRepository.getCachedTrendingStores() ?: emptyList()
+        val cachedTopRated = storeRepository.getCachedTopRatedStores()?.sortedByDescending { it.reviewsCount } ?: emptyList()
 
-            val bannersDeferred = async { categoryRepository.getBanners() }
-            val categoriesDeferred = async { categoryRepository.getCategories() }
-            val trendingDeferred = async { storeRepository.getTrendingStores() }
-            val topRatedDeferred = async { storeRepository.getTopRatedStores() }
+        val hasCachedData = cachedBanners.isNotEmpty() || cachedCategories.isNotEmpty() ||
+                cachedTrending.isNotEmpty() || cachedTopRated.isNotEmpty()
+
+        if (hasCachedData) {
+            _uiState.value = _uiState.value.copy(
+                banners = cachedBanners,
+                categories = cachedCategories,
+                trendingStores = cachedTrending,
+                topRatedStores = cachedTopRated,
+                hasCachedData = true
+            )
+        }
+    }
+
+    /**
+     * Load data from API
+     * @param forceRefresh If true, bypasses cache and fetches fresh data
+     */
+    fun loadData(forceRefresh: Boolean = false) {
+        viewModelScope.launch {
+            // Only show loading indicator if we don't have cached data
+            val showLoading = !_uiState.value.hasCachedData && _uiState.value.banners.isEmpty()
+            _uiState.value = _uiState.value.copy(
+                isLoading = showLoading,
+                error = null
+            )
+
+            val bannersDeferred = async { categoryRepository.getBanners(forceRefresh = forceRefresh) }
+            val categoriesDeferred = async { categoryRepository.getCategories(forceRefresh = forceRefresh) }
+            val trendingDeferred = async { storeRepository.getTrendingStores(forceRefresh = forceRefresh) }
+            val topRatedDeferred = async { storeRepository.getTopRatedStores(forceRefresh = forceRefresh) }
 
             val bannersResult = bannersDeferred.await()
             val categoriesResult = categoriesDeferred.await()
@@ -54,21 +90,25 @@ class HomeViewModel @Inject constructor(
             val topRatedResult = topRatedDeferred.await()
 
             _uiState.value = _uiState.value.copy(
-                banners = (bannersResult as? Result.Success)?.data ?: emptyList(),
-                categories = (categoriesResult as? Result.Success)?.data?.filter { it.shouldShowOnHome } ?: emptyList(),
-                trendingStores = (trendingResult as? Result.Success)?.data ?: emptyList(),
-                topRatedStores = (topRatedResult as? Result.Success)?.data?.sortedByDescending { it.reviewsCount } ?: emptyList(),
+                banners = (bannersResult as? Result.Success)?.data ?: _uiState.value.banners,
+                categories = (categoriesResult as? Result.Success)?.data?.filter { it.shouldShowOnHome } ?: _uiState.value.categories,
+                trendingStores = (trendingResult as? Result.Success)?.data ?: _uiState.value.trendingStores,
+                topRatedStores = (topRatedResult as? Result.Success)?.data?.sortedByDescending { it.reviewsCount } ?: _uiState.value.topRatedStores,
                 isLoading = false,
-                isRefreshing = false
+                isRefreshing = false,
+                hasCachedData = true
             )
         }
     }
 
+    /**
+     * Manual refresh - forces cache bypass to get fresh data
+     */
     fun refresh() {
         if (_uiState.value.isRefreshing) return
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isRefreshing = true)
-            loadData()
+            loadData(forceRefresh = true)
         }
     }
 }

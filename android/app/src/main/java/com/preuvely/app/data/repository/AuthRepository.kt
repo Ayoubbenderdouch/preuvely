@@ -23,6 +23,7 @@ interface AuthRepository {
     suspend fun updateProfile(name: String?, phone: String?): Result<User>
     suspend fun uploadAvatar(file: File): Result<User>
     suspend fun resendVerificationEmail(): Result<String>
+    suspend fun verifyEmailWithCode(code: String): Result<User>
     suspend fun socialAuth(provider: String, idToken: String): Result<User>
 }
 
@@ -127,6 +128,18 @@ class AuthRepositoryImpl @Inject constructor(
         val result = safeApiCall { apiService.resendVerificationEmail() }
         return when (result) {
             is Result.Success -> Result.Success(result.data.message)
+            is Result.Error -> Result.Error(result.message, result.code)
+            is Result.Loading -> Result.Loading
+        }
+    }
+
+    override suspend fun verifyEmailWithCode(code: String): Result<User> {
+        val result = safeApiCall { apiService.verifyEmailWithCode(VerifyEmailRequest(code)) }
+        return when (result) {
+            is Result.Success -> {
+                sessionManager.saveUser(result.data.user)
+                Result.Success(result.data.user)
+            }
             is Result.Error -> Result.Error(result.message, result.code)
             is Result.Loading -> Result.Loading
         }

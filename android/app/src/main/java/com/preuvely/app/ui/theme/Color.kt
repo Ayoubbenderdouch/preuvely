@@ -3,9 +3,10 @@ package com.preuvely.app.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // Primary Brand Colors - Matching iOS exactly
-val PrimaryGreen = Color(0xFF007359)
-val PrimaryGreenLight = Color(0xFF008C72)
-val PrimaryGreenDark = Color(0xFF005945)
+// Using #22C55E as the primary green color for brand consistency
+val PrimaryGreen = Color(0xFF22C55E)
+val PrimaryGreenLight = Color(0xFF4ADE80)
+val PrimaryGreenDark = Color(0xFF16A34A)
 
 // Star Rating Color
 val StarYellow = Color(0xFFFFCC00)
@@ -45,7 +46,10 @@ val TextTertiary = Color(0xFFC7C7CC)
 
 // Card Colors
 val CardBackground = Color(0xFFFFFFFF)
-val CardShadow = Color(0x14000000) // Black at 8% opacity
+val CardShadow = Color(0x14000000) // Black at 8% opacity - matches iOS shadowOpacity: 0.08
+
+// Card Shadow Configuration (matching iOS Spacing.swift)
+// shadowRadius: 8, shadowOpacity: 0.08, shadowOffset: (0, 2)
 
 // Divider
 val Divider = Color(0xFFE5E5EA)

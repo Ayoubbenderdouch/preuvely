@@ -1,6 +1,7 @@
 package com.preuvely.app.data.repository
 
 import com.preuvely.app.data.api.ApiService
+import com.preuvely.app.data.local.CacheService
 import com.preuvely.app.data.models.*
 import com.preuvely.app.utils.Result
 import com.preuvely.app.utils.safeApiCall
@@ -21,8 +22,8 @@ interface StoreRepository {
         perPage: Int = 15
     ): Result<StoreListResponse>
 
-    suspend fun getTrendingStores(): Result<List<Store>>
-    suspend fun getTopRatedStores(): Result<List<Store>>
+    suspend fun getTrendingStores(forceRefresh: Boolean = false): Result<List<Store>>
+    suspend fun getTopRatedStores(forceRefresh: Boolean = false): Result<List<Store>>
     suspend fun getStore(slug: String): Result<Store>
     suspend fun getStoreSummary(slug: String): Result<StoreSummary>
     suspend fun createStore(request: CreateStoreRequest, logoFile: File?): Result<Store>
@@ -31,10 +32,13 @@ interface StoreRepository {
     suspend fun uploadStoreLogo(storeId: Int, file: File): Result<String>
     suspend fun getStoreLinks(storeId: Int): Result<List<StoreLink>>
     suspend fun updateStoreLinks(storeId: Int, links: List<StoreLinkInput>): Result<List<StoreLink>>
+    fun getCachedTrendingStores(): List<Store>?
+    fun getCachedTopRatedStores(): List<Store>?
 }
 
 class StoreRepositoryImpl @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val cacheService: CacheService
 ) : StoreRepository {
 
     override suspend fun searchStores(
@@ -57,14 +61,48 @@ class StoreRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getTrendingStores(): Result<List<Store>> {
+    override suspend fun getTrendingStores(forceRefresh: Boolean): Result<List<Store>> {
+        // Return cached data if available and not forcing refresh
+        if (!forceRefresh) {
+            cacheService.loadTrendingStores()?.let { cached ->
+                if (cached.isNotEmpty()) {
+                    return Result.Success(cached)
+                }
+            }
+        }
+
         val result = safeApiCall { apiService.getTrendingStores() }
-        return result.map { it.data }
+        return result.map { response ->
+            response.data.also { stores ->
+                cacheService.saveTrendingStores(stores)
+            }
+        }
     }
 
-    override suspend fun getTopRatedStores(): Result<List<Store>> {
+    override suspend fun getTopRatedStores(forceRefresh: Boolean): Result<List<Store>> {
+        // Return cached data if available and not forcing refresh
+        if (!forceRefresh) {
+            cacheService.loadTopRatedStores()?.let { cached ->
+                if (cached.isNotEmpty()) {
+                    return Result.Success(cached)
+                }
+            }
+        }
+
         val result = safeApiCall { apiService.getTopRatedStores() }
-        return result.map { it.data }
+        return result.map { response ->
+            response.data.also { stores ->
+                cacheService.saveTopRatedStores(stores)
+            }
+        }
+    }
+
+    override fun getCachedTrendingStores(): List<Store>? {
+        return cacheService.loadTrendingStores()
+    }
+
+    override fun getCachedTopRatedStores(): List<Store>? {
+        return cacheService.loadTopRatedStores()
     }
 
     override suspend fun getStore(slug: String): Result<Store> {

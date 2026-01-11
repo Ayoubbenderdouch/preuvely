@@ -29,6 +29,11 @@ import coil.compose.AsyncImage
 import com.preuvely.app.data.models.*
 import com.preuvely.app.ui.theme.*
 
+// Card shadow configuration matches iOS exactly:
+// - shadowRadius: 8dp
+// - shadowOpacity: 8%
+// - shadowOffset: (0, 2)
+
 @Composable
 fun StoreCard(
     store: Store,

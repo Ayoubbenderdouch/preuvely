@@ -61,9 +61,21 @@ object Spacing {
     val starXLarge = 36.dp
 }
 
-// Shadow configuration matching iOS
+// Shadow configuration matching iOS exactly (from Spacing.swift)
+// iOS uses: shadowRadius: 8, shadowOpacity: 0.08, shadowOffset: CGSize(width: 0, height: 2)
 object Shadows {
+    // Standard elevations for Material Design compatibility
     val cardElevation = 4.dp
     val buttonElevation = 2.dp
     val tabBarElevation = 8.dp
+
+    // iOS-matching shadow parameters for custom shadow effects
+    val shadowRadius = 8.dp           // Matches iOS shadowRadius
+    val shadowOpacity = 0.08f         // Matches iOS shadowOpacity (8%)
+    val shadowOffsetX = 0.dp          // Matches iOS shadowOffset.width
+    val shadowOffsetY = 2.dp          // Matches iOS shadowOffset.height
+
+    // Ambient and spot shadow colors for Material 3
+    val ambientShadowOpacity = 0.08f
+    val spotShadowOpacity = 0.12f
 }

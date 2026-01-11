@@ -61,12 +61,24 @@ fun ProfileScreen(
                 onEditProfile = { /* TODO */ },
                 onNavigateToStore = onNavigateToStore,
                 onNavigateToNotifications = onNavigateToNotifications,
-                onResendEmail = { viewModel.resendVerificationEmail() },
+                onVerifyEmail = { viewModel.showEmailVerificationSheet() },
                 onLogout = { viewModel.logout { } }
             )
         } else {
             GuestContent(onSignIn = onNavigateToAuth)
         }
+    }
+
+    // Email Verification Sheet
+    if (uiState.showEmailVerificationSheet && uiState.user?.email != null) {
+        EmailVerificationSheet(
+            email = uiState.user!!.email!!,
+            onDismiss = { viewModel.hideEmailVerificationSheet() },
+            onVerify = { code -> viewModel.verifyEmailCode(code) },
+            onResendCode = { viewModel.resendVerificationCode() },
+            uiState = uiState.emailVerificationState,
+            onDigitsChange = { digits -> viewModel.updateVerificationDigits(digits) }
+        )
     }
 }
 
@@ -141,7 +153,7 @@ private fun AuthenticatedContent(
     onEditProfile: () -> Unit,
     onNavigateToStore: (String) -> Unit,
     onNavigateToNotifications: () -> Unit,
-    onResendEmail: () -> Unit,
+    onVerifyEmail: () -> Unit,
     onLogout: () -> Unit
 ) {
     val user = uiState.user!!
@@ -229,7 +241,9 @@ private fun AuthenticatedContent(
         if (!user.emailVerified && user.email != null) {
             Spacer(modifier = Modifier.height(Spacing.md))
             Card(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onVerifyEmail),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = WarningOrange.copy(alpha = 0.08f)
@@ -260,27 +274,22 @@ private fun AuthenticatedContent(
                             color = TextPrimary
                         )
                         Text(
-                            text = "Please verify your email to access all features",
+                            text = "Tap to enter verification code",
                             style = PreuvelyTypography.caption1,
                             color = TextSecondary
                         )
                     }
-                    TextButton(
-                        onClick = onResendEmail,
-                        enabled = !uiState.isResendingEmail
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(Spacing.radiusSmall))
+                            .background(WarningOrange.copy(alpha = 0.15f))
+                            .padding(horizontal = Spacing.sm, vertical = Spacing.xs)
                     ) {
-                        if (uiState.isResendingEmail) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(16.dp),
-                                color = WarningOrange
-                            )
-                        } else {
-                            Text(
-                                text = "Resend",
-                                style = PreuvelyTypography.subheadlineBold,
-                                color = WarningOrange
-                            )
-                        }
+                        Text(
+                            text = "Verify",
+                            style = PreuvelyTypography.subheadlineBold,
+                            color = WarningOrange
+                        )
                     }
                 }
             }

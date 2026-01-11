@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder
 import com.preuvely.app.BuildConfig
 import com.preuvely.app.data.api.ApiService
 import com.preuvely.app.data.api.AuthInterceptor
+import com.preuvely.app.data.local.CacheService
 import com.preuvely.app.data.repository.*
 import com.preuvely.app.utils.SessionManager
 import dagger.Module
@@ -83,6 +84,15 @@ object AppModule {
         return retrofit.create(ApiService::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun provideCacheService(
+        @ApplicationContext context: Context,
+        gson: Gson
+    ): CacheService {
+        return CacheService(context, gson)
+    }
+
     // Repositories
     @Provides
     @Singleton
@@ -95,8 +105,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideStoreRepository(apiService: ApiService): StoreRepository {
-        return StoreRepositoryImpl(apiService)
+    fun provideStoreRepository(
+        apiService: ApiService,
+        cacheService: CacheService
+    ): StoreRepository {
+        return StoreRepositoryImpl(apiService, cacheService)
     }
 
     @Provides
@@ -107,8 +120,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideCategoryRepository(apiService: ApiService): CategoryRepository {
-        return CategoryRepositoryImpl(apiService)
+    fun provideCategoryRepository(
+        apiService: ApiService,
+        cacheService: CacheService
+    ): CategoryRepository {
+        return CategoryRepositoryImpl(apiService, cacheService)
     }
 
     @Provides

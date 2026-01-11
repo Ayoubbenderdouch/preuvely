@@ -10,6 +10,8 @@ import com.preuvely.app.data.repository.ReviewRepository
 import com.preuvely.app.data.repository.UserRepository
 import com.preuvely.app.utils.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,7 +28,9 @@ data class ProfileUiState(
     val isLoadingClaims: Boolean = false,
     val error: String? = null,
     val isResendingEmail: Boolean = false,
-    val emailResent: Boolean = false
+    val emailResent: Boolean = false,
+    val showEmailVerificationSheet: Boolean = false,
+    val emailVerificationState: EmailVerificationUiState = EmailVerificationUiState()
 )
 
 @HiltViewModel
@@ -38,6 +42,8 @@ class ProfileViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
+
+    private var cooldownJob: Job? = null
 
     init {
         observeUser()
@@ -121,7 +127,27 @@ class ProfileViewModel @Inject constructor(
 
     fun logout(onComplete: () -> Unit) {
         viewModelScope.launch {
-            authRepository.logout()
+            // Clear local state first to prevent any further API calls
+            _uiState.value = ProfileUiState(
+                user = null,
+                isAuthenticated = false,
+                reviews = emptyList(),
+                claims = emptyList(),
+                isLoading = false,
+                isLoadingReviews = false,
+                isLoadingClaims = false,
+                error = null,
+                isResendingEmail = false,
+                emailResent = false
+            )
+
+            try {
+                authRepository.logout()
+            } catch (e: Exception) {
+                // Ignore logout errors - user is already logged out locally
+                android.util.Log.d("ProfileViewModel", "[Logout] Server logout failed: ${e.message}")
+            }
+
             onComplete()
         }
     }
@@ -129,6 +155,112 @@ class ProfileViewModel @Inject constructor(
     fun refreshUser() {
         viewModelScope.launch {
             authRepository.getCurrentUser()
+        }
+    }
+
+    // Email Verification Sheet methods
+
+    fun showEmailVerificationSheet() {
+        _uiState.value = _uiState.value.copy(
+            showEmailVerificationSheet = true,
+            emailVerificationState = EmailVerificationUiState()
+        )
+    }
+
+    fun hideEmailVerificationSheet() {
+        cooldownJob?.cancel()
+        _uiState.value = _uiState.value.copy(
+            showEmailVerificationSheet = false,
+            emailVerificationState = EmailVerificationUiState()
+        )
+    }
+
+    fun updateVerificationDigits(digits: List<String>) {
+        _uiState.value = _uiState.value.copy(
+            emailVerificationState = _uiState.value.emailVerificationState.copy(
+                digits = digits,
+                errorMessage = null // Clear error when user starts typing
+            )
+        )
+    }
+
+    fun verifyEmailCode(code: String) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(
+                emailVerificationState = _uiState.value.emailVerificationState.copy(
+                    isLoading = true,
+                    errorMessage = null
+                )
+            )
+
+            when (val result = authRepository.verifyEmailWithCode(code)) {
+                is Result.Success -> {
+                    _uiState.value = _uiState.value.copy(
+                        emailVerificationState = _uiState.value.emailVerificationState.copy(
+                            isLoading = false,
+                            isVerified = true
+                        ),
+                        showEmailVerificationSheet = false
+                    )
+                    // Refresh user data to update email verified status
+                    refreshUser()
+                }
+                is Result.Error -> {
+                    _uiState.value = _uiState.value.copy(
+                        emailVerificationState = _uiState.value.emailVerificationState.copy(
+                            isLoading = false,
+                            errorMessage = result.message,
+                            digits = List(6) { "" } // Clear digits on error
+                        )
+                    )
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun resendVerificationCode() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(
+                emailVerificationState = _uiState.value.emailVerificationState.copy(
+                    isResending = true,
+                    errorMessage = null
+                )
+            )
+
+            when (authRepository.resendVerificationEmail()) {
+                is Result.Success -> {
+                    _uiState.value = _uiState.value.copy(
+                        emailVerificationState = _uiState.value.emailVerificationState.copy(
+                            isResending = false
+                        )
+                    )
+                    startResendCooldown()
+                }
+                is Result.Error -> {
+                    _uiState.value = _uiState.value.copy(
+                        emailVerificationState = _uiState.value.emailVerificationState.copy(
+                            isResending = false,
+                            errorMessage = "Failed to resend code. Please try again."
+                        )
+                    )
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun startResendCooldown() {
+        cooldownJob?.cancel()
+        cooldownJob = viewModelScope.launch {
+            for (i in 60 downTo 0) {
+                _uiState.value = _uiState.value.copy(
+                    emailVerificationState = _uiState.value.emailVerificationState.copy(
+                        resendCooldown = i
+                    )
+                )
+                delay(1000)
+            }
         }
     }
 }
