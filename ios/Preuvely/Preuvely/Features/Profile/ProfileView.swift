@@ -1091,14 +1091,18 @@ final class ProfileViewModel: ObservableObject {
     }
 
     func logout() async {
+        // Clear local state first to prevent any further API calls
+        user = nil
+        myReviews = []
+        myClaims = []
+        showError = false
+        errorMessage = nil
+
         do {
             try await apiClient.logout()
-            user = nil
-            myReviews = []
-            myClaims = []
         } catch {
-            errorMessage = error.localizedDescription
-            showError = true
+            // Ignore logout errors - user is already logged out locally
+            print("[Logout] Server logout failed: \(error.localizedDescription)")
         }
     }
 }
