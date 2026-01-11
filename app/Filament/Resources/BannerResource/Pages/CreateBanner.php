@@ -9,6 +9,16 @@ class CreateBanner extends CreateRecord
 {
     protected static string $resource = BannerResource::class;
 
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        // Set default image_url if not provided (we use image_data for base64 storage)
+        if (empty($data['image_url'])) {
+            $data['image_url'] = '';
+        }
+
+        return $data;
+    }
+
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
