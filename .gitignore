@@ -1,18 +1,31 @@
-# OS files
+# Laravel
+*.log
 .DS_Store
-*.DS_Store
+.env
+.env.backup
+.env.production
+.phpactor.json
+.phpunit.result.cache
+/.fleet
+/.idea
+/.nova
+/.phpunit.cache
+/.vscode
+/.zed
+/auth.json
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/vendor
+Homestead.json
+Homestead.yaml
 Thumbs.db
 
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Environment files
-.env
-.env.local
-.env.*.local
+# Database
+database/database.sqlite
 
 # iOS
 ios/Preuvely/Preuvely.xcodeproj/project.xcworkspace/xcuserdata/
@@ -27,15 +40,3 @@ android/build/
 android/local.properties
 android/*.iml
 android/.idea/
-
-# Node
-node_modules/
-
-# Laravel (handled by backend/.gitignore)
-backend/vendor/
-backend/node_modules/
-backend/.env
-backend/storage/*.key
-backend/public/storage
-backend/public/hot
-backend/public/build
