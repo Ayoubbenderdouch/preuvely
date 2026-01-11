@@ -14,6 +14,24 @@ class StoreStoreRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        // Handle JSON strings for links and contacts (from multipart form data)
+        if ($this->has('links') && is_string($this->links)) {
+            $decoded = json_decode($this->links, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $this->merge(['links' => $decoded]);
+            }
+        }
+
+        if ($this->has('contacts') && is_string($this->contacts)) {
+            $decoded = json_decode($this->contacts, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $this->merge(['contacts' => $decoded]);
+            }
+        }
+    }
+
     public function rules(): array
     {
         return [

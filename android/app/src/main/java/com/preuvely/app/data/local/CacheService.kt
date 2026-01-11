@@ -23,9 +23,15 @@ class CacheService @Inject constructor(
     private val gson: Gson
 ) {
     companion object {
-        private const val TAG = "CacheService"
+        @PublishedApi internal const val TAG = "CacheService"
         private const val CACHE_DIR_NAME = "PreuvelyCache"
     }
+
+    @PublishedApi
+    internal val gsonInternal: Gson get() = gson
+
+    @PublishedApi
+    internal val cacheDirectoryInternal: File get() = cacheDirectory
 
     // Cache keys
     enum class CacheKey(val fileName: String) {
@@ -50,8 +56,8 @@ class CacheService @Inject constructor(
      */
     inline fun <reified T> save(data: T, key: CacheKey) {
         try {
-            val json = gson.toJson(data)
-            val file = File(cacheDirectory, key.fileName)
+            val json = gsonInternal.toJson(data)
+            val file = File(cacheDirectoryInternal, key.fileName)
             file.writeText(json)
 
             if (BuildConfig.DEBUG) {
@@ -68,7 +74,7 @@ class CacheService @Inject constructor(
      * Load data from cache
      */
     inline fun <reified T> load(key: CacheKey): T? {
-        val file = File(cacheDirectory, key.fileName)
+        val file = File(cacheDirectoryInternal, key.fileName)
 
         if (!file.exists()) {
             return null
@@ -77,7 +83,7 @@ class CacheService @Inject constructor(
         return try {
             val json = file.readText()
             val type = object : TypeToken<T>() {}.type
-            val result: T = gson.fromJson(json, type)
+            val result: T = gsonInternal.fromJson(json, type)
 
             if (BuildConfig.DEBUG) {
                 Log.d(TAG, "Loaded ${key.name}")

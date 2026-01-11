@@ -1,6 +1,9 @@
 package com.preuvely.app.ui.components
 
+import android.graphics.BitmapFactory
+import android.util.Base64
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -20,12 +23,16 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import com.preuvely.app.data.models.*
 import com.preuvely.app.ui.theme.*
 
@@ -33,6 +40,108 @@ import com.preuvely.app.ui.theme.*
 // - shadowRadius: 8dp
 // - shadowOpacity: 8%
 // - shadowOffset: (0, 2)
+
+/**
+ * CachedAvatarImage - A reusable avatar component that handles:
+ * - Base64 data URLs (data:image/...)
+ * - HTTP/HTTPS URLs
+ * - Loading and error states with fallback to initials
+ */
+@Composable
+fun CachedAvatarImage(
+    urlString: String?,
+    fallbackInitials: String,
+    size: androidx.compose.ui.unit.Dp,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .size(size)
+            .clip(CircleShape)
+            .background(
+                Brush.linearGradient(
+                    listOf(PrimaryGreen.copy(alpha = 0.15f), PrimaryGreen.copy(alpha = 0.05f))
+                )
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        when {
+            urlString.isNullOrBlank() -> {
+                // No URL - show initials
+                Text(
+                    text = fallbackInitials,
+                    style = PreuvelyTypography.subheadlineBold,
+                    color = PrimaryGreen
+                )
+            }
+            urlString.startsWith("data:image") -> {
+                // Base64 data URL
+                val base64Data = urlString.substringAfter("base64,")
+                val bitmap = remember(base64Data) {
+                    try {
+                        val decodedBytes = Base64.decode(base64Data, Base64.DEFAULT)
+                        BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+                    } catch (e: Exception) {
+                        null
+                    }
+                }
+                if (bitmap != null) {
+                    Image(
+                        bitmap = bitmap.asImageBitmap(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(CircleShape)
+                    )
+                } else {
+                    Text(
+                        text = fallbackInitials,
+                        style = PreuvelyTypography.subheadlineBold,
+                        color = PrimaryGreen
+                    )
+                }
+            }
+            else -> {
+                // HTTP/HTTPS URL - use SubcomposeAsyncImage for proper state handling
+                SubcomposeAsyncImage(
+                    model = urlString,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(CircleShape)
+                ) {
+                    when (painter.state) {
+                        is AsyncImagePainter.State.Loading -> {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(size / 3),
+                                    color = PrimaryGreen,
+                                    strokeWidth = 2.dp
+                                )
+                            }
+                        }
+                        is AsyncImagePainter.State.Error -> {
+                            // Show initials on error
+                            Text(
+                                text = fallbackInitials,
+                                style = PreuvelyTypography.subheadlineBold,
+                                color = PrimaryGreen
+                            )
+                        }
+                        else -> {
+                            SubcomposeAsyncImageContent()
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun StoreCard(
@@ -288,40 +397,24 @@ fun ReviewCard(
         Column(modifier = Modifier.padding(16.dp)) {
             // Header
             Row(verticalAlignment = Alignment.CenterVertically) {
-                // Avatar with border
+                // Avatar with border - using CachedAvatarImage
                 Box(
                     modifier = Modifier
                         .size(48.dp)
                         .clip(CircleShape)
                         .border(2.dp, PrimaryGreen.copy(alpha = 0.2f), CircleShape)
                         .padding(2.dp)
-                        .clip(CircleShape)
-                        .background(
-                            Brush.linearGradient(
-                                listOf(PrimaryGreen.copy(alpha = 0.15f), PrimaryGreen.copy(alpha = 0.05f))
-                            )
-                        )
                         .then(
                             if (onUserClick != null) {
                                 Modifier.clickable(onClick = onUserClick)
                             } else Modifier
-                        ),
-                    contentAlignment = Alignment.Center
+                        )
                 ) {
-                    if (!review.userAvatar.isNullOrBlank()) {
-                        AsyncImage(
-                            model = review.userAvatar,
-                            contentDescription = review.userName,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    } else {
-                        Text(
-                            text = review.user.initials,
-                            style = PreuvelyTypography.subheadlineBold,
-                            color = PrimaryGreen
-                        )
-                    }
+                    CachedAvatarImage(
+                        urlString = review.userAvatar,
+                        fallbackInitials = review.user.initials,
+                        size = 44.dp
+                    )
                 }
 
                 Spacer(modifier = Modifier.width(12.dp))

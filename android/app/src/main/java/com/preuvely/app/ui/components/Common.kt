@@ -3,6 +3,7 @@ package com.preuvely.app.ui.components
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -454,7 +455,9 @@ fun SectionHeader(
     title: String,
     modifier: Modifier = Modifier,
     action: String? = null,
-    onAction: (() -> Unit)? = null
+    onAction: (() -> Unit)? = null,
+    icon: ImageVector? = null,
+    iconTint: Color = PrimaryGreen
 ) {
     Row(
         modifier = modifier
@@ -463,17 +466,49 @@ fun SectionHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = title,
-            style = PreuvelyTypography.title3,
-            color = TextPrimary
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            if (icon != null) {
+                Box(
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(iconTint.copy(alpha = 0.1f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = iconTint,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+            }
+            Text(
+                text = title,
+                style = PreuvelyTypography.title3,
+                color = TextPrimary
+            )
+        }
         if (action != null && onAction != null) {
-            TextButton(onClick = onAction) {
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable(onClick = onAction)
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = action,
                     style = PreuvelyTypography.subheadlineBold,
                     color = PrimaryGreen
+                )
+                Spacer(modifier = Modifier.width(2.dp))
+                Icon(
+                    imageVector = Icons.Default.ChevronRight,
+                    contentDescription = null,
+                    tint = PrimaryGreen,
+                    modifier = Modifier.size(18.dp)
                 )
             }
         }

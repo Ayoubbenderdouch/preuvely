@@ -117,7 +117,16 @@
       "Bash(git add:*)",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: Preuvely - Trusted Store Reviews Platform\n\nFeatures:\n- Laravel 12 Backend API with Filament Admin Panel\n- iOS App \\(SwiftUI\\)\n- Android App \\(Kotlin + Jetpack Compose\\)\n- Store reviews with proof verification\n- Multi-language support \\(AR, FR, EN\\)\n- Social authentication \\(Google, Apple\\)\n\nProduction ready:\n- All 148 tests passing\n- Database seeder configured for production\n- Demo data removed\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git push:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(./gradlew :app:compileDebugKotlin:*)",
+      "Bash(emulator:*)",
+      "Bash($ANDROID_HOME/emulator/emulator -list-avds)",
+      "Bash(do)",
+      "Bash(done)",
+      "Bash(adb install:*)",
+      "Bash(git checkout:*)",
+      "Bash(mysql:*)",
+      "Bash(~/Library/Android/sdk/platform-tools/adb shell getprop sys.boot_completed)"
     ]
   }
 }

@@ -1,5 +1,8 @@
 package com.preuvely.app.ui.screens.addstore
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -26,6 +29,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.preuvely.app.R
 import com.preuvely.app.data.models.Category
 import com.preuvely.app.data.models.Platform
@@ -40,6 +44,13 @@ fun AddStoreScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    // Image picker launcher
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        viewModel.setLogoUri(uri)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -47,7 +58,7 @@ fun AddStoreScreen(
             .statusBarsPadding()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = Spacing.screenPadding)
-            .padding(bottom = 100.dp)
+            .padding(bottom = 140.dp)
     ) {
         Spacer(modifier = Modifier.height(Spacing.lg))
 
@@ -74,6 +85,23 @@ fun AddStoreScreen(
                 value = uiState.name,
                 onValueChange = { viewModel.setName(it) },
                 isError = uiState.name.isBlank() && uiState.hasAttemptedSubmit
+            )
+        }
+
+        Spacer(modifier = Modifier.height(Spacing.md))
+
+        // Logo Card
+        FormCard {
+            SectionHeader(
+                icon = Icons.Default.Image,
+                title = stringResource(R.string.add_store_logo),
+                required = false
+            )
+            Spacer(modifier = Modifier.height(Spacing.md))
+            LogoUploadSection(
+                logoUri = uiState.logoUri,
+                onSelectImage = { imagePickerLauncher.launch("image/*") },
+                onRemoveImage = { viewModel.setLogoUri(null) }
             )
         }
 
@@ -338,9 +366,9 @@ private fun PlatformPill(
     onClick: () -> Unit
 ) {
     val iconRes = when (platform) {
-        Platform.INSTAGRAM -> R.drawable.ic_instagram
-        Platform.FACEBOOK -> R.drawable.ic_facebook
-        Platform.TIKTOK -> R.drawable.ic_tiktok
+        Platform.INSTAGRAM -> R.drawable.ic_instagram_color
+        Platform.FACEBOOK -> R.drawable.ic_facebook_color
+        Platform.TIKTOK -> R.drawable.ic_tiktok_color
         Platform.WEBSITE -> null
         else -> null
     }
@@ -738,5 +766,132 @@ private fun ErrorBanner(error: String) {
             style = PreuvelyTypography.caption1,
             color = ErrorRed
         )
+    }
+}
+
+@Composable
+private fun LogoUploadSection(
+    logoUri: Uri?,
+    onSelectImage: () -> Unit,
+    onRemoveImage: () -> Unit
+) {
+    if (logoUri != null) {
+        // Show selected image
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            Box {
+                AsyncImage(
+                    model = logoUri,
+                    contentDescription = "Store Logo",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .border(2.dp, PrimaryGreen.copy(alpha = 0.3f), RoundedCornerShape(16.dp))
+                )
+                // Remove button
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .offset(x = 8.dp, y = (-8).dp)
+                        .size(28.dp)
+                        .clip(CircleShape)
+                        .background(ErrorRed)
+                        .clickable(onClick = onRemoveImage),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Remove",
+                        tint = White,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(Spacing.sm))
+        // Change button
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .background(Gray6)
+                .clickable(onClick = onSelectImage)
+                .padding(Spacing.md),
+            contentAlignment = Alignment.Center
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = null,
+                    tint = PrimaryGreen,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(Spacing.sm))
+                Text(
+                    text = stringResource(R.string.add_store_change_logo),
+                    style = PreuvelyTypography.subheadline,
+                    color = PrimaryGreen
+                )
+            }
+        }
+    } else {
+        // Upload button
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(
+                    Brush.linearGradient(
+                        listOf(
+                            PrimaryGreen.copy(alpha = 0.08f),
+                            PrimaryGreen.copy(alpha = 0.03f)
+                        )
+                    )
+                )
+                .border(
+                    width = 2.dp,
+                    brush = Brush.linearGradient(
+                        listOf(
+                            PrimaryGreen.copy(alpha = 0.3f),
+                            PrimaryGreen.copy(alpha = 0.1f)
+                        )
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .clickable(onClick = onSelectImage),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(PrimaryGreen.copy(alpha = 0.15f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AddPhotoAlternate,
+                        contentDescription = null,
+                        tint = PrimaryGreen,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(Spacing.sm))
+                Text(
+                    text = stringResource(R.string.add_store_upload_logo),
+                    style = PreuvelyTypography.subheadlineBold,
+                    color = PrimaryGreen
+                )
+                Text(
+                    text = stringResource(R.string.add_store_logo_hint),
+                    style = PreuvelyTypography.caption1,
+                    color = TextSecondary
+                )
+            }
+        }
     }
 }

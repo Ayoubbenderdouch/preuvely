@@ -1,5 +1,6 @@
 package com.preuvely.app.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -14,9 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.preuvely.app.R
 import com.preuvely.app.data.models.Platform
 import com.preuvely.app.data.models.ReviewStatus
 import com.preuvely.app.ui.theme.*
@@ -148,37 +152,37 @@ fun PlatformBadge(
         BadgeSize.LARGE -> Spacing.platformBadgeLarge
     }
 
-    val iconSize = badgeSize * 0.6f
+    val iconSize = badgeSize * 0.8f
 
-    val (backgroundColor, icon) = when (platform) {
-        Platform.INSTAGRAM -> Pair(InstagramPink.copy(alpha = 0.15f), Icons.Default.CameraAlt)
-        Platform.FACEBOOK -> Pair(FacebookBlue.copy(alpha = 0.15f), Icons.Default.Facebook)
-        Platform.TIKTOK -> Pair(TikTokBlack.copy(alpha = 0.15f), Icons.Default.MusicNote)
-        Platform.WEBSITE -> Pair(PrimaryGreen.copy(alpha = 0.15f), Icons.Default.Language)
-        Platform.WHATSAPP -> Pair(WhatsAppGreen.copy(alpha = 0.15f), Icons.Default.Chat)
-    }
-
-    val iconColor = when (platform) {
-        Platform.INSTAGRAM -> InstagramPink
-        Platform.FACEBOOK -> FacebookBlue
-        Platform.TIKTOK -> TikTokBlack
-        Platform.WEBSITE -> PrimaryGreen
-        Platform.WHATSAPP -> WhatsAppGreen
+    val iconRes = when (platform) {
+        Platform.INSTAGRAM -> R.drawable.ic_instagram_color
+        Platform.FACEBOOK -> R.drawable.ic_facebook_color
+        Platform.TIKTOK -> R.drawable.ic_tiktok_color
+        Platform.WEBSITE -> null // Use material icon for website
+        Platform.WHATSAPP -> R.drawable.ic_whatsapp_color
     }
 
     Box(
         modifier = modifier
             .size(badgeSize)
-            .clip(RoundedCornerShape(Spacing.radiusSmall))
-            .background(backgroundColor),
+            .clip(RoundedCornerShape(Spacing.radiusSmall)),
         contentAlignment = Alignment.Center
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = platform.displayName,
-            tint = iconColor,
-            modifier = Modifier.size(iconSize)
-        )
+        if (iconRes != null) {
+            Image(
+                painter = painterResource(id = iconRes),
+                contentDescription = platform.displayName,
+                modifier = Modifier.size(iconSize),
+                contentScale = ContentScale.Fit
+            )
+        } else {
+            Icon(
+                imageVector = Icons.Default.Language,
+                contentDescription = platform.displayName,
+                tint = PrimaryGreen,
+                modifier = Modifier.size(iconSize)
+            )
+        }
     }
 }
 
@@ -188,35 +192,43 @@ fun PlatformIconCircle(
     size: Dp = 60.dp,
     modifier: Modifier = Modifier
 ) {
-    val gradient = when (platform) {
-        Platform.INSTAGRAM -> Brush.linearGradient(listOf(Color(0xFFF58529), Color(0xFFDD2A7B), Color(0xFF8134AF)))
-        Platform.FACEBOOK -> Brush.linearGradient(listOf(FacebookBlue, Color(0xFF4267B2)))
-        Platform.TIKTOK -> Brush.linearGradient(listOf(TikTokBlack, Color(0xFF25F4EE)))
-        Platform.WEBSITE -> Brush.linearGradient(listOf(PrimaryGreen, PrimaryGreenLight))
-        Platform.WHATSAPP -> Brush.linearGradient(listOf(WhatsAppGreen, Color(0xFF25D366)))
-    }
-
-    val icon = when (platform) {
-        Platform.INSTAGRAM -> Icons.Default.CameraAlt
-        Platform.FACEBOOK -> Icons.Default.Facebook
-        Platform.TIKTOK -> Icons.Default.MusicNote
-        Platform.WEBSITE -> Icons.Default.Language
-        Platform.WHATSAPP -> Icons.Default.Chat
+    val iconRes = when (platform) {
+        Platform.INSTAGRAM -> R.drawable.ic_instagram_color
+        Platform.FACEBOOK -> R.drawable.ic_facebook_color
+        Platform.TIKTOK -> R.drawable.ic_tiktok_color
+        Platform.WEBSITE -> null
+        Platform.WHATSAPP -> R.drawable.ic_whatsapp_color
     }
 
     Box(
         modifier = modifier
             .size(size)
-            .clip(CircleShape)
-            .background(gradient),
+            .clip(CircleShape),
         contentAlignment = Alignment.Center
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = platform.displayName,
-            tint = White,
-            modifier = Modifier.size(size * 0.5f)
-        )
+        if (iconRes != null) {
+            Image(
+                painter = painterResource(id = iconRes),
+                contentDescription = platform.displayName,
+                modifier = Modifier.size(size * 0.85f),
+                contentScale = ContentScale.Fit
+            )
+        } else {
+            // Website fallback with gradient background
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Brush.linearGradient(listOf(PrimaryGreen, PrimaryGreenLight))),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Language,
+                    contentDescription = platform.displayName,
+                    tint = White,
+                    modifier = Modifier.size(size * 0.5f)
+                )
+            }
+        }
     }
 }
 

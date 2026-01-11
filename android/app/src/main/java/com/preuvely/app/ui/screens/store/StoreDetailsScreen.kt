@@ -26,8 +26,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.preuvely.app.R
 import coil.compose.AsyncImage
 import com.preuvely.app.data.models.*
 import com.preuvely.app.ui.components.*
@@ -56,13 +58,13 @@ fun StoreDetailsScreen(
                 title = { },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, "Back")
+                        Icon(Icons.Default.ArrowBack, stringResource(R.string.store_back))
                     }
                 },
                 actions = {
                     Box {
                         IconButton(onClick = { showMenu = true }) {
-                            Icon(Icons.Default.MoreVert, "More options")
+                            Icon(Icons.Default.MoreVert, stringResource(R.string.store_more_options))
                         }
                         DropdownMenu(
                             expanded = showMenu,
@@ -78,7 +80,7 @@ fun StoreDetailsScreen(
                                             modifier = Modifier.size(20.dp)
                                         )
                                         Spacer(modifier = Modifier.width(Spacing.sm))
-                                        Text("Claim this store")
+                                        Text(stringResource(R.string.store_claim))
                                     }
                                 },
                                 onClick = {
@@ -96,7 +98,7 @@ fun StoreDetailsScreen(
                                             modifier = Modifier.size(20.dp)
                                         )
                                         Spacer(modifier = Modifier.width(Spacing.sm))
-                                        Text("Report store")
+                                        Text(stringResource(R.string.store_report))
                                     }
                                 },
                                 onClick = {
@@ -198,7 +200,7 @@ fun StoreDetailsScreen(
                     // Reviews Header
                     item {
                         SectionHeader(
-                            title = "Reviews",
+                            title = stringResource(R.string.store_reviews),
                             modifier = Modifier.padding(top = Spacing.xl)
                         )
                         Spacer(modifier = Modifier.height(Spacing.md))
@@ -209,8 +211,8 @@ fun StoreDetailsScreen(
                         item {
                             EmptyStateView(
                                 icon = Icons.Default.RateReview,
-                                title = "No reviews yet",
-                                message = "Be the first to review this store",
+                                title = stringResource(R.string.store_no_reviews),
+                                message = stringResource(R.string.store_be_first),
                                 modifier = Modifier.padding(Spacing.xl)
                             )
                         }
@@ -254,7 +256,7 @@ fun StoreDetailsScreen(
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
-                                        text = "Load More",
+                                        text = stringResource(R.string.store_load_more),
                                         style = PreuvelyTypography.subheadlineBold,
                                         color = PrimaryGreen
                                     )
@@ -600,7 +602,7 @@ private fun ContactsSection(
                     )
                     Spacer(modifier = Modifier.width(Spacing.sm))
                     Text(
-                        text = "WhatsApp",
+                        text = stringResource(R.string.store_whatsapp),
                         style = PreuvelyTypography.subheadlineBold,
                         color = WhatsAppGreen
                     )
@@ -626,7 +628,7 @@ private fun ContactsSection(
                     )
                     Spacer(modifier = Modifier.width(Spacing.sm))
                     Text(
-                        text = "Call",
+                        text = stringResource(R.string.store_call),
                         style = PreuvelyTypography.subheadlineBold,
                         color = PrimaryGreen
                     )
@@ -674,7 +676,7 @@ private fun RatingBreakdownSection(summary: StoreSummary) {
                 }
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = "Rating Breakdown",
+                    text = stringResource(R.string.store_rating_breakdown),
                     style = PreuvelyTypography.headline.copy(fontWeight = FontWeight.Bold),
                     color = TextPrimary
                 )
@@ -783,7 +785,7 @@ private fun WriteReviewSection(
 ) {
     Column(modifier = Modifier.padding(Spacing.screenPadding)) {
         PrimaryButton(
-            text = if (hasReviewed) "Edit Review" else "Write Review",
+            text = if (hasReviewed) stringResource(R.string.store_edit_review) else stringResource(R.string.store_write_review),
             onClick = if (hasReviewed) onEditReview else onWriteReview,
             enabled = true,
             icon = Icons.Default.Edit
@@ -809,7 +811,12 @@ private fun WriteReviewSheet(
     var stars by remember { mutableIntStateOf(existingStars) }
     var comment by remember { mutableStateOf(existingComment) }
 
-    val ratingLabels = listOf("", "Poor", "Fair", "Good", "Very Good", "Excellent")
+    val ratingLabelPoor = stringResource(R.string.review_rating_poor)
+    val ratingLabelFair = stringResource(R.string.review_rating_fair)
+    val ratingLabelGood = stringResource(R.string.review_rating_good)
+    val ratingLabelVeryGood = stringResource(R.string.review_rating_very_good)
+    val ratingLabelExcellent = stringResource(R.string.review_rating_excellent)
+    val ratingLabels = listOf("", ratingLabelPoor, ratingLabelFair, ratingLabelGood, ratingLabelVeryGood, ratingLabelExcellent)
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -842,7 +849,7 @@ private fun WriteReviewSheet(
                 Spacer(modifier = Modifier.height(Spacing.lg))
 
                 Text(
-                    text = "Login Required",
+                    text = stringResource(R.string.review_login_required),
                     style = PreuvelyTypography.title3,
                     color = TextPrimary
                 )
@@ -850,7 +857,7 @@ private fun WriteReviewSheet(
                 Spacer(modifier = Modifier.height(Spacing.sm))
 
                 Text(
-                    text = "Please log in to write a review. Your opinion helps other shoppers make informed decisions.",
+                    text = stringResource(R.string.review_login_message),
                     style = PreuvelyTypography.body,
                     color = TextSecondary,
                     textAlign = TextAlign.Center
@@ -859,14 +866,14 @@ private fun WriteReviewSheet(
                 Spacer(modifier = Modifier.height(Spacing.xl))
 
                 PrimaryButton(
-                    text = "Log In",
+                    text = stringResource(R.string.review_login),
                     onClick = onNavigateToAuth
                 )
 
                 Spacer(modifier = Modifier.height(Spacing.md))
 
                 SecondaryButton(
-                    text = "Cancel",
+                    text = stringResource(R.string.cancel),
                     onClick = onDismiss
                 )
             }
@@ -898,7 +905,7 @@ private fun WriteReviewSheet(
                 Spacer(modifier = Modifier.height(Spacing.lg))
 
                 Text(
-                    text = if (isEditing) "Review Updated!" else "Review Submitted!",
+                    text = if (isEditing) stringResource(R.string.review_success_edit) else stringResource(R.string.review_success),
                     style = PreuvelyTypography.title3,
                     color = TextPrimary
                 )
@@ -906,7 +913,7 @@ private fun WriteReviewSheet(
                 Spacer(modifier = Modifier.height(Spacing.sm))
 
                 Text(
-                    text = if (isEditing) "Your review has been updated successfully." else "Thank you for sharing your experience. Your review helps others make better decisions.",
+                    text = if (isEditing) stringResource(R.string.review_success_edit_message) else stringResource(R.string.review_success_message),
                     style = PreuvelyTypography.body,
                     color = TextSecondary,
                     textAlign = TextAlign.Center
@@ -915,7 +922,7 @@ private fun WriteReviewSheet(
                 Spacer(modifier = Modifier.height(Spacing.xl))
 
                 PrimaryButton(
-                    text = "Done",
+                    text = stringResource(R.string.done),
                     onClick = onDismiss
                 )
             }
@@ -958,12 +965,12 @@ private fun WriteReviewSheet(
                     Spacer(modifier = Modifier.width(Spacing.md))
                     Column {
                         Text(
-                            text = if (isEditing) "Edit Review" else "Write a Review",
+                            text = if (isEditing) stringResource(R.string.review_title_edit) else stringResource(R.string.review_title),
                             style = PreuvelyTypography.title3,
                             color = White
                         )
                         Text(
-                            text = if (isEditing) "Update your experience" else "Share your experience",
+                            text = if (isEditing) stringResource(R.string.review_update_experience) else stringResource(R.string.review_share_experience),
                             style = PreuvelyTypography.caption1,
                             color = White.copy(alpha = 0.8f)
                         )
@@ -1031,7 +1038,7 @@ private fun WriteReviewSheet(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "How was your experience?",
+                            text = stringResource(R.string.review_how_was_experience),
                             style = PreuvelyTypography.subheadlineBold,
                             color = TextPrimary
                         )
@@ -1098,7 +1105,7 @@ private fun WriteReviewSheet(
 
                 // Review Text Section
                 Text(
-                    text = "Tell us more",
+                    text = stringResource(R.string.review_tell_us_more),
                     style = PreuvelyTypography.subheadlineBold,
                     color = TextPrimary
                 )
@@ -1112,7 +1119,7 @@ private fun WriteReviewSheet(
                         .height(140.dp),
                     placeholder = {
                         Text(
-                            text = "What did you like or dislike? How was the service quality? Would you recommend this store?",
+                            text = stringResource(R.string.review_comment_placeholder),
                             style = PreuvelyTypography.body,
                             color = TextTertiary
                         )
@@ -1135,7 +1142,7 @@ private fun WriteReviewSheet(
                 ) {
                     if (comment.isNotEmpty() && comment.length < 8) {
                         Text(
-                            text = "Minimum 8 characters",
+                            text = stringResource(R.string.review_min_chars),
                             style = PreuvelyTypography.caption1,
                             color = ErrorRed
                         )
@@ -1204,7 +1211,7 @@ private fun WriteReviewSheet(
                         )
                         Spacer(modifier = Modifier.width(Spacing.sm))
                         Text(
-                            text = if (isEditing) "Update Review" else "Submit Review",
+                            text = if (isEditing) stringResource(R.string.review_update) else stringResource(R.string.review_submit),
                             style = PreuvelyTypography.subheadlineBold
                         )
                     }
@@ -1259,7 +1266,7 @@ private fun ClaimStoreSheet(
                 Spacer(modifier = Modifier.height(Spacing.lg))
 
                 Text(
-                    text = "Claim Submitted!",
+                    text = stringResource(R.string.claim_success),
                     style = PreuvelyTypography.title3,
                     color = TextPrimary
                 )
@@ -1267,7 +1274,7 @@ private fun ClaimStoreSheet(
                 Spacer(modifier = Modifier.height(Spacing.sm))
 
                 Text(
-                    text = "We'll review your request and get back to you",
+                    text = stringResource(R.string.claim_success_message),
                     style = PreuvelyTypography.body,
                     color = TextSecondary,
                     textAlign = TextAlign.Center
@@ -1276,7 +1283,7 @@ private fun ClaimStoreSheet(
                 Spacer(modifier = Modifier.height(Spacing.xl))
 
                 PrimaryButton(
-                    text = "Got it",
+                    text = stringResource(R.string.claim_got_it),
                     onClick = onDismiss
                 )
             }
@@ -1289,7 +1296,7 @@ private fun ClaimStoreSheet(
                     .padding(bottom = 32.dp)
             ) {
                 Text(
-                    text = "Claim this store",
+                    text = stringResource(R.string.claim_title),
                     style = PreuvelyTypography.title3,
                     color = TextPrimary
                 )
@@ -1313,7 +1320,7 @@ private fun ClaimStoreSheet(
                     )
                     Spacer(modifier = Modifier.width(Spacing.sm))
                     Text(
-                        text = "Claiming this store allows you to respond to reviews and update store information.",
+                        text = stringResource(R.string.claim_info_banner),
                         style = PreuvelyTypography.caption1,
                         color = TextSecondary
                     )
@@ -1325,7 +1332,7 @@ private fun ClaimStoreSheet(
                 OutlinedTextField(
                     value = ownerName,
                     onValueChange = { ownerName = it },
-                    label = { Text("Your Name") },
+                    label = { Text(stringResource(R.string.claim_owner_name)) },
                     leadingIcon = {
                         Icon(Icons.Default.Person, null, tint = Gray3)
                     },
@@ -1343,7 +1350,7 @@ private fun ClaimStoreSheet(
                 OutlinedTextField(
                     value = whatsappNumber,
                     onValueChange = { whatsappNumber = it },
-                    label = { Text("WhatsApp Number") },
+                    label = { Text(stringResource(R.string.claim_whatsapp)) },
                     leadingIcon = {
                         Icon(Icons.Default.Message, null, tint = Gray3)
                     },
@@ -1362,7 +1369,7 @@ private fun ClaimStoreSheet(
                 OutlinedTextField(
                     value = note,
                     onValueChange = { note = it },
-                    label = { Text("Additional Notes (optional)") },
+                    label = { Text(stringResource(R.string.claim_note)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(100.dp),
@@ -1375,7 +1382,7 @@ private fun ClaimStoreSheet(
                 Spacer(modifier = Modifier.height(Spacing.xl))
 
                 PrimaryButton(
-                    text = "Submit Claim",
+                    text = stringResource(R.string.claim_submit),
                     onClick = {
                         onSubmitClaim(ownerName, whatsappNumber, note.ifBlank { null })
                         showSuccess = true
@@ -1403,11 +1410,15 @@ private fun ReportStoreSheet(
     var selectedReason by remember { mutableStateOf<String?>(null) }
     var note by remember { mutableStateOf("") }
 
+    val reasonSpam = stringResource(R.string.report_spam)
+    val reasonAbuse = stringResource(R.string.report_abuse)
+    val reasonFake = stringResource(R.string.report_fake)
+    val reasonOther = stringResource(R.string.report_other)
     val reasons = listOf(
-        "spam" to "Spam",
-        "abuse" to "Abusive Content",
-        "fake" to "Fake Store",
-        "other" to "Other"
+        "spam" to reasonSpam,
+        "abuse" to reasonAbuse,
+        "fake" to reasonFake,
+        "other" to reasonOther
     )
 
     ModalBottomSheet(
@@ -1441,7 +1452,7 @@ private fun ReportStoreSheet(
                 Spacer(modifier = Modifier.height(Spacing.lg))
 
                 Text(
-                    text = "Login Required",
+                    text = stringResource(R.string.review_login_required),
                     style = PreuvelyTypography.title3,
                     color = TextPrimary
                 )
@@ -1449,7 +1460,7 @@ private fun ReportStoreSheet(
                 Spacer(modifier = Modifier.height(Spacing.sm))
 
                 Text(
-                    text = "Please log in to report this store. Your feedback helps keep our community safe.",
+                    text = stringResource(R.string.profile_report_login_message),
                     style = PreuvelyTypography.body,
                     color = TextSecondary,
                     textAlign = TextAlign.Center
@@ -1458,14 +1469,14 @@ private fun ReportStoreSheet(
                 Spacer(modifier = Modifier.height(Spacing.xl))
 
                 PrimaryButton(
-                    text = "Log In",
+                    text = stringResource(R.string.review_login),
                     onClick = onNavigateToAuth
                 )
 
                 Spacer(modifier = Modifier.height(Spacing.md))
 
                 SecondaryButton(
-                    text = "Cancel",
+                    text = stringResource(R.string.cancel),
                     onClick = onDismiss
                 )
             }
@@ -1496,7 +1507,7 @@ private fun ReportStoreSheet(
                 Spacer(modifier = Modifier.height(Spacing.lg))
 
                 Text(
-                    text = "Report Submitted",
+                    text = stringResource(R.string.report_success),
                     style = PreuvelyTypography.title3,
                     color = TextPrimary
                 )
@@ -1504,7 +1515,7 @@ private fun ReportStoreSheet(
                 Spacer(modifier = Modifier.height(Spacing.sm))
 
                 Text(
-                    text = "Thank you for helping us keep our platform safe",
+                    text = stringResource(R.string.report_success_message),
                     style = PreuvelyTypography.body,
                     color = TextSecondary,
                     textAlign = TextAlign.Center
@@ -1513,7 +1524,7 @@ private fun ReportStoreSheet(
                 Spacer(modifier = Modifier.height(Spacing.xl))
 
                 PrimaryButton(
-                    text = "Done",
+                    text = stringResource(R.string.done),
                     onClick = onDismiss
                 )
             }
@@ -1526,7 +1537,7 @@ private fun ReportStoreSheet(
                     .padding(bottom = 32.dp)
             ) {
                 Text(
-                    text = "Report Store",
+                    text = stringResource(R.string.report_title),
                     style = PreuvelyTypography.title3,
                     color = TextPrimary
                 )
@@ -1550,7 +1561,7 @@ private fun ReportStoreSheet(
                     )
                     Spacer(modifier = Modifier.width(Spacing.sm))
                     Text(
-                        text = "Reporting: ${store.name}",
+                        text = stringResource(R.string.report_store_info, store.name),
                         style = PreuvelyTypography.subheadline,
                         color = TextSecondary
                     )
@@ -1559,7 +1570,7 @@ private fun ReportStoreSheet(
                 Spacer(modifier = Modifier.height(Spacing.xl))
 
                 Text(
-                    text = "Select a reason",
+                    text = stringResource(R.string.report_reason),
                     style = PreuvelyTypography.subheadlineBold,
                     color = TextPrimary
                 )
@@ -1605,7 +1616,7 @@ private fun ReportStoreSheet(
                 OutlinedTextField(
                     value = note,
                     onValueChange = { note = it },
-                    label = { Text("Additional details (optional)") },
+                    label = { Text(stringResource(R.string.report_note)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(100.dp),
@@ -1628,7 +1639,7 @@ private fun ReportStoreSheet(
                 Spacer(modifier = Modifier.height(Spacing.xl))
 
                 PrimaryButton(
-                    text = "Submit Report",
+                    text = stringResource(R.string.report_submit),
                     onClick = {
                         selectedReason?.let { reason ->
                             onSubmitReport(reason, note.ifBlank { null })

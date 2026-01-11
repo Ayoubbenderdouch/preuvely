@@ -31,7 +31,7 @@ interface ApiService {
     @POST("auth/email/resend")
     suspend fun resendVerificationEmail(): Response<MessageResponse>
 
-    @POST("auth/email/verify")
+    @POST("auth/email/verify-code")
     suspend fun verifyEmailWithCode(@Body request: VerifyEmailRequest): Response<UserResponse>
 
     @POST("auth/social/{provider}/callback")
@@ -84,7 +84,7 @@ interface ApiService {
         @Part("name") name: okhttp3.RequestBody,
         @Part("description") description: okhttp3.RequestBody?,
         @Part("city") city: okhttp3.RequestBody?,
-        @Part("category_ids[]") categoryIds: List<okhttp3.RequestBody>,
+        @Part categoryIds: List<MultipartBody.Part>,
         @Part logo: MultipartBody.Part?,
         @Part("links") links: okhttp3.RequestBody?,
         @Part("contacts") contacts: okhttp3.RequestBody?

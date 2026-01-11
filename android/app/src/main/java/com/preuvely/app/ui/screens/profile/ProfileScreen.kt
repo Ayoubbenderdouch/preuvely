@@ -2,6 +2,10 @@ package com.preuvely.app.ui.screens.profile
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.util.Base64
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,9 +23,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -45,27 +51,40 @@ fun ProfileScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(BackgroundSecondary)
-            .statusBarsPadding()
-            .verticalScroll(rememberScrollState())
-            .padding(bottom = 100.dp)
-    ) {
-        Spacer(modifier = Modifier.height(Spacing.md))
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(BackgroundSecondary)
+                .statusBarsPadding()
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = 100.dp)
+        ) {
+            Spacer(modifier = Modifier.height(Spacing.md))
 
-        if (uiState.isAuthenticated && uiState.user != null) {
-            AuthenticatedContent(
-                uiState = uiState,
-                onEditProfile = { /* TODO */ },
-                onNavigateToStore = onNavigateToStore,
-                onNavigateToNotifications = onNavigateToNotifications,
-                onResendEmail = { viewModel.resendVerificationEmail() },
-                onLogout = { viewModel.logout { } }
+            if (uiState.isAuthenticated && uiState.user != null) {
+                AuthenticatedContent(
+                    uiState = uiState,
+                    onEditProfile = { viewModel.showEditProfileSheet() },
+                    onNavigateToStore = onNavigateToStore,
+                    onNavigateToNotifications = onNavigateToNotifications,
+                    onResendEmail = { viewModel.resendVerificationEmail() },
+                    onLogout = { viewModel.logout { } }
+                )
+            } else {
+                GuestContent(onSignIn = onNavigateToAuth)
+            }
+        }
+
+        // Edit Profile Sheet
+        if (uiState.showEditProfileSheet && uiState.user != null) {
+            EditProfileSheet(
+                user = uiState.user!!,
+                uiState = uiState.editProfileState,
+                onDismiss = { viewModel.hideEditProfileSheet() },
+                onSave = { name, phone -> viewModel.updateProfile(name, phone) },
+                onAvatarSelected = { uri -> viewModel.uploadAvatar(uri) }
             )
-        } else {
-            GuestContent(onSignIn = onNavigateToAuth)
         }
     }
 }
@@ -132,6 +151,11 @@ private fun GuestContent(onSignIn: () -> Unit) {
 
         // Settings
         SettingsSection()
+
+        Spacer(modifier = Modifier.height(Spacing.xl))
+
+        // Social Media
+        SocialMediaSection()
     }
 }
 
@@ -170,12 +194,33 @@ private fun AuthenticatedContent(
                     contentAlignment = Alignment.Center
                 ) {
                     if (!user.avatar.isNullOrBlank()) {
-                        AsyncImage(
-                            model = user.avatar,
-                            contentDescription = user.name,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
-                        )
+                        // Handle base64 data URL
+                        if (user.avatar!!.startsWith("data:image")) {
+                            val base64Data = user.avatar!!.substringAfter("base64,")
+                            val bitmap = remember(base64Data) {
+                                try {
+                                    val decodedBytes = Base64.decode(base64Data, Base64.DEFAULT)
+                                    BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+                                } catch (e: Exception) {
+                                    null
+                                }
+                            }
+                            bitmap?.let {
+                                Image(
+                                    bitmap = it.asImageBitmap(),
+                                    contentDescription = user.name,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
+                        } else {
+                            AsyncImage(
+                                model = user.avatar,
+                                contentDescription = user.name,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
                     } else {
                         Text(
                             text = user.initials,
@@ -196,7 +241,7 @@ private fun AuthenticatedContent(
                         )
                         Spacer(modifier = Modifier.width(Spacing.xs))
                         Text(
-                            text = "Edit",
+                            text = stringResource(R.string.profile_edit),
                             style = PreuvelyTypography.caption1,
                             color = TextSecondary
                         )
@@ -255,12 +300,12 @@ private fun AuthenticatedContent(
                     Spacer(modifier = Modifier.width(Spacing.md))
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Verify your email",
+                            text = stringResource(R.string.profile_verify_email),
                             style = PreuvelyTypography.subheadlineBold,
                             color = TextPrimary
                         )
                         Text(
-                            text = "Please verify your email to access all features",
+                            text = stringResource(R.string.profile_verify_email_message),
                             style = PreuvelyTypography.caption1,
                             color = TextSecondary
                         )
@@ -276,7 +321,7 @@ private fun AuthenticatedContent(
                             )
                         } else {
                             Text(
-                                text = "Resend",
+                                text = stringResource(R.string.profile_resend_email),
                                 style = PreuvelyTypography.subheadlineBold,
                                 color = WarningOrange
                             )
@@ -295,7 +340,7 @@ private fun AuthenticatedContent(
         if (uiState.reviews.isEmpty()) {
             EmptySection(
                 icon = Icons.Outlined.RateReview,
-                message = "You haven't written any reviews yet"
+                message = stringResource(R.string.profile_no_reviews)
             )
         } else {
             uiState.reviews.forEach { review ->
@@ -313,7 +358,7 @@ private fun AuthenticatedContent(
         if (uiState.claims.isEmpty()) {
             EmptySection(
                 icon = Icons.Outlined.Store,
-                message = "You haven't claimed any stores yet"
+                message = stringResource(R.string.profile_no_claims)
             )
         } else {
             uiState.claims.forEach { claim ->
@@ -326,6 +371,11 @@ private fun AuthenticatedContent(
 
         // Settings
         SettingsSection()
+
+        Spacer(modifier = Modifier.height(Spacing.xl))
+
+        // Social Media
+        SocialMediaSection()
 
         Spacer(modifier = Modifier.height(Spacing.xl))
 
@@ -490,17 +540,29 @@ private fun LanguageOption(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
-                Text(
-                    text = language.nativeName,
-                    style = PreuvelyTypography.bodyBold,
-                    color = if (isSelected) PrimaryGreen else TextPrimary
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                // Flag Image
+                Image(
+                    painter = painterResource(id = language.flagResId),
+                    contentDescription = language.displayName,
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
                 )
-                Text(
-                    text = language.displayName,
-                    style = PreuvelyTypography.caption1,
-                    color = TextSecondary
-                )
+                Spacer(modifier = Modifier.width(Spacing.md))
+                Column {
+                    Text(
+                        text = language.nativeName,
+                        style = PreuvelyTypography.bodyBold,
+                        color = if (isSelected) PrimaryGreen else TextPrimary
+                    )
+                    Text(
+                        text = language.displayName,
+                        style = PreuvelyTypography.caption1,
+                        color = TextSecondary
+                    )
+                }
             }
             if (isSelected) {
                 Icon(
@@ -658,10 +720,14 @@ private fun ClaimItem(claim: com.preuvely.app.data.models.Claim) {
 
 @Composable
 private fun ClaimStatusBadge(status: ClaimStatus) {
+    val pendingText = stringResource(R.string.profile_claim_pending)
+    val approvedText = stringResource(R.string.profile_claim_approved)
+    val rejectedText = stringResource(R.string.profile_claim_rejected)
+
     val (backgroundColor, textColor, text) = when (status) {
-        ClaimStatus.PENDING -> Triple(WarningOrange.copy(alpha = 0.1f), WarningOrange, "Pending")
-        ClaimStatus.APPROVED -> Triple(SuccessGreen.copy(alpha = 0.1f), SuccessGreen, "Approved")
-        ClaimStatus.REJECTED -> Triple(ErrorRed.copy(alpha = 0.1f), ErrorRed, "Rejected")
+        ClaimStatus.PENDING -> Triple(WarningOrange.copy(alpha = 0.1f), WarningOrange, pendingText)
+        ClaimStatus.APPROVED -> Triple(SuccessGreen.copy(alpha = 0.1f), SuccessGreen, approvedText)
+        ClaimStatus.REJECTED -> Triple(ErrorRed.copy(alpha = 0.1f), ErrorRed, rejectedText)
     }
 
     Box(
@@ -674,6 +740,115 @@ private fun ClaimStatusBadge(status: ClaimStatus) {
             text = text,
             style = PreuvelyTypography.caption1,
             color = textColor
+        )
+    }
+}
+
+@Composable
+private fun SocialMediaSection() {
+    val context = LocalContext.current
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = CardBackground)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Spacing.lg),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Header
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = null,
+                    tint = PrimaryGreen,
+                    modifier = Modifier.size(14.dp)
+                )
+                Spacer(modifier = Modifier.width(Spacing.sm))
+                Text(
+                    text = stringResource(R.string.profile_follow_us),
+                    style = PreuvelyTypography.subheadline,
+                    color = TextSecondary
+                )
+            }
+
+            Spacer(modifier = Modifier.height(Spacing.lg))
+
+            // Social Media Buttons
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                SocialMediaButton(
+                    iconRes = R.drawable.ic_instagram_color,
+                    contentDescription = "Instagram",
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://instagram.com/preuvely"))
+                        context.startActivity(intent)
+                    }
+                )
+                Spacer(modifier = Modifier.width(Spacing.lg))
+                SocialMediaButton(
+                    iconRes = R.drawable.ic_facebook_color,
+                    contentDescription = "Facebook",
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://facebook.com/preuvely"))
+                        context.startActivity(intent)
+                    }
+                )
+                Spacer(modifier = Modifier.width(Spacing.lg))
+                SocialMediaButton(
+                    iconRes = R.drawable.ic_tiktok_color,
+                    contentDescription = "TikTok",
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://tiktok.com/@preuvely"))
+                        context.startActivity(intent)
+                    }
+                )
+                Spacer(modifier = Modifier.width(Spacing.lg))
+                SocialMediaButton(
+                    iconRes = R.drawable.ic_whatsapp_color,
+                    contentDescription = "WhatsApp",
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/213555123456"))
+                        context.startActivity(intent)
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SocialMediaButton(
+    iconRes: Int,
+    contentDescription: String,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .size(52.dp)
+            .clip(CircleShape)
+            .background(
+                Brush.linearGradient(
+                    colors = listOf(Gray6, Gray5)
+                )
+            )
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(id = iconRes),
+            contentDescription = contentDescription,
+            modifier = Modifier.size(26.dp),
+            contentScale = ContentScale.Fit
         )
     }
 }

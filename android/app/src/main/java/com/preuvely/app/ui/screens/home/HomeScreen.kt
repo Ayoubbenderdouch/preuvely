@@ -1,5 +1,7 @@
 package com.preuvely.app.ui.screens.home
 
+import android.graphics.BitmapFactory
+import android.util.Base64
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -21,6 +23,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -63,61 +66,55 @@ fun HomeScreen(
         if (uiState.isLoading && uiState.categories.isEmpty()) {
             LoadingView()
         } else {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(
-                    start = Spacing.screenPadding,
-                    end = Spacing.screenPadding,
-                    bottom = 100.dp
-                ),
-                horizontalArrangement = Arrangement.spacedBy(Spacing.md),
-                verticalArrangement = Arrangement.spacedBy(Spacing.md)
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = Spacing.screenPadding)
+                    .padding(bottom = 100.dp)
             ) {
                 // Categories Section Header
-                item(span = { GridItemSpan(2) }) {
-                    SectionHeader(
-                        title = stringResource(R.string.home_categories),
-                        action = stringResource(R.string.home_see_all),
-                        onAction = { /* Show all categories */ },
-                        modifier = Modifier.padding(top = Spacing.lg)
-                    )
-                }
+                SectionHeader(
+                    title = stringResource(R.string.home_categories),
+                    action = stringResource(R.string.home_see_all),
+                    onAction = { /* Show all categories */ },
+                    modifier = Modifier.padding(top = Spacing.lg)
+                )
+
+                Spacer(modifier = Modifier.height(Spacing.md))
 
                 // Categories Grid (4 per row)
-                item(span = { GridItemSpan(2) }) {
-                    val categories = uiState.categories.take(8)
-                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.sm)) {
-                        // First row (4 categories)
+                val categories = uiState.categories.take(8)
+                Column(verticalArrangement = Arrangement.spacedBy(Spacing.sm)) {
+                    // First row (4 categories)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        categories.take(4).forEach { category ->
+                            CategoryTile(
+                                category = category,
+                                onClick = { onNavigateToCategory(category.id, category.slug) },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+                    // Second row (next 4 categories)
+                    if (categories.size > 4) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            categories.take(4).forEach { category ->
+                            categories.drop(4).take(4).forEach { category ->
                                 CategoryTile(
                                     category = category,
                                     onClick = { onNavigateToCategory(category.id, category.slug) },
                                     modifier = Modifier.weight(1f)
                                 )
                             }
-                        }
-                        // Second row (next 4 categories)
-                        if (categories.size > 4) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                categories.drop(4).take(4).forEach { category ->
-                                    CategoryTile(
-                                        category = category,
-                                        onClick = { onNavigateToCategory(category.id, category.slug) },
-                                        modifier = Modifier.weight(1f)
-                                    )
-                                }
-                                // Fill empty slots if less than 4 in second row
-                                repeat(4 - categories.drop(4).take(4).size) {
-                                    Spacer(modifier = Modifier.weight(1f))
-                                }
+                            // Fill empty slots if less than 4 in second row
+                            repeat(4 - categories.drop(4).take(4).size) {
+                                Spacer(modifier = Modifier.weight(1f))
                             }
                         }
                     }
@@ -125,30 +122,42 @@ fun HomeScreen(
 
                 // Banners Carousel
                 if (uiState.banners.isNotEmpty()) {
-                    item(span = { GridItemSpan(2) }) {
-                        BannerCarousel(
-                            banners = uiState.banners,
-                            modifier = Modifier.padding(top = Spacing.lg)
-                        )
-                    }
-                }
-
-                // Top Reviewed Section Header
-                item(span = { GridItemSpan(2) }) {
-                    SectionHeader(
-                        title = stringResource(R.string.home_top_reviewed),
-                        action = stringResource(R.string.home_see_all),
-                        onAction = onNavigateToSearch,
+                    BannerCarousel(
+                        banners = uiState.banners,
                         modifier = Modifier.padding(top = Spacing.lg)
                     )
                 }
 
-                // Top Rated Stores
-                items(uiState.topRatedStores) { store ->
-                    ModernStoreCard(
-                        store = store,
-                        onClick = { onNavigateToStore(store.slug) }
-                    )
+                // Top Reviewed Section Header
+                SectionHeader(
+                    title = stringResource(R.string.home_top_reviewed),
+                    action = stringResource(R.string.home_see_all),
+                    onAction = onNavigateToSearch,
+                    modifier = Modifier.padding(top = Spacing.lg)
+                )
+
+                Spacer(modifier = Modifier.height(Spacing.md))
+
+                // Top Rated Stores - 2 column grid
+                val storeRows = uiState.topRatedStores.chunked(2)
+                storeRows.forEach { rowStores ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(Spacing.md)
+                    ) {
+                        rowStores.forEach { store ->
+                            ModernStoreCard(
+                                store = store,
+                                onClick = { onNavigateToStore(store.slug) },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                        // Fill empty slot if odd number of stores
+                        if (rowStores.size == 1) {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(Spacing.md))
                 }
             }
         }
@@ -333,26 +342,35 @@ private fun BannerCard(banner: Banner) {
             .padding(horizontal = 2.dp)
             .clip(RoundedCornerShape(20.dp))
     ) {
-        AsyncImage(
-            model = banner.imageUrl,
-            contentDescription = banner.title,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
-
-        // Gradient overlay
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.horizontalGradient(
-                        colors = listOf(
-                            Color.Black.copy(alpha = 0.6f),
-                            Color.Transparent
-                        )
-                    )
+        // Handle base64 data URL or regular URL
+        val imageUrl = banner.imageUrl
+        if (imageUrl != null && imageUrl.startsWith("data:image")) {
+            val base64Data = imageUrl.substringAfter("base64,")
+            val bitmap = remember(base64Data) {
+                try {
+                    val decodedBytes = Base64.decode(base64Data, Base64.DEFAULT)
+                    BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+                } catch (e: Exception) {
+                    null
+                }
+            }
+            bitmap?.let {
+                Image(
+                    bitmap = it.asImageBitmap(),
+                    contentDescription = banner.title,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
                 )
-        )
+            }
+        } else {
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = banner.title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
 
         // Content
         Column(
@@ -396,7 +414,8 @@ private fun BannerCard(banner: Banner) {
 @Composable
 private fun ModernStoreCard(
     store: Store,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -406,7 +425,7 @@ private fun ModernStoreCard(
     )
 
     Card(
-        modifier = Modifier
+        modifier = modifier
             .scale(scale)
             .fillMaxWidth()
             .shadow(
@@ -431,12 +450,33 @@ private fun ModernStoreCard(
                 contentAlignment = Alignment.Center
             ) {
                 if (!store.logo.isNullOrBlank()) {
-                    AsyncImage(
-                        model = store.logo,
-                        contentDescription = store.name,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
+                    // Handle base64 data URL or regular URL
+                    if (store.logo!!.startsWith("data:image")) {
+                        val base64Data = store.logo!!.substringAfter("base64,")
+                        val bitmap = remember(base64Data) {
+                            try {
+                                val decodedBytes = Base64.decode(base64Data, Base64.DEFAULT)
+                                BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+                            } catch (e: Exception) {
+                                null
+                            }
+                        }
+                        bitmap?.let {
+                            Image(
+                                bitmap = it.asImageBitmap(),
+                                contentDescription = store.name,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                    } else {
+                        AsyncImage(
+                            model = store.logo,
+                            contentDescription = store.name,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
                 } else {
                     Box(
                         modifier = Modifier

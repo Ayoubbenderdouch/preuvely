@@ -126,8 +126,8 @@ class StoreRepositoryImpl @Inject constructor(
         val nameBody = request.name.toRequestBody("text/plain".toMediaTypeOrNull())
         val descriptionBody = request.description?.toRequestBody("text/plain".toMediaTypeOrNull())
         val cityBody = request.city?.toRequestBody("text/plain".toMediaTypeOrNull())
-        val categoryIdBodies = request.categoryIds.map {
-            it.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+        val categoryIdParts = request.categoryIds.map { id ->
+            MultipartBody.Part.createFormData("category_ids[]", id.toString())
         }
 
         val logoRequestFile = logoFile.asRequestBody("image/*".toMediaTypeOrNull())
@@ -145,7 +145,7 @@ class StoreRepositoryImpl @Inject constructor(
                 name = nameBody,
                 description = descriptionBody,
                 city = cityBody,
-                categoryIds = categoryIdBodies,
+                categoryIds = categoryIdParts,
                 logo = logoPart,
                 links = linksJson,
                 contacts = contactsJson

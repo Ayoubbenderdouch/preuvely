@@ -42,37 +42,66 @@
     <string name="store_reviews">Avis</string>
     <string name="store_rating_breakdown">Répartition des notes</string>
     <string name="store_write_review">Écrire un avis</string>
+    <string name="store_edit_review">Modifier l\'avis</string>
     <string name="store_claim">Réclamer cette boutique</string>
-    <string name="store_report">Signaler</string>
+    <string name="store_report">Signaler la boutique</string>
     <string name="store_no_reviews">Aucun avis</string>
     <string name="store_be_first">Soyez le premier à laisser un avis</string>
     <string name="store_load_more">Charger plus</string>
+    <string name="store_back">Retour</string>
+    <string name="store_more_options">Plus d\'options</string>
+    <string name="store_whatsapp">WhatsApp</string>
+    <string name="store_call">Appeler</string>
+    <string name="store_reviews_count">%d avis</string>
 
     <!-- Write Review -->
     <string name="review_title">Écrire un avis</string>
+    <string name="review_title_edit">Modifier l\'avis</string>
     <string name="review_rating">Votre note</string>
     <string name="review_comment">Votre avis</string>
     <string name="review_comment_hint">Partagez votre expérience avec cette boutique…</string>
+    <string name="review_comment_placeholder">Qu\'avez-vous aimé ou pas aimé ? Comment était la qualité du service ? Recommanderiez-vous cette boutique ?</string>
     <string name="review_proof">Télécharger une preuve</string>
     <string name="review_proof_required">Preuve requise pour cette catégorie</string>
     <string name="review_proof_optional">La preuve est optionnelle mais recommandée</string>
     <string name="review_submit">Soumettre l\'avis</string>
+    <string name="review_update">Mettre à jour l\'avis</string>
     <string name="review_success">Avis soumis !</string>
-    <string name="review_success_message">Merci pour votre retour</string>
-    <string name="review_min_chars">Minimum 8 caractères requis</string>
+    <string name="review_success_edit">Avis mis à jour !</string>
+    <string name="review_success_message">Merci de partager votre expérience. Votre avis aide les autres à prendre de meilleures décisions.</string>
+    <string name="review_success_edit_message">Votre avis a été mis à jour avec succès.</string>
+    <string name="review_min_chars">Minimum 8 caractères</string>
+    <string name="review_share_experience">Partagez votre expérience</string>
+    <string name="review_update_experience">Mettez à jour votre expérience</string>
+    <string name="review_how_was_experience">Comment était votre expérience ?</string>
+    <string name="review_tell_us_more">Dites-nous en plus</string>
+    <string name="review_login_required">Connexion requise</string>
+    <string name="review_login_message">Veuillez vous connecter pour écrire un avis. Votre opinion aide les autres acheteurs à prendre des décisions éclairées.</string>
+    <string name="review_login">Se connecter</string>
+    <string name="review_rating_poor">Mauvais</string>
+    <string name="review_rating_fair">Passable</string>
+    <string name="review_rating_good">Bien</string>
+    <string name="review_rating_very_good">Très bien</string>
+    <string name="review_rating_excellent">Excellent</string>
 
     <!-- Add Store -->
     <string name="add_store_title">Ajouter à Preuvely</string>
     <string name="add_store_subtitle">Aidez les autres à découvrir des boutiques fiables</string>
     <string name="add_store_name">Nom de la boutique</string>
     <string name="add_store_name_placeholder">Entrez le nom de la boutique</string>
-    <string name="add_store_name_required">Nom de la boutique *</string>
+    <string name="add_store_name_required">Le nom de la boutique est requis</string>
     <string name="add_store_platform">Plateforme</string>
     <string name="add_store_link">Lien ou identifiant</string>
     <string name="add_store_whatsapp">WhatsApp</string>
     <string name="add_store_categories">Catégories</string>
     <string name="add_store_logo">Logo de la boutique</string>
-    <string name="add_store_submit">Ajouter la boutique</string>
+    <string name="add_store_add_logo">Ajouter un logo</string>
+    <string name="add_store_upload_logo">Télécharger le logo</string>
+    <string name="add_store_change_logo">Changer le logo</string>
+    <string name="add_store_logo_hint">JPG, PNG • Max 5MB</string>
+    <string name="add_store_submit">Soumettre</string>
+    <string name="add_store_next">Suivant</string>
+    <string name="add_store_back">Retour</string>
     <string name="add_store_pending">Votre boutique sera examinée avant d\'apparaître publiquement</string>
     <string name="add_store_duplicate_title">Boutique existante</string>
     <string name="add_store_duplicate_message">Voulez-vous dire cette boutique ?</string>
@@ -81,13 +110,29 @@
     <string name="add_store_optional">Optionnel</string>
     <string name="add_store_review_notice_title">Révision requise</string>
     <string name="add_store_review_notice_message">Votre boutique sera examinée avant d\'apparaître publiquement</string>
+    <!-- Add Store - Wizard Steps -->
+    <string name="add_store_step_basic">Informations</string>
+    <string name="add_store_step_platforms">Plateformes</string>
+    <string name="add_store_step_categories">Catégories</string>
+    <string name="add_store_step_review">Révision</string>
+    <!-- Add Store - Tips -->
+    <string name="add_store_tip_name_title">Conseil</string>
+    <string name="add_store_tip_name_message">Utilisez le nom officiel de la boutique pour une meilleure visibilité</string>
+    <string name="add_store_tip_platforms_title">Plusieurs plateformes</string>
+    <string name="add_store_tip_platforms_message">Ajoutez toutes les plateformes où votre boutique est présente</string>
+    <!-- Add Store - Status Messages -->
+    <string name="add_store_platforms_added">plateformes ajoutées</string>
+    <string name="add_store_categories_selected">catégories sélectionnées</string>
+    <string name="add_store_loading_categories">Chargement des catégories...</string>
+    <string name="add_store_review_title">Vérifiez votre boutique</string>
+    <string name="add_store_review_subtitle">Assurez-vous que tout est correct avant de soumettre</string>
 
     <!-- Profile -->
     <string name="profile_guest">Invité</string>
     <string name="profile_sign_in_prompt">Connectez-vous pour accéder à toutes les fonctionnalités</string>
     <string name="profile_sign_in">Se connecter</string>
     <string name="profile_sign_out">Se déconnecter</string>
-    <string name="profile_edit">Modifier le profil</string>
+    <string name="profile_edit">Modifier</string>
     <string name="profile_my_reviews">Mes avis</string>
     <string name="profile_my_claims">Mes réclamations</string>
     <string name="profile_my_stores">Mes boutiques</string>
@@ -98,7 +143,14 @@
     <string name="profile_privacy">Politique de confidentialité</string>
     <string name="profile_verify_email">Vérifiez votre email</string>
     <string name="profile_verify_email_message">Veuillez vérifier votre email pour accéder à toutes les fonctionnalités</string>
-    <string name="profile_resend_email">Renvoyer l\'email</string>
+    <string name="profile_resend_email">Renvoyer</string>
+    <string name="profile_follow_us">Suivez-nous</string>
+    <string name="profile_no_reviews">Vous n\'avez pas encore écrit d\'avis</string>
+    <string name="profile_no_claims">Vous n\'avez pas encore réclamé de boutique</string>
+    <string name="profile_claim_pending">En attente</string>
+    <string name="profile_claim_approved">Approuvée</string>
+    <string name="profile_claim_rejected">Rejetée</string>
+    <string name="profile_report_login_message">Veuillez vous connecter pour signaler cette boutique. Vos commentaires nous aident à garder notre communauté en sécurité.</string>
 
     <!-- Auth -->
     <string name="auth_login">Connexion</string>
@@ -145,18 +197,35 @@
     <string name="claim_submit">Soumettre la réclamation</string>
     <string name="claim_success">Réclamation soumise !</string>
     <string name="claim_success_message">Nous examinerons votre demande et vous recontacterons</string>
+    <string name="claim_verify_ownership">Vérifiez que vous êtes propriétaire de %s</string>
+    <string name="claim_message_optional">Message (optionnel)</string>
+    <string name="claim_message_placeholder">Dites-nous pourquoi vous réclamez cette boutique...</string>
+    <string name="claim_proof_required">Preuve de propriété *</string>
+    <string name="claim_proof_description">Téléchargez des documents commerciaux, des captures d\'écran de votre tableau de bord ou d\'autres preuves</string>
+    <string name="claim_upload">Télécharger</string>
+    <string name="claim_proof_header">Ce que nous acceptons comme preuve :</string>
+    <string name="claim_proof_1">Documents d\'enregistrement d\'entreprise</string>
+    <string name="claim_proof_2">Capture d\'écran de votre panneau d\'administration</string>
+    <string name="claim_proof_3">Captures d\'écran de réseaux sociaux vérifiés</string>
+    <string name="claim_proof_4">Factures ou reçus de paiement</string>
+    <string name="claim_info_banner">Réclamer cette boutique vous permet de répondre aux avis et de mettre à jour les informations.</string>
+    <string name="claim_got_it">Compris</string>
 
     <!-- Report -->
-    <string name="report_title">Signaler</string>
+    <string name="report_title">Signaler la boutique</string>
     <string name="report_reason">Sélectionnez une raison</string>
+    <string name="report_reason_required">Raison du signalement *</string>
     <string name="report_spam">Spam</string>
     <string name="report_abuse">Contenu abusif</string>
-    <string name="report_fake">Faux avis</string>
+    <string name="report_fake">Fausse boutique</string>
     <string name="report_other">Autre</string>
     <string name="report_note">Détails supplémentaires (optionnel)</string>
+    <string name="report_note_placeholder">Fournissez plus d\'informations sur le problème...</string>
     <string name="report_submit">Soumettre le signalement</string>
     <string name="report_success">Signalement soumis</string>
     <string name="report_success_message">Merci de nous aider à garder notre plateforme sûre</string>
+    <string name="report_help_message">Aidez-nous à garder Preuvely sûr en signalant les problèmes avec %s</string>
+    <string name="report_store_info">Signalement : %s</string>
 
     <!-- My Stores -->
     <string name="my_stores_title">Mes boutiques</string>

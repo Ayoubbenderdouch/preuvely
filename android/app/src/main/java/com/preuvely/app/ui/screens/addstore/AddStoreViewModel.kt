@@ -1,5 +1,7 @@
 package com.preuvely.app.ui.screens.addstore
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.preuvely.app.data.models.*
@@ -8,11 +10,13 @@ import com.preuvely.app.data.repository.CategoryRepository
 import com.preuvely.app.data.repository.StoreRepository
 import com.preuvely.app.utils.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 data class AddStoreUiState(
@@ -22,6 +26,7 @@ data class AddStoreUiState(
     val selectedPlatform: Platform? = null,
     val platformLinks: Map<Platform, String> = emptyMap(),
     val whatsapp: String = "",
+    val logoUri: Uri? = null,
     val isSubmitting: Boolean = false,
     val error: String? = null,
     val hasAttemptedSubmit: Boolean = false,
@@ -32,7 +37,8 @@ data class AddStoreUiState(
 class AddStoreViewModel @Inject constructor(
     private val storeRepository: StoreRepository,
     private val categoryRepository: CategoryRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AddStoreUiState())
@@ -69,6 +75,10 @@ class AddStoreViewModel @Inject constructor(
 
     fun setWhatsapp(whatsapp: String) {
         _uiState.value = _uiState.value.copy(whatsapp = whatsapp)
+    }
+
+    fun setLogoUri(uri: Uri?) {
+        _uiState.value = _uiState.value.copy(logoUri = uri)
     }
 
     fun toggleCategory(categoryId: Int) {
@@ -135,7 +145,12 @@ class AddStoreViewModel @Inject constructor(
                 contacts = contacts
             )
 
-            when (val result = storeRepository.createStore(request, null)) {
+            // Convert logo URI to File if present
+            val logoFile = _uiState.value.logoUri?.let { uri ->
+                uriToFile(uri)
+            }
+
+            when (val result = storeRepository.createStore(request, logoFile)) {
                 is Result.Success -> {
                     _uiState.value = _uiState.value.copy(isSubmitting = false)
                     onSuccess(result.data.slug)
@@ -166,6 +181,20 @@ class AddStoreViewModel @Inject constructor(
                 regex.find(url)?.groupValues?.getOrNull(1)
             }
             else -> null
+        }
+    }
+
+    private fun uriToFile(uri: Uri): File? {
+        return try {
+            val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+            val file = File(context.cacheDir, "store_logo_${System.currentTimeMillis()}.jpg")
+            file.outputStream().use { output ->
+                inputStream.copyTo(output)
+            }
+            inputStream.close()
+            file
+        } catch (e: Exception) {
+            null
         }
     }
 }

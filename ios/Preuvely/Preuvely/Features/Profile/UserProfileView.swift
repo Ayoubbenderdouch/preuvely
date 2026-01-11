@@ -161,32 +161,23 @@ struct UserProfileView: View {
 
     private var avatarView: some View {
         Group {
-            if let avatarURL = viewModel.profile?.avatar, let url = URL(string: avatarURL) {
-                AsyncImage(url: url) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .scaledToFill()
-                    case .failure(_):
-                        avatarPlaceholder
-                    case .empty:
-                        avatarPlaceholder
-                            .shimmer()
-                    @unknown default:
-                        avatarPlaceholder
-                    }
-                }
+            if let avatarURL = viewModel.profile?.avatar, !avatarURL.isEmpty {
+                // Use CachedAvatarImage which handles both base64 data URLs and regular HTTP URLs
+                CachedAvatarImage(urlString: avatarURL, size: 80)
+                    .overlay(
+                        Circle()
+                            .stroke(Color.primaryGreen.opacity(0.2), lineWidth: 3)
+                    )
             } else {
                 avatarPlaceholder
+                    .frame(width: 80, height: 80)
+                    .clipShape(Circle())
+                    .overlay(
+                        Circle()
+                            .stroke(Color.primaryGreen.opacity(0.2), lineWidth: 3)
+                    )
             }
         }
-        .frame(width: 80, height: 80)
-        .clipShape(Circle())
-        .overlay(
-            Circle()
-                .stroke(Color.primaryGreen.opacity(0.2), lineWidth: 3)
-        )
     }
 
     private var avatarPlaceholder: some View {

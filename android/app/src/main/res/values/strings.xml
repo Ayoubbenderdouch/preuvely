@@ -42,37 +42,66 @@
     <string name="store_reviews">Reviews</string>
     <string name="store_rating_breakdown">Rating Breakdown</string>
     <string name="store_write_review">Write Review</string>
+    <string name="store_edit_review">Edit Review</string>
     <string name="store_claim">Claim this store</string>
-    <string name="store_report">Report</string>
+    <string name="store_report">Report store</string>
     <string name="store_no_reviews">No reviews yet</string>
     <string name="store_be_first">Be the first to review this store</string>
     <string name="store_load_more">Load More</string>
+    <string name="store_back">Back</string>
+    <string name="store_more_options">More options</string>
+    <string name="store_whatsapp">WhatsApp</string>
+    <string name="store_call">Call</string>
+    <string name="store_reviews_count">%d reviews</string>
 
     <!-- Write Review -->
     <string name="review_title">Write Review</string>
+    <string name="review_title_edit">Edit Review</string>
     <string name="review_rating">Your Rating</string>
     <string name="review_comment">Your Review</string>
     <string name="review_comment_hint">Share your experience with this store...</string>
+    <string name="review_comment_placeholder">What did you like or dislike? How was the service quality? Would you recommend this store?</string>
     <string name="review_proof">Upload Proof</string>
     <string name="review_proof_required">Proof required for this category</string>
     <string name="review_proof_optional">Proof is optional but recommended</string>
     <string name="review_submit">Submit Review</string>
+    <string name="review_update">Update Review</string>
     <string name="review_success">Review Submitted!</string>
-    <string name="review_success_message">Thank you for your feedback</string>
-    <string name="review_min_chars">Minimum 8 characters required</string>
+    <string name="review_success_edit">Review Updated!</string>
+    <string name="review_success_message">Thank you for sharing your experience. Your review helps others make better decisions.</string>
+    <string name="review_success_edit_message">Your review has been updated successfully.</string>
+    <string name="review_min_chars">Minimum 8 characters</string>
+    <string name="review_share_experience">Share your experience</string>
+    <string name="review_update_experience">Update your experience</string>
+    <string name="review_how_was_experience">How was your experience?</string>
+    <string name="review_tell_us_more">Tell us more</string>
+    <string name="review_login_required">Login Required</string>
+    <string name="review_login_message">Please log in to write a review. Your opinion helps other shoppers make informed decisions.</string>
+    <string name="review_login">Log In</string>
+    <string name="review_rating_poor">Poor</string>
+    <string name="review_rating_fair">Fair</string>
+    <string name="review_rating_good">Good</string>
+    <string name="review_rating_very_good">Very Good</string>
+    <string name="review_rating_excellent">Excellent</string>
 
     <!-- Add Store -->
     <string name="add_store_title">Add to Preuvely</string>
     <string name="add_store_subtitle">Help others discover trustworthy stores</string>
     <string name="add_store_name">Store Name</string>
     <string name="add_store_name_placeholder">Enter store name</string>
-    <string name="add_store_name_required">Store Name *</string>
+    <string name="add_store_name_required">Store name is required</string>
     <string name="add_store_platform">Platform</string>
     <string name="add_store_link">Enter link or handle</string>
     <string name="add_store_whatsapp">WhatsApp</string>
     <string name="add_store_categories">Categories</string>
     <string name="add_store_logo">Store Logo</string>
-    <string name="add_store_submit">Add Store</string>
+    <string name="add_store_add_logo">Add Logo</string>
+    <string name="add_store_upload_logo">Upload Logo</string>
+    <string name="add_store_change_logo">Change Logo</string>
+    <string name="add_store_logo_hint">JPG, PNG • Max 5MB</string>
+    <string name="add_store_submit">Submit</string>
+    <string name="add_store_next">Next</string>
+    <string name="add_store_back">Back</string>
     <string name="add_store_pending">Your store will be reviewed before appearing publicly</string>
     <string name="add_store_duplicate_title">Store Already Exists</string>
     <string name="add_store_duplicate_message">Did you mean this store?</string>
@@ -81,13 +110,29 @@
     <string name="add_store_optional">Optional</string>
     <string name="add_store_review_notice_title">Review Required</string>
     <string name="add_store_review_notice_message">Your store will be reviewed before appearing publicly</string>
+    <!-- Add Store - Wizard Steps -->
+    <string name="add_store_step_basic">Basic Info</string>
+    <string name="add_store_step_platforms">Platforms</string>
+    <string name="add_store_step_categories">Categories</string>
+    <string name="add_store_step_review">Review</string>
+    <!-- Add Store - Tips -->
+    <string name="add_store_tip_name_title">Pro Tip</string>
+    <string name="add_store_tip_name_message">Use the official store name for better visibility in search results</string>
+    <string name="add_store_tip_platforms_title">Multiple Platforms</string>
+    <string name="add_store_tip_platforms_message">Add all platforms where your store is present to help customers find you</string>
+    <!-- Add Store - Status Messages -->
+    <string name="add_store_platforms_added">platforms added</string>
+    <string name="add_store_categories_selected">categories selected</string>
+    <string name="add_store_loading_categories">Loading categories...</string>
+    <string name="add_store_review_title">Review Your Store</string>
+    <string name="add_store_review_subtitle">Make sure everything looks correct before submitting</string>
 
     <!-- Profile -->
     <string name="profile_guest">Guest</string>
     <string name="profile_sign_in_prompt">Sign in to access all features</string>
     <string name="profile_sign_in">Sign In</string>
     <string name="profile_sign_out">Sign Out</string>
-    <string name="profile_edit">Edit Profile</string>
+    <string name="profile_edit">Edit</string>
     <string name="profile_my_reviews">My Reviews</string>
     <string name="profile_my_claims">My Claims</string>
     <string name="profile_my_stores">My Stores</string>
@@ -96,9 +141,16 @@
     <string name="profile_support">Support</string>
     <string name="profile_terms">Terms of Service</string>
     <string name="profile_privacy">Privacy Policy</string>
-    <string name="profile_verify_email">Verify Your Email</string>
+    <string name="profile_verify_email">Verify your email</string>
     <string name="profile_verify_email_message">Please verify your email to access all features</string>
-    <string name="profile_resend_email">Resend Email</string>
+    <string name="profile_resend_email">Resend</string>
+    <string name="profile_follow_us">Follow us</string>
+    <string name="profile_no_reviews">You haven\'t written any reviews yet</string>
+    <string name="profile_no_claims">You haven\'t claimed any stores yet</string>
+    <string name="profile_claim_pending">Pending</string>
+    <string name="profile_claim_approved">Approved</string>
+    <string name="profile_claim_rejected">Rejected</string>
+    <string name="profile_report_login_message">Please log in to report this store. Your feedback helps keep our community safe.</string>
 
     <!-- Auth -->
     <string name="auth_login">Sign In</string>
@@ -145,18 +197,35 @@
     <string name="claim_submit">Submit Claim</string>
     <string name="claim_success">Claim Submitted!</string>
     <string name="claim_success_message">We will review your claim and get back to you</string>
+    <string name="claim_verify_ownership">Verify that you own %s</string>
+    <string name="claim_message_optional">Message (optional)</string>
+    <string name="claim_message_placeholder">Tell us why you\'re claiming this store...</string>
+    <string name="claim_proof_required">Proof of Ownership *</string>
+    <string name="claim_proof_description">Upload business documents, screenshots from your store dashboard, or other proof</string>
+    <string name="claim_upload">Upload</string>
+    <string name="claim_proof_header">What we accept as proof:</string>
+    <string name="claim_proof_1">Business registration documents</string>
+    <string name="claim_proof_2">Screenshot from your store admin panel</string>
+    <string name="claim_proof_3">Verified social media screenshots</string>
+    <string name="claim_proof_4">Payment/invoice records</string>
+    <string name="claim_info_banner">Claiming this store allows you to respond to reviews and update store information.</string>
+    <string name="claim_got_it">Got it</string>
 
     <!-- Report -->
-    <string name="report_title">Report</string>
+    <string name="report_title">Report Store</string>
     <string name="report_reason">Select a reason</string>
+    <string name="report_reason_required">Reason for reporting *</string>
     <string name="report_spam">Spam</string>
     <string name="report_abuse">Abusive Content</string>
-    <string name="report_fake">Fake Review</string>
+    <string name="report_fake">Fake Store</string>
     <string name="report_other">Other</string>
     <string name="report_note">Additional details (optional)</string>
+    <string name="report_note_placeholder">Provide more information about the issue...</string>
     <string name="report_submit">Submit Report</string>
     <string name="report_success">Report Submitted</string>
     <string name="report_success_message">Thank you for helping keep our platform safe</string>
+    <string name="report_help_message">Help us keep Preuvely safe by reporting issues with %s</string>
+    <string name="report_store_info">Reporting: %s</string>
 
     <!-- My Stores -->
     <string name="my_stores_title">My Stores</string>

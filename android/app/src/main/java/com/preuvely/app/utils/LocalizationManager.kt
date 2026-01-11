@@ -19,11 +19,12 @@ enum class AppLanguage(
     val code: String,
     val displayName: String,
     val nativeName: String,
-    val isRtl: Boolean
+    val isRtl: Boolean,
+    val flagResId: Int
 ) {
-    ENGLISH("en", "English", "English", false),
-    FRENCH("fr", "French", "Français", false),
-    ARABIC("ar", "Arabic", "العربية", true);
+    ENGLISH("en", "English", "English", false, com.preuvely.app.R.drawable.flag_uk),
+    FRENCH("fr", "French", "Français", false, com.preuvely.app.R.drawable.flag_france),
+    ARABIC("ar", "Arabic", "العربية", true, com.preuvely.app.R.drawable.flag_algeria);
 
     companion object {
         fun fromCode(code: String): AppLanguage {

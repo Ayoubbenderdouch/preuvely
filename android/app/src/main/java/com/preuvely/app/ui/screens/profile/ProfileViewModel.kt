@@ -1,5 +1,7 @@
 package com.preuvely.app.ui.screens.profile
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.preuvely.app.data.models.Claim
@@ -10,12 +12,15 @@ import com.preuvely.app.data.repository.ReviewRepository
 import com.preuvely.app.data.repository.UserRepository
 import com.preuvely.app.utils.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 import javax.inject.Inject
 
 data class ProfileUiState(
@@ -30,14 +35,17 @@ data class ProfileUiState(
     val isResendingEmail: Boolean = false,
     val emailResent: Boolean = false,
     val showEmailVerificationSheet: Boolean = false,
-    val emailVerificationState: EmailVerificationUiState = EmailVerificationUiState()
+    val emailVerificationState: EmailVerificationUiState = EmailVerificationUiState(),
+    val showEditProfileSheet: Boolean = false,
+    val editProfileState: EditProfileUiState = EditProfileUiState()
 )
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val reviewRepository: ReviewRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -262,5 +270,110 @@ class ProfileViewModel @Inject constructor(
                 delay(1000)
             }
         }
+    }
+
+    // Edit Profile Sheet methods
+
+    fun showEditProfileSheet() {
+        _uiState.value = _uiState.value.copy(
+            showEditProfileSheet = true,
+            editProfileState = EditProfileUiState()
+        )
+    }
+
+    fun hideEditProfileSheet() {
+        _uiState.value = _uiState.value.copy(
+            showEditProfileSheet = false,
+            editProfileState = EditProfileUiState()
+        )
+    }
+
+    fun updateProfile(name: String, phone: String?) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(
+                editProfileState = _uiState.value.editProfileState.copy(
+                    isSaving = true,
+                    errorMessage = null
+                )
+            )
+
+            when (val result = authRepository.updateProfile(name, phone)) {
+                is Result.Success -> {
+                    _uiState.value = _uiState.value.copy(
+                        editProfileState = _uiState.value.editProfileState.copy(
+                            isSaving = false,
+                            successMessage = "Profile updated successfully"
+                        )
+                    )
+                    // Auto-close after success
+                    delay(1000)
+                    hideEditProfileSheet()
+                }
+                is Result.Error -> {
+                    _uiState.value = _uiState.value.copy(
+                        editProfileState = _uiState.value.editProfileState.copy(
+                            isSaving = false,
+                            errorMessage = result.message
+                        )
+                    )
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun uploadAvatar(uri: Uri) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(
+                editProfileState = _uiState.value.editProfileState.copy(
+                    isUploadingAvatar = true,
+                    errorMessage = null
+                )
+            )
+
+            try {
+                // Copy URI to temp file
+                val file = uriToFile(uri)
+
+                when (val result = authRepository.uploadAvatar(file)) {
+                    is Result.Success -> {
+                        _uiState.value = _uiState.value.copy(
+                            editProfileState = _uiState.value.editProfileState.copy(
+                                isUploadingAvatar = false,
+                                successMessage = "Avatar updated successfully"
+                            )
+                        )
+                        file.delete()
+                    }
+                    is Result.Error -> {
+                        _uiState.value = _uiState.value.copy(
+                            editProfileState = _uiState.value.editProfileState.copy(
+                                isUploadingAvatar = false,
+                                errorMessage = result.message
+                            )
+                        )
+                        file.delete()
+                    }
+                    else -> {}
+                }
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    editProfileState = _uiState.value.editProfileState.copy(
+                        isUploadingAvatar = false,
+                        errorMessage = "Failed to process image"
+                    )
+                )
+            }
+        }
+    }
+
+    private fun uriToFile(uri: Uri): File {
+        val inputStream = context.contentResolver.openInputStream(uri)
+        val file = File(context.cacheDir, "avatar_${System.currentTimeMillis()}.jpg")
+        FileOutputStream(file).use { outputStream ->
+            inputStream?.copyTo(outputStream)
+        }
+        inputStream?.close()
+        return file
     }
 }

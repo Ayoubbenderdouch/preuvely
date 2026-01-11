@@ -42,37 +42,66 @@
     <string name="store_reviews">المراجعات</string>
     <string name="store_rating_breakdown">توزيع التقييمات</string>
     <string name="store_write_review">اكتب مراجعة</string>
+    <string name="store_edit_review">تعديل المراجعة</string>
     <string name="store_claim">المطالبة بالمتجر</string>
-    <string name="store_report">إبلاغ</string>
+    <string name="store_report">الإبلاغ عن المتجر</string>
     <string name="store_no_reviews">لا توجد مراجعات</string>
     <string name="store_be_first">كن أول من يراجع هذا المتجر</string>
     <string name="store_load_more">تحميل المزيد</string>
+    <string name="store_back">رجوع</string>
+    <string name="store_more_options">المزيد من الخيارات</string>
+    <string name="store_whatsapp">واتساب</string>
+    <string name="store_call">اتصال</string>
+    <string name="store_reviews_count">%d مراجعات</string>
 
     <!-- Write Review -->
     <string name="review_title">اكتب مراجعة</string>
+    <string name="review_title_edit">تعديل المراجعة</string>
     <string name="review_rating">تقييمك</string>
     <string name="review_comment">مراجعتك</string>
     <string name="review_comment_hint">شارك تجربتك مع هذا المتجر…</string>
+    <string name="review_comment_placeholder">ما الذي أعجبك أو لم يعجبك؟ كيف كانت جودة الخدمة؟ هل توصي بهذا المتجر؟</string>
     <string name="review_proof">رفع إثبات</string>
     <string name="review_proof_required">الإثبات مطلوب لهذه الفئة</string>
     <string name="review_proof_optional">الإثبات اختياري لكنه موصى به</string>
     <string name="review_submit">إرسال المراجعة</string>
+    <string name="review_update">تحديث المراجعة</string>
     <string name="review_success">تم إرسال المراجعة!</string>
-    <string name="review_success_message">شكراً لمشاركتك</string>
+    <string name="review_success_edit">تم تحديث المراجعة!</string>
+    <string name="review_success_message">شكراً لمشاركة تجربتك. مراجعتك تساعد الآخرين على اتخاذ قرارات أفضل.</string>
+    <string name="review_success_edit_message">تم تحديث مراجعتك بنجاح.</string>
     <string name="review_min_chars">الحد الأدنى 8 أحرف</string>
+    <string name="review_share_experience">شارك تجربتك</string>
+    <string name="review_update_experience">حدّث تجربتك</string>
+    <string name="review_how_was_experience">كيف كانت تجربتك؟</string>
+    <string name="review_tell_us_more">أخبرنا المزيد</string>
+    <string name="review_login_required">تسجيل الدخول مطلوب</string>
+    <string name="review_login_message">يرجى تسجيل الدخول لكتابة مراجعة. رأيك يساعد المتسوقين الآخرين على اتخاذ قرارات مستنيرة.</string>
+    <string name="review_login">تسجيل الدخول</string>
+    <string name="review_rating_poor">سيء</string>
+    <string name="review_rating_fair">مقبول</string>
+    <string name="review_rating_good">جيد</string>
+    <string name="review_rating_very_good">جيد جداً</string>
+    <string name="review_rating_excellent">ممتاز</string>
 
     <!-- Add Store -->
     <string name="add_store_title">أضف إلى بريوفلي</string>
     <string name="add_store_subtitle">ساعد الآخرين على اكتشاف متاجر موثوقة</string>
     <string name="add_store_name">اسم المتجر</string>
     <string name="add_store_name_placeholder">أدخل اسم المتجر</string>
-    <string name="add_store_name_required">اسم المتجر *</string>
+    <string name="add_store_name_required">اسم المتجر مطلوب</string>
     <string name="add_store_platform">المنصة</string>
     <string name="add_store_link">أدخل الرابط أو المعرف</string>
     <string name="add_store_whatsapp">واتساب</string>
     <string name="add_store_categories">الفئات</string>
     <string name="add_store_logo">شعار المتجر</string>
-    <string name="add_store_submit">إضافة المتجر</string>
+    <string name="add_store_add_logo">إضافة شعار</string>
+    <string name="add_store_upload_logo">رفع الشعار</string>
+    <string name="add_store_change_logo">تغيير الشعار</string>
+    <string name="add_store_logo_hint">JPG، PNG • الحد الأقصى 5MB</string>
+    <string name="add_store_submit">إرسال</string>
+    <string name="add_store_next">التالي</string>
+    <string name="add_store_back">رجوع</string>
     <string name="add_store_pending">سيتم مراجعة متجرك قبل نشره</string>
     <string name="add_store_duplicate_title">المتجر موجود</string>
     <string name="add_store_duplicate_message">هل تقصد هذا المتجر؟</string>
@@ -81,13 +110,29 @@
     <string name="add_store_optional">اختياري</string>
     <string name="add_store_review_notice_title">المراجعة مطلوبة</string>
     <string name="add_store_review_notice_message">سيتم مراجعة متجرك قبل نشره</string>
+    <!-- Add Store - Wizard Steps -->
+    <string name="add_store_step_basic">المعلومات</string>
+    <string name="add_store_step_platforms">المنصات</string>
+    <string name="add_store_step_categories">الفئات</string>
+    <string name="add_store_step_review">المراجعة</string>
+    <!-- Add Store - Tips -->
+    <string name="add_store_tip_name_title">نصيحة</string>
+    <string name="add_store_tip_name_message">استخدم الاسم الرسمي للمتجر للحصول على رؤية أفضل</string>
+    <string name="add_store_tip_platforms_title">منصات متعددة</string>
+    <string name="add_store_tip_platforms_message">أضف جميع المنصات التي يتواجد فيها متجرك</string>
+    <!-- Add Store - Status Messages -->
+    <string name="add_store_platforms_added">منصات مضافة</string>
+    <string name="add_store_categories_selected">فئات محددة</string>
+    <string name="add_store_loading_categories">جاري تحميل الفئات...</string>
+    <string name="add_store_review_title">راجع متجرك</string>
+    <string name="add_store_review_subtitle">تأكد من صحة جميع المعلومات قبل الإرسال</string>
 
     <!-- Profile -->
     <string name="profile_guest">زائر</string>
     <string name="profile_sign_in_prompt">سجل دخولك للوصول إلى جميع الميزات</string>
     <string name="profile_sign_in">تسجيل الدخول</string>
     <string name="profile_sign_out">تسجيل الخروج</string>
-    <string name="profile_edit">تعديل الملف الشخصي</string>
+    <string name="profile_edit">تعديل</string>
     <string name="profile_my_reviews">مراجعاتي</string>
     <string name="profile_my_claims">مطالباتي</string>
     <string name="profile_my_stores">متاجري</string>
@@ -98,7 +143,14 @@
     <string name="profile_privacy">سياسة الخصوصية</string>
     <string name="profile_verify_email">تأكيد البريد الإلكتروني</string>
     <string name="profile_verify_email_message">يرجى تأكيد بريدك الإلكتروني للوصول إلى جميع الميزات</string>
-    <string name="profile_resend_email">إعادة إرسال البريد</string>
+    <string name="profile_resend_email">إعادة الإرسال</string>
+    <string name="profile_follow_us">تابعنا</string>
+    <string name="profile_no_reviews">لم تكتب أي مراجعات بعد</string>
+    <string name="profile_no_claims">لم تطالب بأي متاجر بعد</string>
+    <string name="profile_claim_pending">قيد الانتظار</string>
+    <string name="profile_claim_approved">موافق عليها</string>
+    <string name="profile_claim_rejected">مرفوضة</string>
+    <string name="profile_report_login_message">يرجى تسجيل الدخول للإبلاغ عن هذا المتجر. ملاحظاتك تساعدنا في الحفاظ على مجتمعنا آمناً.</string>
 
     <!-- Auth -->
     <string name="auth_login">تسجيل الدخول</string>
@@ -145,18 +197,35 @@
     <string name="claim_submit">إرسال المطالبة</string>
     <string name="claim_success">تم إرسال المطالبة!</string>
     <string name="claim_success_message">سنراجع طلبك ونتواصل معك</string>
+    <string name="claim_verify_ownership">تأكد من أنك تملك %s</string>
+    <string name="claim_message_optional">رسالة (اختياري)</string>
+    <string name="claim_message_placeholder">أخبرنا لماذا تطالب بهذا المتجر...</string>
+    <string name="claim_proof_required">إثبات الملكية *</string>
+    <string name="claim_proof_description">ارفع وثائق العمل أو لقطات شاشة من لوحة التحكم أو إثبات آخر</string>
+    <string name="claim_upload">رفع</string>
+    <string name="claim_proof_header">ما نقبله كإثبات:</string>
+    <string name="claim_proof_1">وثائق تسجيل النشاط التجاري</string>
+    <string name="claim_proof_2">لقطة شاشة من لوحة إدارة متجرك</string>
+    <string name="claim_proof_3">لقطات شاشة من حسابات التواصل الاجتماعي الموثقة</string>
+    <string name="claim_proof_4">سجلات الدفع أو الفواتير</string>
+    <string name="claim_info_banner">المطالبة بهذا المتجر تتيح لك الرد على المراجعات وتحديث معلومات المتجر.</string>
+    <string name="claim_got_it">فهمت</string>
 
     <!-- Report -->
-    <string name="report_title">إبلاغ</string>
+    <string name="report_title">الإبلاغ عن المتجر</string>
     <string name="report_reason">اختر السبب</string>
+    <string name="report_reason_required">سبب الإبلاغ *</string>
     <string name="report_spam">محتوى مزعج</string>
     <string name="report_abuse">محتوى مسيء</string>
-    <string name="report_fake">مراجعة مزيفة</string>
+    <string name="report_fake">متجر مزيف</string>
     <string name="report_other">أخرى</string>
     <string name="report_note">تفاصيل إضافية (اختياري)</string>
+    <string name="report_note_placeholder">قدم المزيد من المعلومات حول المشكلة...</string>
     <string name="report_submit">إرسال البلاغ</string>
     <string name="report_success">تم إرسال البلاغ</string>
     <string name="report_success_message">شكراً لمساعدتنا في الحفاظ على منصتنا آمنة</string>
+    <string name="report_help_message">ساعدنا في الحفاظ على بريوفلي آمناً بالإبلاغ عن المشاكل مع %s</string>
+    <string name="report_store_info">الإبلاغ عن: %s</string>
 
     <!-- My Stores -->
     <string name="my_stores_title">متاجري</string>

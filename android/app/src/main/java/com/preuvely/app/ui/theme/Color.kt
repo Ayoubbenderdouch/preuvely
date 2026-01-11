@@ -3,10 +3,10 @@ package com.preuvely.app.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // Primary Brand Colors - Matching iOS exactly
-// Using #22C55E as the primary green color for brand consistency
-val PrimaryGreen = Color(0xFF22C55E)
-val PrimaryGreenLight = Color(0xFF4ADE80)
-val PrimaryGreenDark = Color(0xFF16A34A)
+// Using #007359 as the primary green color (iOS Dark Emerald) for brand consistency
+val PrimaryGreen = Color(0xFF007359)
+val PrimaryGreenLight = Color(0xFF339580)  // Lighter variant of Dark Emerald
+val PrimaryGreenDark = Color(0xFF005544)   // Darker variant of Dark Emerald
 
 // Star Rating Color
 val StarYellow = Color(0xFFFFCC00)

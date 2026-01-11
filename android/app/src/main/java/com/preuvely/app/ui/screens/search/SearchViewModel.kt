@@ -1,5 +1,7 @@
 package com.preuvely.app.ui.screens.search
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.preuvely.app.data.models.Category
@@ -9,6 +11,7 @@ import com.preuvely.app.data.repository.CategoryRepository
 import com.preuvely.app.data.repository.StoreRepository
 import com.preuvely.app.utils.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +31,9 @@ data class SearchUiState(
     val isLoadingMore: Boolean = false,
     val hasMorePages: Boolean = false,
     val error: String? = null,
-    val hasSearched: Boolean = false
+    val hasSearched: Boolean = false,
+    val recentSearches: List<String> = emptyList(),
+    val isSearchFocused: Boolean = false
 ) {
     val hasActiveFilters: Boolean
         get() = selectedCategory != null || verifiedOnly || sortOption != StoreSortOption.BEST_RATED
@@ -37,7 +42,8 @@ data class SearchUiState(
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val storeRepository: StoreRepository,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SearchUiState())
@@ -46,8 +52,52 @@ class SearchViewModel @Inject constructor(
     private var searchJob: Job? = null
     private var currentPage = 1
 
+    private val prefs: SharedPreferences by lazy {
+        context.getSharedPreferences("search_prefs", Context.MODE_PRIVATE)
+    }
+
+    companion object {
+        private const val RECENT_SEARCHES_KEY = "recent_searches"
+        private const val MAX_RECENT_SEARCHES = 8
+    }
+
     init {
         loadCategories()
+        loadRecentSearches()
+    }
+
+    private fun loadRecentSearches() {
+        val searches = prefs.getStringSet(RECENT_SEARCHES_KEY, emptySet())?.toList() ?: emptyList()
+        _uiState.value = _uiState.value.copy(recentSearches = searches.take(MAX_RECENT_SEARCHES))
+    }
+
+    private fun saveRecentSearch(query: String) {
+        if (query.isBlank() || query.length < 2) return
+
+        val currentSearches = _uiState.value.recentSearches.toMutableList()
+        currentSearches.remove(query)
+        currentSearches.add(0, query)
+
+        val trimmedSearches = currentSearches.take(MAX_RECENT_SEARCHES)
+        _uiState.value = _uiState.value.copy(recentSearches = trimmedSearches)
+
+        prefs.edit().putStringSet(RECENT_SEARCHES_KEY, trimmedSearches.toSet()).apply()
+    }
+
+    fun removeRecentSearch(query: String) {
+        val currentSearches = _uiState.value.recentSearches.toMutableList()
+        currentSearches.remove(query)
+        _uiState.value = _uiState.value.copy(recentSearches = currentSearches)
+        prefs.edit().putStringSet(RECENT_SEARCHES_KEY, currentSearches.toSet()).apply()
+    }
+
+    fun clearRecentSearches() {
+        _uiState.value = _uiState.value.copy(recentSearches = emptyList())
+        prefs.edit().remove(RECENT_SEARCHES_KEY).apply()
+    }
+
+    fun setSearchFocused(focused: Boolean) {
+        _uiState.value = _uiState.value.copy(isSearchFocused = focused)
     }
 
     private fun loadCategories() {
@@ -78,6 +128,11 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    fun selectRecentSearch(query: String) {
+        _uiState.value = _uiState.value.copy(query = query)
+        search()
+    }
+
     fun setCategory(category: Category?) {
         _uiState.value = _uiState.value.copy(selectedCategory = category)
     }
@@ -106,6 +161,12 @@ class SearchViewModel @Inject constructor(
     fun search() {
         searchJob?.cancel()
         currentPage = 1
+
+        // Save to recent searches
+        if (_uiState.value.query.isNotBlank()) {
+            saveRecentSearch(_uiState.value.query)
+        }
+
         searchJob = viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null, hasSearched = true)
 

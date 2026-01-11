@@ -97,24 +97,9 @@ struct ReviewCard: View {
 
     @ViewBuilder
     private var userAvatarView: some View {
-        if let avatarURL = review.userAvatar, let url = URL(string: avatarURL) {
-            AsyncImage(url: url) { phase in
-                switch phase {
-                case .success(let image):
-                    image
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 40, height: 40)
-                        .clipShape(Circle())
-                case .failure:
-                    avatarFallback
-                case .empty:
-                    ProgressView()
-                        .frame(width: 40, height: 40)
-                @unknown default:
-                    avatarFallback
-                }
-            }
+        if let avatarURL = review.userAvatar, !avatarURL.isEmpty {
+            // Use CachedAvatarImage which handles both base64 data URLs and regular HTTP URLs
+            CachedAvatarImage(urlString: avatarURL, size: 40)
         } else {
             avatarFallback
         }
