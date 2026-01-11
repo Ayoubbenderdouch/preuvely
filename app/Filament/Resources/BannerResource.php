@@ -6,9 +6,11 @@ use App\Filament\Resources\BannerResource\Pages;
 use App\Models\Banner;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class BannerResource extends Resource
 {
@@ -59,21 +61,39 @@ class BannerResource extends Resource
 
                 Forms\Components\Section::make('Banner Image')
                     ->schema([
-                        Forms\Components\FileUpload::make('image_url')
+                        Forms\Components\FileUpload::make('image_upload')
                             ->label('Banner Image')
                             ->image()
-                            ->disk('public')
-                            ->directory('banners')
                             ->imageResizeMode('cover')
                             ->imageCropAspectRatio('16:9')
                             ->imageResizeTargetWidth('1200')
                             ->imageResizeTargetHeight('675')
-                            ->required(),
+                            ->maxSize(5120)
+                            ->disk('local')
+                            ->directory('temp-banners')
+                            ->visibility('private')
+                            ->dehydrated(false)
+                            ->afterStateUpdated(function ($state, Set $set) {
+                                if ($state instanceof TemporaryUploadedFile) {
+                                    $contents = file_get_contents($state->getRealPath());
+                                    $mimeType = $state->getMimeType();
+                                    $base64 = 'data:' . $mimeType . ';base64,' . base64_encode($contents);
+                                    $set('image_data', $base64);
+                                }
+                            })
+                            ->required(fn ($record) => $record === null || empty($record->image_data)),
+                        Forms\Components\Hidden::make('image_data'),
+                        Forms\Components\Placeholder::make('current_image')
+                            ->label('Current Image')
+                            ->content(fn ($record) => $record && $record->image_data
+                                ? new \Illuminate\Support\HtmlString('<img src="' . $record->image_data . '" style="max-width: 300px; border-radius: 8px;" />')
+                                : 'No image uploaded')
+                            ->visible(fn ($record) => $record !== null),
                         Forms\Components\ColorPicker::make('background_color')
                             ->label('Background Color (Fallback)')
                             ->default('#22C55E'),
                     ])
-                    ->columns(2),
+                    ->columns(1),
 
                 Forms\Components\Section::make('Link Settings')
                     ->schema([
@@ -119,11 +139,11 @@ class BannerResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('image_url')
+                Tables\Columns\ImageColumn::make('image_data')
                     ->label('Image')
-                    ->disk('public')
                     ->width(120)
-                    ->height(68),
+                    ->height(68)
+                    ->defaultImageUrl(fn ($record) => null),
                 Tables\Columns\TextColumn::make('title')
                     ->label('Title')
                     ->searchable()

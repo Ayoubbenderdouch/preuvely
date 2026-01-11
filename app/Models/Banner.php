@@ -18,6 +18,7 @@ class Banner extends Model
         'subtitle_ar',
         'subtitle_fr',
         'image_url',
+        'image_data',
         'link_type',
         'link_value',
         'background_color',
@@ -58,22 +59,28 @@ class Banner extends Model
     }
 
     /**
-     * Get full image URL
+     * Get full image URL (returns base64 data URL if available)
      */
     public function getFullImageUrlAttribute(): ?string
     {
+        // Prioritize base64 stored image
+        if (!empty($this->image_data)) {
+            return $this->image_data;
+        }
+
         if (empty($this->image_url)) {
             return null;
         }
 
+        // External URL
         if (str_starts_with($this->image_url, 'http')) {
             return $this->image_url;
         }
 
+        // Local storage fallback
         try {
             return Storage::disk('public')->url($this->image_url);
         } catch (\Exception $e) {
-            // Fallback: construct URL manually if Storage fails
             return config('app.url') . '/storage/' . $this->image_url;
         }
     }
