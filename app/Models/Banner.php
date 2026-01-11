@@ -84,9 +84,9 @@ class Banner extends Model
     public function getLocalizedTitle(string $locale = 'en'): string
     {
         return match ($locale) {
-            'ar' => $this->title_ar ?? $this->title,
-            'fr' => $this->title_fr ?? $this->title,
-            default => $this->title,
+            'ar' => $this->title_ar ?? $this->title ?? '',
+            'fr' => $this->title_fr ?? $this->title ?? '',
+            default => $this->title ?? '',
         };
     }
 
