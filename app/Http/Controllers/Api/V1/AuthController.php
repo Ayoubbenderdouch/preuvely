@@ -248,13 +248,14 @@ class AuthController extends Controller
      * Upload avatar
      *
      * Upload or update the authenticated user's profile picture.
+     * Uses Cloudinary for persistent cloud storage.
      *
      * @authenticated
      * @bodyParam avatar file required The avatar image file (max 10MB, jpeg/png/jpg/gif/webp/heic). Example: avatar.jpg
      *
      * @response {
      *   "message": "Avatar uploaded successfully",
-     *   "user": {"id": 1, "name": "John Doe", "avatar": "http://example.com/storage/avatars/xxx.jpg"}
+     *   "user": {"id": 1, "name": "John Doe", "avatar": "https://res.cloudinary.com/xxx/image/upload/avatars/user_1.jpg"}
      * }
      * @response 422 {"message": "The avatar field is required."}
      */
@@ -266,66 +267,36 @@ class AuthController extends Controller
 
         $user = $request->user();
 
-        // Determine which disk to use (S3 for production, public for local)
-        $disk = $this->getAvatarDisk();
+        try {
+            // Upload to Cloudinary
+            $result = cloudinary()->upload($request->file('avatar')->getRealPath(), [
+                'folder' => 'preuvely/avatars',
+                'public_id' => 'user_' . $user->id,
+                'overwrite' => true,
+                'transformation' => [
+                    'width' => 400,
+                    'height' => 400,
+                    'crop' => 'fill',
+                    'gravity' => 'face',
+                    'quality' => 'auto',
+                    'fetch_format' => 'auto',
+                ],
+            ]);
 
-        // Delete old avatar if exists
-        if ($user->avatar) {
-            // Check if old avatar is a full URL (S3) or relative path
-            $oldPath = $this->extractPathFromAvatar($user->avatar);
-            if ($oldPath && Storage::disk($disk)->exists($oldPath)) {
-                Storage::disk($disk)->delete($oldPath);
-            }
+            $avatarUrl = $result->getSecurePath();
+
+            $user->update(['avatar' => $avatarUrl]);
+
+            return response()->json([
+                'message' => 'Avatar uploaded successfully',
+                'user' => new UserResource($user->fresh()),
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Avatar upload failed: ' . $e->getMessage());
+
+            return response()->json([
+                'message' => 'Failed to upload avatar. Please try again.',
+            ], 500);
         }
-
-        // Store new avatar
-        $path = $request->file('avatar')->store('avatars', $disk);
-
-        // For S3, store the full URL; for local, store the relative path
-        if ($disk === 's3') {
-            $avatarValue = Storage::disk('s3')->url($path);
-        } else {
-            $avatarValue = $path;
-        }
-
-        $user->update(['avatar' => $avatarValue]);
-
-        return response()->json([
-            'message' => 'Avatar uploaded successfully',
-            'user' => new UserResource($user->fresh()),
-        ]);
-    }
-
-    /**
-     * Get the appropriate disk for avatar storage
-     */
-    private function getAvatarDisk(): string
-    {
-        // Use S3 if configured, otherwise fall back to public
-        if (config('filesystems.disks.s3.key') && config('filesystems.disks.s3.bucket')) {
-            return 's3';
-        }
-        return 'public';
-    }
-
-    /**
-     * Extract the storage path from an avatar URL or path
-     */
-    private function extractPathFromAvatar(?string $avatar): ?string
-    {
-        if (empty($avatar)) {
-            return null;
-        }
-
-        // If it's a full S3 URL, extract the path
-        if (str_starts_with($avatar, 'http')) {
-            // Extract path after the bucket name
-            if (preg_match('/avatars\/[^\/]+\.\w+$/', $avatar, $matches)) {
-                return $matches[0];
-            }
-            return null;
-        }
-
-        return $avatar;
     }
 }
