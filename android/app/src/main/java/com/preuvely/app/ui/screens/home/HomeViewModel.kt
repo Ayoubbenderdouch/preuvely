@@ -39,8 +39,8 @@ class HomeViewModel @Inject constructor(
     init {
         // Load cached data immediately for instant display
         loadCachedData()
-        // Then fetch fresh data from API
-        loadData(forceRefresh = false)
+        // Then fetch fresh data from API (always force refresh to get latest data)
+        loadData(forceRefresh = true)
     }
 
     /**

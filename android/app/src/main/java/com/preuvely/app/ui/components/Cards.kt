@@ -143,6 +143,106 @@ fun CachedAvatarImage(
     }
 }
 
+/**
+ * CachedLogoImage - A reusable logo component that handles:
+ * - Base64 data URLs (data:image/...)
+ * - HTTP/HTTPS URLs
+ * - Loading and error states with fallback to initials
+ */
+@Composable
+fun CachedLogoImage(
+    urlString: String?,
+    fallbackInitials: String,
+    modifier: Modifier = Modifier,
+    cornerRadius: androidx.compose.ui.unit.Dp = 21.dp
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(cornerRadius))
+            .background(
+                Brush.linearGradient(
+                    listOf(PrimaryGreen.copy(alpha = 0.1f), PrimaryGreen.copy(alpha = 0.05f))
+                )
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        when {
+            urlString.isNullOrBlank() -> {
+                // No URL - show initials
+                Text(
+                    text = fallbackInitials,
+                    style = PreuvelyTypography.largeTitle.copy(fontSize = 36.sp),
+                    color = PrimaryGreen
+                )
+            }
+            urlString.startsWith("data:image") -> {
+                // Base64 data URL
+                val base64Data = urlString.substringAfter("base64,")
+                val bitmap = remember(base64Data) {
+                    try {
+                        val decodedBytes = Base64.decode(base64Data, Base64.DEFAULT)
+                        BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+                    } catch (e: Exception) {
+                        null
+                    }
+                }
+                if (bitmap != null) {
+                    Image(
+                        bitmap = bitmap.asImageBitmap(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(cornerRadius))
+                    )
+                } else {
+                    Text(
+                        text = fallbackInitials,
+                        style = PreuvelyTypography.largeTitle.copy(fontSize = 36.sp),
+                        color = PrimaryGreen
+                    )
+                }
+            }
+            else -> {
+                // HTTP/HTTPS URL - use SubcomposeAsyncImage
+                SubcomposeAsyncImage(
+                    model = urlString,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(cornerRadius))
+                ) {
+                    when (painter.state) {
+                        is AsyncImagePainter.State.Loading -> {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(32.dp),
+                                    color = PrimaryGreen,
+                                    strokeWidth = 2.dp
+                                )
+                            }
+                        }
+                        is AsyncImagePainter.State.Error -> {
+                            Text(
+                                text = fallbackInitials,
+                                style = PreuvelyTypography.largeTitle.copy(fontSize = 36.sp),
+                                color = PrimaryGreen
+                            )
+                        }
+                        else -> {
+                            SubcomposeAsyncImageContent()
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 @Composable
 fun StoreCard(
     store: Store,
@@ -265,43 +365,14 @@ fun CompactStoreCard(
     ) {
         Column {
             // Image section
-            Box(
+            CachedLogoImage(
+                urlString = store.logo,
+                fallbackInitials = store.nameInitial,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp)
-                    .background(Gray6),
-                contentAlignment = Alignment.Center
-            ) {
-                if (!store.logo.isNullOrBlank()) {
-                    AsyncImage(
-                        model = store.logo,
-                        contentDescription = store.name,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                } else {
-                    // Placeholder
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                Brush.linearGradient(
-                                    listOf(
-                                        PrimaryGreen.copy(alpha = 0.15f),
-                                        PrimaryGreen.copy(alpha = 0.05f)
-                                    )
-                                )
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = store.nameInitial,
-                            style = PreuvelyTypography.title1,
-                            color = PrimaryGreen
-                        )
-                    }
-                }
-            }
+                    .height(100.dp),
+                cornerRadius = 0.dp
+            )
 
             // Info section
             Column(modifier = Modifier.padding(Spacing.md)) {
@@ -343,6 +414,8 @@ fun StoreLogoImage(
     size: androidx.compose.ui.unit.Dp,
     modifier: Modifier = Modifier
 ) {
+    val initial = storeName.firstOrNull()?.uppercase() ?: "?"
+
     Box(
         modifier = modifier
             .size(size)
@@ -357,21 +430,64 @@ fun StoreLogoImage(
             ),
         contentAlignment = Alignment.Center
     ) {
-        if (!logoUrl.isNullOrBlank()) {
-            AsyncImage(
-                model = logoUrl,
-                contentDescription = storeName,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(Spacing.radiusMedium))
-            )
-        } else {
-            Text(
-                text = storeName.firstOrNull()?.uppercase() ?: "?",
-                style = PreuvelyTypography.title2,
-                color = PrimaryGreen
-            )
+        when {
+            logoUrl.isNullOrBlank() -> {
+                Text(
+                    text = initial,
+                    style = PreuvelyTypography.title2,
+                    color = PrimaryGreen
+                )
+            }
+            logoUrl.startsWith("data:image") -> {
+                // Base64 data URL
+                val base64Data = logoUrl.substringAfter("base64,")
+                val bitmap = remember(base64Data) {
+                    try {
+                        val decodedBytes = Base64.decode(base64Data, Base64.DEFAULT)
+                        BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+                    } catch (e: Exception) {
+                        null
+                    }
+                }
+                if (bitmap != null) {
+                    Image(
+                        bitmap = bitmap.asImageBitmap(),
+                        contentDescription = storeName,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(Spacing.radiusMedium))
+                    )
+                } else {
+                    Text(
+                        text = initial,
+                        style = PreuvelyTypography.title2,
+                        color = PrimaryGreen
+                    )
+                }
+            }
+            else -> {
+                // HTTP/HTTPS URL
+                SubcomposeAsyncImage(
+                    model = logoUrl,
+                    contentDescription = storeName,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(Spacing.radiusMedium))
+                ) {
+                    when (painter.state) {
+                        is AsyncImagePainter.State.Error -> {
+                            Text(
+                                text = initial,
+                                style = PreuvelyTypography.title2,
+                                color = PrimaryGreen
+                            )
+                        }
+                        else -> SubcomposeAsyncImageContent()
+                    }
+                }
+            }
         }
     }
 }

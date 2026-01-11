@@ -36,14 +36,13 @@ class StoreController extends Controller
      */
     public function topRated(Request $request): AnonymousResourceCollection
     {
-        $limit = min($request->input('limit', 10), 20);
+        $limit = min($request->input('limit', 16), 16);
 
         $stores = Store::query()
             ->with('categories')
             ->where('status', StoreStatus::Active)
-            ->where('reviews_count_cache', '>', 0)
+            ->orderByDesc('reviews_count_cache')  // Prioritize stores with more reviews
             ->orderByDesc('avg_rating_cache')
-            ->orderByDesc('reviews_count_cache')
             ->limit($limit)
             ->get();
 
