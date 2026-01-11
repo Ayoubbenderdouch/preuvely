@@ -18,8 +18,8 @@ class AdminUserSeeder extends Seeder
         $adminEmail = env('ADMIN_EMAIL', 'admin@preuvely.dz');
         $adminPassword = env('ADMIN_PASSWORD', 'Pr3uvely!@Adm1n#2025Secure');
 
-        // Create admin user
-        $admin = User::firstOrCreate(
+        // Create or update admin user
+        $admin = User::updateOrCreate(
             ['email' => $adminEmail],
             [
                 'name' => 'Admin',
