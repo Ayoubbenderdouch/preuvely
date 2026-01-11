@@ -248,44 +248,37 @@ class AuthController extends Controller
      * Upload avatar
      *
      * Upload or update the authenticated user's profile picture.
-     * Uses Cloudinary for persistent cloud storage.
+     * Stores avatar as base64 data URL in database for reliable persistence.
      *
      * @authenticated
-     * @bodyParam avatar file required The avatar image file (max 10MB, jpeg/png/jpg/gif/webp/heic). Example: avatar.jpg
+     * @bodyParam avatar file required The avatar image file (max 2MB, jpeg/png/jpg). Example: avatar.jpg
      *
      * @response {
      *   "message": "Avatar uploaded successfully",
-     *   "user": {"id": 1, "name": "John Doe", "avatar": "https://res.cloudinary.com/xxx/image/upload/avatars/user_1.jpg"}
+     *   "user": {"id": 1, "name": "John Doe", "avatar": "data:image/jpeg;base64,..."}
      * }
      * @response 422 {"message": "The avatar field is required."}
      */
     public function uploadAvatar(Request $request): JsonResponse
     {
         $request->validate([
-            'avatar' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,webp,heic', 'max:10240'],
+            'avatar' => ['required', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
         ]);
 
         $user = $request->user();
 
         try {
-            // Upload to Cloudinary
-            $result = cloudinary()->upload($request->file('avatar')->getRealPath(), [
-                'folder' => 'preuvely/avatars',
-                'public_id' => 'user_' . $user->id,
-                'overwrite' => true,
-                'transformation' => [
-                    'width' => 400,
-                    'height' => 400,
-                    'crop' => 'fill',
-                    'gravity' => 'face',
-                    'quality' => 'auto',
-                    'fetch_format' => 'auto',
-                ],
-            ]);
+            $file = $request->file('avatar');
 
-            $avatarUrl = $result->getSecurePath();
+            // Resize image to max 300x300 for avatars
+            $image = $this->resizeAvatar($file->getRealPath(), 300);
 
-            $user->update(['avatar' => $avatarUrl]);
+            // Convert to base64 data URL
+            $base64 = base64_encode($image);
+            $mimeType = 'image/jpeg';
+            $dataUrl = "data:{$mimeType};base64,{$base64}";
+
+            $user->update(['avatar' => $dataUrl]);
 
             return response()->json([
                 'message' => 'Avatar uploaded successfully',
@@ -295,8 +288,42 @@ class AuthController extends Controller
             \Log::error('Avatar upload failed: ' . $e->getMessage());
 
             return response()->json([
-                'message' => 'Failed to upload avatar. Please try again.',
+                'message' => 'Failed to upload avatar: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * Resize avatar image to specified max dimension
+     */
+    private function resizeAvatar(string $path, int $maxSize): string
+    {
+        $image = imagecreatefromstring(file_get_contents($path));
+
+        $width = imagesx($image);
+        $height = imagesy($image);
+
+        // Calculate new dimensions
+        if ($width > $height) {
+            $newWidth = $maxSize;
+            $newHeight = (int) ($height * ($maxSize / $width));
+        } else {
+            $newHeight = $maxSize;
+            $newWidth = (int) ($width * ($maxSize / $height));
+        }
+
+        // Create resized image
+        $resized = imagecreatetruecolor($newWidth, $newHeight);
+        imagecopyresampled($resized, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+        // Output to string
+        ob_start();
+        imagejpeg($resized, null, 85);
+        $output = ob_get_clean();
+
+        imagedestroy($image);
+        imagedestroy($resized);
+
+        return $output;
     }
 }

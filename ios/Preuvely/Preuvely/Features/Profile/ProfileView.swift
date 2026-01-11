@@ -1074,8 +1074,7 @@ final class ProfileViewModel: ObservableObject {
 
 // MARK: - Cached Avatar Image
 
-/// Custom avatar image view that loads images using URLSession
-/// and handles caching more reliably than AsyncImage
+/// Custom avatar image view that handles both HTTP URLs and base64 data URLs
 struct CachedAvatarImage: View {
     let urlString: String
     let size: CGFloat
@@ -1113,17 +1112,57 @@ struct CachedAvatarImage: View {
     }
 
     private func loadImage() async {
+        isLoading = true
+        loadFailed = false
+        image = nil
+
+        // Check if it's a base64 data URL
+        if urlString.hasPrefix("data:image") {
+            loadBase64Image()
+            return
+        }
+
+        // Otherwise load from HTTP URL
+        await loadHttpImage()
+    }
+
+    private func loadBase64Image() {
+        // Parse data URL: data:image/jpeg;base64,/9j/4AAQ...
+        guard let commaIndex = urlString.firstIndex(of: ",") else {
+            #if DEBUG
+            print("[CachedAvatarImage] Invalid base64 data URL format")
+            #endif
+            isLoading = false
+            loadFailed = true
+            return
+        }
+
+        let base64String = String(urlString[urlString.index(after: commaIndex)...])
+
+        guard let data = Data(base64Encoded: base64String),
+              let loadedImage = UIImage(data: data) else {
+            #if DEBUG
+            print("[CachedAvatarImage] Failed to decode base64 image")
+            #endif
+            isLoading = false
+            loadFailed = true
+            return
+        }
+
+        #if DEBUG
+        print("[CachedAvatarImage] Successfully loaded base64 image")
+        #endif
+        self.image = loadedImage
+        self.isLoading = false
+    }
+
+    private func loadHttpImage() async {
         guard let url = URL(string: urlString) else {
             isLoading = false
             loadFailed = true
             return
         }
 
-        isLoading = true
-        loadFailed = false
-        image = nil
-
-        // Create request with cache policy to bypass stale cache
         var request = URLRequest(url: url)
         request.cachePolicy = .reloadIgnoringLocalCacheData
 
@@ -1146,12 +1185,9 @@ struct CachedAvatarImage: View {
                     self.isLoading = false
                 }
                 #if DEBUG
-                print("[CachedAvatarImage] Successfully loaded image from: \(urlString)")
+                print("[CachedAvatarImage] Successfully loaded image from URL")
                 #endif
             } else {
-                #if DEBUG
-                print("[CachedAvatarImage] Failed to create UIImage from data")
-                #endif
                 isLoading = false
                 loadFailed = true
             }
