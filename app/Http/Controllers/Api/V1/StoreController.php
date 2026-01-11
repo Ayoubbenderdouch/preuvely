@@ -298,16 +298,20 @@ class StoreController extends Controller
     public function store(StoreStoreRequest $request): JsonResponse
     {
         $store = DB::transaction(function () use ($request) {
-            $logoPath = null;
+            $logoData = null;
             if ($request->hasFile('logo')) {
-                $logoPath = $request->file('logo')->store('store-logos', 'public');
+                // Convert to base64 for Laravel Cloud compatibility
+                $file = $request->file('logo');
+                $mimeType = $file->getMimeType();
+                $contents = file_get_contents($file->getRealPath());
+                $logoData = 'data:' . $mimeType . ';base64,' . base64_encode($contents);
             }
 
             $store = Store::create([
                 'name' => $request->name,
                 'description' => $request->description,
                 'city' => $request->city,
-                'logo' => $logoPath,
+                'logo_data' => $logoData,
                 'status' => StoreStatus::Active,
                 'submitted_by' => $request->user()?->id,
             ]);

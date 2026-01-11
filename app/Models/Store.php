@@ -25,6 +25,7 @@ class Store extends Model
         'description',
         'city',
         'logo',
+        'logo_data',
         'status',
         'is_verified',
         'verified_at',
@@ -192,5 +193,33 @@ class Store extends Model
     public static function findPotentialDuplicatesByHandle(string $handle, ?string $platform = null): \Illuminate\Support\Collection
     {
         return app(DuplicateStoreDetectionService::class)->findByHandle($handle, $platform);
+    }
+
+    /**
+     * Get the full logo URL (returns base64 data URL if available, like Banner model)
+     */
+    public function getFullLogoUrlAttribute(): ?string
+    {
+        // Prioritize base64 stored image (works on Laravel Cloud)
+        if (!empty($this->logo_data)) {
+            return $this->logo_data;
+        }
+
+        if (empty($this->logo)) {
+            return null;
+        }
+
+        // External URL
+        if (str_starts_with($this->logo, 'http')) {
+            return $this->logo;
+        }
+
+        // Base64 data URL stored in logo field
+        if (str_starts_with($this->logo, 'data:image')) {
+            return $this->logo;
+        }
+
+        // Local storage path - fallback (won't work on Laravel Cloud)
+        return asset('storage/' . $this->logo);
     }
 }

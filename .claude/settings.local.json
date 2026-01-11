@@ -126,7 +126,9 @@
       "Bash(adb install:*)",
       "Bash(git checkout:*)",
       "Bash(mysql:*)",
-      "Bash(~/Library/Android/sdk/platform-tools/adb shell getprop sys.boot_completed)"
+      "Bash(~/Library/Android/sdk/platform-tools/adb shell getprop sys.boot_completed)",
+      "Bash(~/Library/Android/sdk/platform-tools/adb logcat -c)",
+      "Bash(~/Library/Android/sdk/platform-tools/adb logcat -s \"AddStoreViewModel:*\" \"StoreRepository:*\")"
     ]
   }
 }

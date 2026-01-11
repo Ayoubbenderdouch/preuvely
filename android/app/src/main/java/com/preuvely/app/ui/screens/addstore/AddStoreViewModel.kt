@@ -186,14 +186,35 @@ class AddStoreViewModel @Inject constructor(
 
     private fun uriToFile(uri: Uri): File? {
         return try {
-            val inputStream = context.contentResolver.openInputStream(uri) ?: return null
-            val file = File(context.cacheDir, "store_logo_${System.currentTimeMillis()}.jpg")
+            val inputStream = context.contentResolver.openInputStream(uri) ?: run {
+                android.util.Log.e("AddStoreViewModel", "Failed to open input stream for URI: $uri")
+                return null
+            }
+
+            // Get file extension from mime type
+            val mimeType = context.contentResolver.getType(uri)
+            val extension = when {
+                mimeType?.contains("png") == true -> "png"
+                mimeType?.contains("webp") == true -> "webp"
+                else -> "jpg"
+            }
+
+            val file = File(context.cacheDir, "store_logo_${System.currentTimeMillis()}.$extension")
             file.outputStream().use { output ->
                 inputStream.copyTo(output)
             }
             inputStream.close()
-            file
+
+            // Verify file was created and has content
+            if (file.exists() && file.length() > 0) {
+                android.util.Log.d("AddStoreViewModel", "Logo file created: ${file.absolutePath}, size: ${file.length()}")
+                file
+            } else {
+                android.util.Log.e("AddStoreViewModel", "Logo file is empty or doesn't exist")
+                null
+            }
         } catch (e: Exception) {
+            android.util.Log.e("AddStoreViewModel", "Error converting URI to file: ${e.message}", e)
             null
         }
     }

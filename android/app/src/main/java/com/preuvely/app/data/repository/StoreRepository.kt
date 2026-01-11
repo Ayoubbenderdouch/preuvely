@@ -118,9 +118,12 @@ class StoreRepositoryImpl @Inject constructor(
     override suspend fun createStore(request: CreateStoreRequest, logoFile: File?): Result<Store> {
         // If no logo, use JSON request
         if (logoFile == null) {
+            android.util.Log.d("StoreRepository", "Creating store without logo (JSON request)")
             val result = safeApiCall { apiService.createStoreJson(request) }
             return result.map { it.data }
         }
+
+        android.util.Log.d("StoreRepository", "Creating store WITH logo: ${logoFile.absolutePath}, size: ${logoFile.length()}")
 
         // With logo, use multipart
         val nameBody = request.name.toRequestBody("text/plain".toMediaTypeOrNull())

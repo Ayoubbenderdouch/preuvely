@@ -31,6 +31,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.preuvely.app.R
 import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import com.preuvely.app.data.models.*
 import com.preuvely.app.ui.components.*
 import com.preuvely.app.ui.theme.*
@@ -445,13 +447,36 @@ private fun StoreHeader(
                 contentAlignment = Alignment.Center
             ) {
                 if (!store.logo.isNullOrBlank()) {
-                    AsyncImage(
+                    SubcomposeAsyncImage(
                         model = store.logo,
                         contentDescription = store.name,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
-                            .clip(RoundedCornerShape(21.dp))
+                            .clip(RoundedCornerShape(21.dp)),
+                        loading = {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(32.dp),
+                                    color = PrimaryGreen,
+                                    strokeWidth = 2.dp
+                                )
+                            }
+                        },
+                        error = {
+                            // Fallback to initials if image fails to load
+                            Text(
+                                text = store.nameInitial,
+                                style = PreuvelyTypography.largeTitle.copy(fontSize = 36.sp),
+                                color = PrimaryGreen
+                            )
+                        },
+                        success = {
+                            SubcomposeAsyncImageContent()
+                        }
                     )
                 } else {
                     Text(
