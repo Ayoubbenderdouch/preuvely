@@ -266,19 +266,66 @@ class AuthController extends Controller
 
         $user = $request->user();
 
+        // Determine which disk to use (S3 for production, public for local)
+        $disk = $this->getAvatarDisk();
+
         // Delete old avatar if exists
-        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-            Storage::disk('public')->delete($user->avatar);
+        if ($user->avatar) {
+            // Check if old avatar is a full URL (S3) or relative path
+            $oldPath = $this->extractPathFromAvatar($user->avatar);
+            if ($oldPath && Storage::disk($disk)->exists($oldPath)) {
+                Storage::disk($disk)->delete($oldPath);
+            }
         }
 
         // Store new avatar
-        $path = $request->file('avatar')->store('avatars', 'public');
+        $path = $request->file('avatar')->store('avatars', $disk);
 
-        $user->update(['avatar' => $path]);
+        // For S3, store the full URL; for local, store the relative path
+        if ($disk === 's3') {
+            $avatarValue = Storage::disk('s3')->url($path);
+        } else {
+            $avatarValue = $path;
+        }
+
+        $user->update(['avatar' => $avatarValue]);
 
         return response()->json([
             'message' => 'Avatar uploaded successfully',
             'user' => new UserResource($user->fresh()),
         ]);
+    }
+
+    /**
+     * Get the appropriate disk for avatar storage
+     */
+    private function getAvatarDisk(): string
+    {
+        // Use S3 if configured, otherwise fall back to public
+        if (config('filesystems.disks.s3.key') && config('filesystems.disks.s3.bucket')) {
+            return 's3';
+        }
+        return 'public';
+    }
+
+    /**
+     * Extract the storage path from an avatar URL or path
+     */
+    private function extractPathFromAvatar(?string $avatar): ?string
+    {
+        if (empty($avatar)) {
+            return null;
+        }
+
+        // If it's a full S3 URL, extract the path
+        if (str_starts_with($avatar, 'http')) {
+            // Extract path after the bucket name
+            if (preg_match('/avatars\/[^\/]+\.\w+$/', $avatar, $matches)) {
+                return $matches[0];
+            }
+            return null;
+        }
+
+        return $avatar;
     }
 }
