@@ -1,0 +1,385 @@
+/* Arabic Localization for Preuvely */
+/* ترجمة عربية لتطبيق بريوفلي */
+
+// MARK: - Common (عام)
+"app_name" = "بريوفلي";
+"common_cancel" = "إلغاء";
+"common_done" = "تم";
+"common_save" = "حفظ";
+"common_delete" = "حذف";
+"common_edit" = "تعديل";
+"common_submit" = "إرسال";
+"common_loading" = "جارٍ التحميل...";
+"common_error" = "خطأ";
+"common_retry" = "إعادة المحاولة";
+"common_success" = "تم بنجاح";
+"common_search" = "بحث";
+"common_see_all" = "عرض الكل";
+"common_no_results" = "لا توجد نتائج";
+"common_ok" = "موافق";
+"common_all" = "الكل";
+"common_optional" = "اختياري";
+"common_more" = "المزيد";
+"common_reset" = "إعادة تعيين";
+"common_apply" = "تطبيق";
+"common_verified" = "موثّق";
+"common_try_again" = "إعادة المحاولة";
+"common_oops" = "عذراً!";
+
+// MARK: - Onboarding (الترحيب)
+"onboarding_page1_title" = "تطبيق التقييمات رقم 1 في الجزائر";
+"onboarding_page1_subtitle" = "اعثر على متاجر موثوقة واقرأ تقييمات المشترين الجزائريين";
+"onboarding_page2_title" = "تقييمات مع إثبات";
+"onboarding_page2_subtitle" = "تقييمات موثّقة للتسوق بأمان";
+"onboarding_page3_title" = "صُنع للجزائر";
+"onboarding_page3_subtitle" = "دعم التجارة المحلية وحماية المستهلك الجزائري";
+"onboarding_get_started" = "ابدأ الآن";
+"onboarding_continue" = "متابعة";
+"onboarding_skip" = "تخطّي";
+
+// MARK: - Tabs (التبويبات)
+"tab_home" = "الرئيسية";
+"tab_search" = "بحث";
+"tab_add" = "إضافة";
+"tab_profile" = "حسابي";
+"tab_account" = "الحساب";
+
+// MARK: - Home (الصفحة الرئيسية)
+"home_tagline" = "الثقة من خلال الإثبات";
+"home_categories" = "الفئات";
+"home_trending" = "الأكثر رواجاً هذا الأسبوع";
+"home_top_rated" = "الأعلى تقييماً";
+"home_top_reviewed" = "الأكثر تقييمات";
+"home_search_placeholder" = "ابحث عن أي متجر...";
+"home_all_categories" = "جميع الفئات";
+"home_discover_trusted_stores" = "اكتشف متاجر موثوقة";
+"home_verified_reviews_trust" = "تقييمات موثّقة يمكنك الوثوق بها";
+"home_new_stores_week" = "متاجر جديدة هذا الأسبوع";
+"home_check_latest" = "اطّلع على أحدث الإضافات";
+"home_high_risk_protection" = "حماية عالية المخاطر";
+"home_proof_verified_reviews" = "تقييمات موثّقة بالأدلة لسلامتك";
+"home_claim_your_store" = "طالب بمتجرك";
+"home_get_verified_respond" = "احصل على التوثيق وقم بالرد على التقييمات";
+"home_reviews_count" = "%d تقييم";
+"home_discover_stores" = "اكتشف متاجر موثوقة في الجزائر";
+"home_learn_more" = "اعرف المزيد";
+
+// MARK: - Search (البحث)
+"search_placeholder" = "ابحث عن متاجر...";
+"search_filters" = "التصفية";
+"search_category" = "الفئة";
+"search_verified_only" = "الموثّقون فقط";
+"search_sort_by" = "ترتيب حسب";
+"search_best_rated" = "الأعلى تقييماً";
+"search_most_reviewed" = "الأكثر تقييمات";
+"search_newest" = "الأحدث";
+"search_no_store_found" = "لم يُعثر على متجر";
+"search_add_this_store" = "أضف هذا المتجر";
+"search_searching" = "جارٍ البحث...";
+"search_adjust_or_add" = "حاول تعديل بحثك أو أضف هذا المتجر";
+"search_for_stores" = "ابحث عن متاجر";
+"search_find_by_name" = "ابحث عن المتاجر بالاسم أو المعرّف أو الوصف";
+"search_verified_only_desc" = "عرض المتاجر الموثّقة فقط";
+"search_hint_title" = "ابحث عن طريق";
+"search_hint_name" = "اسم المتجر";
+"search_hint_tiktok" = "اسم مستخدم تيك توك";
+"search_hint_instagram" = "معرّف انستغرام";
+"search_hint_facebook" = "صفحة فيسبوك";
+"search_hint_whatsapp" = "رقم واتساب";
+"search_hint_phone" = "رقم الهاتف";
+"search_hint_link" = "موقع أو رابط";
+
+// MARK: - Store (المتجر)
+"store_verified" = "موثّق";
+"store_reviews" = "التقييمات";
+"store_rating" = "التقييم";
+"store_write_review" = "اكتب تقييماً";
+"store_claim" = "طلب ملكية المتجر";
+"store_report" = "الإبلاغ عن المتجر";
+"store_links" = "الروابط";
+"store_contact" = "التواصل";
+"store_rating_breakdown" = "توزيع التقييمات";
+"store_no_reviews_yet" = "لا توجد تقييمات بعد";
+"store_be_first_review" = "كن أول من يقيّم هذا المتجر";
+"store_call" = "اتصال";
+"store_submitted_by" = "أضافه";
+"store_submitter_stats" = "%d متجر مُضاف \u{2022} %d تقييم";
+
+// MARK: - Review (التقييم)
+"review_your_rating" = "تقييمك";
+"review_write_comment" = "اكتب تقييمك";
+"review_comment_placeholder" = "شاركنا تجربتك مع هذا المتجر...";
+"review_proof_required" = "يتطلب إثباتاً";
+"review_upload_proof" = "رفع الإثبات";
+"review_proof_pending" = "قيد المراجعة";
+"review_proof_approved" = "تمت الموافقة";
+"review_proof_rejected" = "مرفوض";
+"review_submit" = "إرسال التقييم";
+"review_has_proof" = "شراء موثّق";
+"review_merchant_reply" = "رد المتجر";
+"review_success_title" = "تم بنجاح";
+"review_success_message" = "تم إرسال تقييمك بنجاح!";
+"review_success_message_proof" = "تم إرسال تقييمك. يرجى رفع إثبات للتحقق.";
+"review_min_characters" = "الحد الأدنى 8 أحرف مطلوبة";
+"review_high_risk_explanation" = "هذه فئة عالية المخاطر. يرجى رفع إثبات للمعاملة (لقطة شاشة، إيصال، إلخ.)";
+"review_rating_1" = "سيء جداً";
+"review_rating_2" = "سيء";
+"review_rating_3" = "متوسط";
+"review_rating_4" = "جيد";
+"review_rating_5" = "ممتاز";
+"review_submitting" = "جارٍ الإرسال...";
+"review_thank_you_title" = "شكراً لك!";
+"review_thank_you_message" = "تقييمك يساعد الآخرين على اتخاذ قرارات أفضل";
+"review_already_exists" = "لقد قمت بتقييم هذا المتجر مسبقاً";
+"auth_required_review" = "يرجى تسجيل الدخول لكتابة تقييم";
+"review_add_proof" = "إضافة إثبات";
+"review_proof_boost_message" = "قم بتحميل لقطة شاشة أو إيصال للتحقق من عملية الشراء وتعزيز مصداقية تقييمك";
+"review_proof_verified" = "عملية شراء مؤكدة";
+"you_already_reviewed" = "لقد قمت بتقييم هذا المتجر";
+"load_more_reviews" = "تحميل المزيد من التقييمات";
+
+// MARK: - Add Store (إضافة متجر)
+"add_store_title" = "إضافة متجر";
+"add_store_name" = "اسم المتجر";
+"add_store_platform" = "المنصة";
+"add_store_link" = "الرابط / المعرّف";
+"add_store_whatsapp" = "واتساب";
+"add_store_phone" = "رقم الهاتف";
+"add_store_categories" = "الفئات";
+"add_store_city" = "المدينة";
+"add_store_submit" = "إضافة المتجر";
+"add_store_success" = "تمت إضافة المتجر بنجاح!";
+"add_store_to_preuvely" = "أضف متجرك إلى بريوفلي";
+"add_store_help_discover" = "ساعد الآخرين على اكتشاف عملك وبناء الثقة من خلال التقييمات.";
+"add_store_name_placeholder" = "اسم متجرك";
+"add_store_select_categories" = "اختر الفئات";
+"add_store_city_placeholder" = "مثال: الجزائر";
+"add_store_enter_link" = "أدخل الرابط أو المعرّف";
+"add_store_added_title" = "تمت إضافة المتجر!";
+"add_store_added_message" = "تمت إضافة متجرك بنجاح. سيكون مرئياً للجميع.";
+"add_store_view_store" = "عرض المتجر";
+"add_store_add_another" = "إضافة متجر آخر";
+"add_store_high_risk" = "عالي المخاطر";
+"add_store_pending_review" = "طلبك قيد المراجعة. سيقوم فريقنا بالتحقق منه ونشره قريباً.";
+"add_store_review_notice_title" = "قيد المراجعة";
+"add_store_review_notice_message" = "تتم مراجعة جميع طلبات إضافة المتاجر من قِبل فريقنا قبل النشر لضمان الجودة والدقة.";
+"add_store_logo" = "شعار المتجر";
+"add_store_add_logo" = "إضافة شعار";
+"add_store_logo_hint" = "أضف شعاراً لتميز متجرك";
+"add_store_error_generic" = "حدث خطأ ما. يرجى المحاولة مرة أخرى.";
+
+// MARK: - Duplicate Store (متجر مكرر)
+"duplicate_store_title" = "المتجر موجود بالفعل";
+"duplicate_store_message" = "يوجد متجر باسم أو معرّف مشابه على بريوفلي. هل تريد الاطلاع عليه؟";
+"duplicate_store_view_existing" = "عرض المتجر الموجود";
+
+// MARK: - Admin Dashboard (لوحة التحكم)
+"admin_dashboard" = "لوحة التحكم";
+"admin_pending_stores" = "متاجر قيد الانتظار";
+"admin_pending_reviews" = "تقييمات قيد الانتظار";
+"admin_pending_claims" = "طلبات ملكية قيد الانتظار";
+"admin_reports" = "البلاغات";
+"admin_statistics" = "الإحصائيات";
+"admin_total_stores" = "إجمالي المتاجر";
+"admin_total_reviews" = "إجمالي التقييمات";
+"admin_total_users" = "إجمالي المستخدمين";
+"admin_approve" = "قبول";
+"admin_reject" = "رفض";
+"admin_view_details" = "عرض التفاصيل";
+"admin_no_pending" = "لا توجد عناصر معلقة";
+"admin_submitted_by" = "مقدم من";
+"admin_submitted_on" = "تاريخ التقديم";
+"admin_manage_desc" = "إدارة المتاجر والتقييمات والمطالبات";
+
+// MARK: - Auth (المصادقة)
+"auth_sign_in" = "تسجيل الدخول";
+"auth_sign_up" = "إنشاء حساب";
+"auth_email" = "البريد الإلكتروني";
+"auth_password" = "كلمة المرور";
+"auth_confirm_password" = "تأكيد كلمة المرور";
+"auth_forgot_password" = "نسيت كلمة المرور؟";
+"auth_or_continue_with" = "أو المتابعة عبر";
+"auth_google" = "المتابعة مع جوجل";
+"auth_apple" = "المتابعة مع آبل";
+"auth_verify_email" = "تأكيد البريد الإلكتروني";
+"auth_verify_email_message" = "يرجى التحقق من صندوق الوارد وتأكيد بريدك الإلكتروني للوصول إلى جميع الميزات.";
+"auth_resend_email" = "إعادة إرسال رسالة التأكيد";
+"auth_no_account" = "ليس لديك حساب؟";
+"auth_have_account" = "لديك حساب بالفعل؟";
+"auth_logout" = "تسجيل الخروج";
+"auth_name" = "الاسم";
+"auth_name_placeholder" = "اسمك الكامل";
+"auth_email_placeholder" = "you@example.com";
+"auth_password_placeholder" = "8 أحرف كحد أدنى";
+"auth_password_min" = "8 أحرف كحد أدنى";
+"auth_passwords_mismatch" = "كلمات المرور غير متطابقة";
+"auth_trust_through_proof" = "الثقة من خلال الإثبات";
+"auth_sign_in_to_review" = "سجّل الدخول لمشاركة تقييمك";
+"auth_sign_in_to_review_subtitle" = "تقييمك يساعد الآخرين على اتخاذ قرارات مستنيرة";
+"auth_reviewing" = "أنت تقيّم";
+"auth_sign_in_with_email" = "تسجيل الدخول بالبريد الإلكتروني";
+"auth_terms_agreement" = "بتسجيل الدخول، فإنك توافق على شروط الاستخدام وسياسة الخصوصية";
+
+// Social Login Not Available
+"social_login_not_available_title" = "قريباً";
+"social_login_not_available_message" = "تسجيل الدخول عبر وسائل التواصل الاجتماعي غير متاح حالياً. يرجى استخدام تسجيل الدخول بالبريد الإلكتروني.";
+
+// MARK: - Profile (الملف الشخصي)
+"profile_guest" = "زائر";
+"profile_my_reviews" = "تقييماتي";
+"profile_my_claims" = "طلبات الملكية";
+"profile_settings" = "الإعدادات";
+"profile_language" = "اللغة";
+"profile_support" = "الدعم الفني";
+"profile_terms" = "شروط الاستخدام";
+"profile_privacy" = "سياسة الخصوصية";
+"profile_about" = "حول التطبيق";
+"profile_sign_in_to_access" = "سجّل الدخول لكتابة التقييمات والمطالبة بالمتاجر والمزيد";
+"profile_no_reviews_yet" = "لم تكتب أي تقييمات بعد";
+"profile_no_claims_yet" = "لم تطالب بأي متاجر بعد";
+"profile_see_all_reviews" = "عرض جميع التقييمات";
+"profile_follow_us" = "تابعنا";
+"profile_edit" = "تعديل الملف الشخصي";
+"profile_edit_hint" = "· تعديل";
+"profile_tap_to_change_photo" = "اضغط لتغيير الصورة";
+"profile_name_required" = "الاسم مطلوب";
+"profile_email_cannot_change" = "لا يمكن تغيير البريد الإلكتروني";
+"profile_phone_placeholder" = "+213 555 123 456";
+
+// MARK: - Claims (طلبات الملكية)
+"claim_title" = "طلب ملكية المتجر";
+"claim_owner_name" = "اسم المالك";
+"claim_phone" = "رقم الهاتف";
+"claim_note" = "ملاحظات إضافية";
+"claim_submit" = "إرسال الطلب";
+"claim_pending" = "قيد المراجعة";
+"claim_approved" = "تمت الموافقة";
+"claim_rejected" = "مرفوض";
+"claim_submitted_title" = "تم إرسال الطلب";
+"claim_submitted_message" = "تم إرسال طلبك وسيتم مراجعته من قِبل فريقنا.";
+"claim_store_name" = "المطالبة بـ %@";
+"claim_owner_benefits" = "إذا كنت مالك هذا المتجر، يمكنك المطالبة به للحصول على حالة التوثيق والرد على التقييمات.";
+"claim_owner_name_placeholder" = "اسمك الكامل";
+"claim_note_placeholder" = "أي معلومات إضافية للتحقق من ملكيتك...";
+"claim_whatsapp" = "رقم واتساب";
+"claim_whatsapp_placeholder" = "+213 5XX XXX XXX";
+"claim_success_title" = "تم إرسال الطلب!";
+"claim_success_message" = "سنتواصل معك عبر واتساب خلال 24 ساعة للتحقق من ملكيتك.";
+"claim_got_it" = "حسناً";
+
+// MARK: - Report (الإبلاغ)
+"report_title" = "إبلاغ";
+"report_reason" = "السبب";
+"report_note" = "تفاصيل إضافية";
+"report_submit" = "إرسال البلاغ";
+"report_success" = "تم إرسال البلاغ بنجاح";
+"report_submitted_title" = "تم إرسال البلاغ";
+"report_submitted_message" = "شكراً لبلاغك. سيقوم فريقنا بمراجعته قريباً.";
+"report_thank_you_message" = "شكراً لمساعدتك في الحفاظ على سلامة مجتمعنا";
+"report_reporting" = "إبلاغ";
+"report_note_placeholder" = "قدّم المزيد من التفاصيل حول بلاغك...";
+
+// MARK: - Report Reasons (أسباب الإبلاغ)
+"report_reason_spam" = "محتوى مزعج";
+"report_reason_abuse" = "إساءة";
+"report_reason_fake" = "محتوى مزيّف أو مضلّل";
+"report_reason_other" = "سبب آخر";
+
+// MARK: - Notifications (الإشعارات)
+"notification_title" = "الإشعارات";
+"notification_empty_title" = "لا توجد إشعارات";
+"notification_empty_message" = "أنت على اطلاع! سنُعلمك عند حدوث شيء مهم.";
+"notification_mark_all_read" = "تحديد الكل كمقروء";
+"notification_mark_read" = "تحديد كمقروء";
+"notification_today" = "اليوم";
+"notification_yesterday" = "أمس";
+"notification_this_week" = "هذا الأسبوع";
+"notification_older" = "أقدم";
+
+// Notification Types - Titles (عناوين الإشعارات)
+"notification_review_received_title" = "تقييم جديد";
+"notification_review_approved_title" = "تمت الموافقة على التقييم";
+"notification_review_rejected_title" = "لم تتم الموافقة على التقييم";
+"notification_claim_approved_title" = "تمت الموافقة على طلب الملكية";
+"notification_claim_rejected_title" = "لم تتم الموافقة على طلب الملكية";
+"notification_store_approved_title" = "تم نشر المتجر";
+"notification_new_reply_title" = "رد جديد";
+"notification_store_verified_title" = "تم توثيق المتجر";
+
+// Notification Types - Messages (رسائل الإشعارات)
+"notification_review_received_message" = "متجرك تلقى تقييماً من %@";
+"notification_review_approved_message" = "تمت الموافقة على تقييمك! شكراً لملاحظاتك.";
+"notification_review_rejected_message" = "لم تتم الموافقة على تقييمك. يرجى التأكد من أنه يتوافق مع إرشاداتنا.";
+"notification_claim_approved_message" = "تمت الموافقة على طلب ملكية متجرك! يمكنك الآن إدارة متجرك.";
+"notification_claim_rejected_message" = "لم تتم الموافقة على طلب ملكية متجرك. يرجى تقديم تحقق إضافي.";
+"notification_store_approved_message" = "تم نشر متجرك! وهو مرئي الآن للجميع.";
+"notification_new_reply_message" = "رد صاحب المتجر على تقييمك.";
+"notification_store_verified_message" = "تم توثيق متجرك! يمكنك الآن الرد على التقييمات.";
+
+// MARK: - Category (الفئات)
+"category_no_stores" = "لا توجد متاجر بعد";
+"category_no_stores_description" = "لا توجد متاجر في هذه الفئة بعد. كن أول من يضيف واحداً!";
+
+// MARK: - My Stores (متاجري)
+"my_stores_title" = "متاجري";
+"my_stores_empty_title" = "لا توجد متاجر";
+"my_stores_empty_message" = "لا تملك أي متاجر بعد. طالب بمتجر لإدارته هنا.";
+
+// MARK: - Edit Store (تعديل المتجر)
+"edit_store_title" = "تعديل المتجر";
+"edit_store_name" = "اسم المتجر";
+"edit_store_name_placeholder" = "أدخل اسم المتجر";
+"edit_store_name_required" = "اسم المتجر مطلوب";
+"edit_store_description" = "الوصف";
+"edit_store_description_placeholder" = "صف متجرك...";
+"edit_store_city" = "المدينة";
+"edit_store_city_placeholder" = "مثال: الجزائر";
+"edit_store_tap_change_logo" = "اضغط لتغيير الشعار";
+"edit_store_choose_photo" = "اختر صورة";
+"edit_store_take_photo" = "التقط صورة";
+"edit_store_choose_library" = "اختر من المكتبة";
+"edit_store_links" = "روابط التواصل";
+"edit_store_links_subtitle" = "أدر روابط مواقع التواصل الاجتماعي والموقع الإلكتروني";
+
+// MARK: - Edit Store Links (تعديل الروابط)
+"edit_store_links_title" = "روابط التواصل";
+"edit_store_links_header" = "أضف روابطك";
+"edit_store_links_description" = "أضف موقعك الإلكتروني وروابط التواصل الاجتماعي ليتمكن العملاء من العثور عليك.";
+
+// MARK: - User Profile (الملف الشخصي)
+"user_profile_title" = "الملف الشخصي";
+"user_profile_member_since" = "عضو منذ %@";
+"user_profile_stores_submitted" = "متاجر";
+"user_profile_reviews_written" = "تقييمات";
+"user_profile_stores" = "متاجر";
+"user_profile_reviews" = "تقييمات";
+"user_profile_no_stores_title" = "لا توجد متاجر";
+"user_profile_no_stores_message" = "لم يقم هذا المستخدم بإضافة أي متاجر بعد.";
+"user_profile_no_reviews_title" = "لا توجد تقييمات";
+"user_profile_no_reviews_message" = "لم يكتب هذا المستخدم أي تقييمات بعد.";
+
+// MARK: - Shake Feedback
+"shake_feedback_title" = "ارسل ملاحظاتك";
+"shake_feedback_subtitle" = "هز هاتفك في اي وقت لارسال ملاحظاتك";
+"shake_feedback_what_type" = "ما نوع الملاحظة؟";
+"shake_feedback_bug" = "ابلاغ عن خطا";
+"shake_feedback_suggestion" = "اقتراح";
+"shake_feedback_content" = "مشكلة في المحتوى";
+"shake_feedback_other" = "اخرى";
+"shake_feedback_describe" = "صف ملاحظتك";
+"shake_feedback_placeholder" = "اخبرنا ما حدث او ما يمكن تحسينه...";
+"shake_feedback_include_screenshot" = "تضمين لقطة شاشة";
+"shake_feedback_screenshot_hint" = "يساعدنا على فهم المشكلة بشكل افضل";
+"shake_feedback_send" = "ارسال";
+"shake_feedback_sending" = "جاري الارسال...";
+"shake_feedback_done" = "تم";
+"shake_feedback_thanks_title" = "شكرا لك!";
+"shake_feedback_thanks_message" = "ملاحظاتك تساعدنا على تحسين Preuvely للجميع.";
+"shake_feedback_close" = "اغلاق";
+
+// MARK: - Shake Contact
+"shake_contact_title" = "تحتاج مساعدة؟";
+"shake_contact_subtitle" = "تواصل معنا مباشرة عبر واتساب";
+"shake_contact_whatsapp" = "الدردشة عبر واتساب";
+"shake_contact_close" = "اغلاق";
+"shake_contact_message" = "مرحبا! احتاج مساعدة في تطبيق Preuvely.";

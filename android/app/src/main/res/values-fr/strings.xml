@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Preuvely</string>
+
+    <!-- Tab Bar -->
+    <string name="tab_home">Accueil</string>
+    <string name="tab_search">Recherche</string>
+    <string name="tab_add">Ajouter</string>
+    <string name="tab_profile">Compte</string>
+
+    <!-- Home -->
+    <string name="home_categories">Catégories</string>
+    <string name="home_see_all">Voir tout</string>
+    <string name="home_top_reviewed">Les plus commentés</string>
+    <string name="home_search_placeholder">Rechercher une boutique…</string>
+
+    <!-- Search -->
+    <string name="search_title">Recherche</string>
+    <string name="search_placeholder">Rechercher une boutique…</string>
+    <string name="search_filters">Filtres</string>
+    <string name="search_all_categories">Toutes les catégories</string>
+    <string name="search_verified_only">Vérifiés uniquement</string>
+    <string name="search_verified_only_desc">Afficher uniquement les boutiques vérifiées</string>
+    <string name="search_sort_by">Trier par</string>
+    <string name="search_sort_best_rated">Meilleure note</string>
+    <string name="search_sort_most_reviewed">Plus commentés</string>
+    <string name="search_sort_newest">Plus récents</string>
+    <string name="search_no_results">Aucune boutique trouvée</string>
+    <string name="search_try_different">Essayez un autre terme ou ajoutez cette boutique</string>
+    <string name="search_add_store">Ajouter cette boutique</string>
+    <string name="search_apply">Appliquer</string>
+    <string name="search_reset">Réinitialiser</string>
+    <string name="search_initial_title">Rechercher des boutiques</string>
+    <string name="search_initial_message">Rechercher par nom, Instagram, TikTok ou numéro de téléphone</string>
+    <string name="search_hint_name">Nom</string>
+    <string name="search_hint_phone">Téléphone</string>
+    <string name="search_hint_website">Site web</string>
+    <string name="search_category">Catégorie</string>
+
+    <!-- Store Details -->
+    <string name="store_verified">Vérifié</string>
+    <string name="store_reviews">Avis</string>
+    <string name="store_rating_breakdown">Répartition des notes</string>
+    <string name="store_write_review">Écrire un avis</string>
+    <string name="store_claim">Réclamer cette boutique</string>
+    <string name="store_report">Signaler</string>
+    <string name="store_no_reviews">Aucun avis</string>
+    <string name="store_be_first">Soyez le premier à laisser un avis</string>
+    <string name="store_load_more">Charger plus</string>
+
+    <!-- Write Review -->
+    <string name="review_title">Écrire un avis</string>
+    <string name="review_rating">Votre note</string>
+    <string name="review_comment">Votre avis</string>
+    <string name="review_comment_hint">Partagez votre expérience avec cette boutique…</string>
+    <string name="review_proof">Télécharger une preuve</string>
+    <string name="review_proof_required">Preuve requise pour cette catégorie</string>
+    <string name="review_proof_optional">La preuve est optionnelle mais recommandée</string>
+    <string name="review_submit">Soumettre l\'avis</string>
+    <string name="review_success">Avis soumis !</string>
+    <string name="review_success_message">Merci pour votre retour</string>
+    <string name="review_min_chars">Minimum 8 caractères requis</string>
+
+    <!-- Add Store -->
+    <string name="add_store_title">Ajouter à Preuvely</string>
+    <string name="add_store_subtitle">Aidez les autres à découvrir des boutiques fiables</string>
+    <string name="add_store_name">Nom de la boutique</string>
+    <string name="add_store_name_placeholder">Entrez le nom de la boutique</string>
+    <string name="add_store_name_required">Nom de la boutique *</string>
+    <string name="add_store_platform">Plateforme</string>
+    <string name="add_store_link">Lien ou identifiant</string>
+    <string name="add_store_whatsapp">WhatsApp</string>
+    <string name="add_store_categories">Catégories</string>
+    <string name="add_store_logo">Logo de la boutique</string>
+    <string name="add_store_submit">Ajouter la boutique</string>
+    <string name="add_store_pending">Votre boutique sera examinée avant d\'apparaître publiquement</string>
+    <string name="add_store_duplicate_title">Boutique existante</string>
+    <string name="add_store_duplicate_message">Voulez-vous dire cette boutique ?</string>
+    <string name="add_store_view_existing">Voir la boutique existante</string>
+    <string name="add_store_required">Requis</string>
+    <string name="add_store_optional">Optionnel</string>
+    <string name="add_store_review_notice_title">Révision requise</string>
+    <string name="add_store_review_notice_message">Votre boutique sera examinée avant d\'apparaître publiquement</string>
+
+    <!-- Profile -->
+    <string name="profile_guest">Invité</string>
+    <string name="profile_sign_in_prompt">Connectez-vous pour accéder à toutes les fonctionnalités</string>
+    <string name="profile_sign_in">Se connecter</string>
+    <string name="profile_sign_out">Se déconnecter</string>
+    <string name="profile_edit">Modifier le profil</string>
+    <string name="profile_my_reviews">Mes avis</string>
+    <string name="profile_my_claims">Mes réclamations</string>
+    <string name="profile_my_stores">Mes boutiques</string>
+    <string name="profile_settings">Paramètres</string>
+    <string name="profile_language">Langue</string>
+    <string name="profile_support">Support</string>
+    <string name="profile_terms">Conditions d\'utilisation</string>
+    <string name="profile_privacy">Politique de confidentialité</string>
+    <string name="profile_verify_email">Vérifiez votre email</string>
+    <string name="profile_verify_email_message">Veuillez vérifier votre email pour accéder à toutes les fonctionnalités</string>
+    <string name="profile_resend_email">Renvoyer l\'email</string>
+
+    <!-- Auth -->
+    <string name="auth_login">Connexion</string>
+    <string name="auth_register">Inscription</string>
+    <string name="auth_email">Email</string>
+    <string name="auth_password">Mot de passe</string>
+    <string name="auth_confirm_password">Confirmer le mot de passe</string>
+    <string name="auth_name">Nom complet</string>
+    <string name="auth_phone">Téléphone (optionnel)</string>
+    <string name="auth_forgot_password">Mot de passe oublié ?</string>
+    <string name="auth_or_continue">ou continuer avec</string>
+    <string name="auth_google">Se connecter avec Google</string>
+    <string name="auth_apple">Se connecter avec Apple</string>
+    <string name="auth_no_account">Vous n\'avez pas de compte ?</string>
+    <string name="auth_have_account">Vous avez déjà un compte ?</string>
+    <string name="auth_passwords_not_match">Les mots de passe ne correspondent pas</string>
+
+    <!-- Notifications -->
+    <string name="notifications_title">Notifications</string>
+    <string name="notifications_empty">Aucune notification</string>
+    <string name="notifications_empty_message">Vous êtes à jour !</string>
+    <string name="notifications_mark_all_read">Tout marquer comme lu</string>
+    <string name="notifications_today">Aujourd\'hui</string>
+    <string name="notifications_yesterday">Hier</string>
+    <string name="notifications_this_week">Cette semaine</string>
+    <string name="notifications_older">Plus ancien</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_skip">Passer</string>
+    <string name="onboarding_continue">Continuer</string>
+    <string name="onboarding_get_started">Commencer</string>
+    <string name="onboarding_1_title">Trouvez des boutiques fiables</string>
+    <string name="onboarding_1_subtitle">Recherchez et découvrez des boutiques vérifiées avec de vrais avis</string>
+    <string name="onboarding_2_title">Partagez votre expérience</string>
+    <string name="onboarding_2_subtitle">Laissez des avis vérifiés et aidez les autres</string>
+    <string name="onboarding_3_title">Preuve vérifiée</string>
+    <string name="onboarding_3_subtitle">Téléchargez une preuve d\'achat pour des avis vérifiés</string>
+
+    <!-- Claim Store -->
+    <string name="claim_title">Réclamer cette boutique</string>
+    <string name="claim_owner_name">Votre nom</string>
+    <string name="claim_whatsapp">Numéro WhatsApp</string>
+    <string name="claim_note">Notes supplémentaires (optionnel)</string>
+    <string name="claim_submit">Soumettre la réclamation</string>
+    <string name="claim_success">Réclamation soumise !</string>
+    <string name="claim_success_message">Nous examinerons votre demande et vous recontacterons</string>
+
+    <!-- Report -->
+    <string name="report_title">Signaler</string>
+    <string name="report_reason">Sélectionnez une raison</string>
+    <string name="report_spam">Spam</string>
+    <string name="report_abuse">Contenu abusif</string>
+    <string name="report_fake">Faux avis</string>
+    <string name="report_other">Autre</string>
+    <string name="report_note">Détails supplémentaires (optionnel)</string>
+    <string name="report_submit">Soumettre le signalement</string>
+    <string name="report_success">Signalement soumis</string>
+    <string name="report_success_message">Merci de nous aider à garder notre plateforme sûre</string>
+
+    <!-- My Stores -->
+    <string name="my_stores_title">Mes boutiques</string>
+    <string name="my_stores_empty">Vous n\'avez pas encore ajouté de boutique</string>
+    <string name="my_stores_empty_message">Commencez par ajouter votre première boutique</string>
+    <string name="edit_store_title">Modifier la boutique</string>
+    <string name="edit_store_name">Nom de la boutique</string>
+    <string name="edit_store_description">Description</string>
+    <string name="edit_store_city">Ville</string>
+    <string name="edit_store_links">Liens sociaux</string>
+    <string name="edit_store_save">Enregistrer</string>
+    <string name="edit_store_logo">Changer le logo</string>
+
+    <!-- Common -->
+    <string name="loading">Chargement…</string>
+    <string name="error">Erreur</string>
+    <string name="retry">Réessayer</string>
+    <string name="cancel">Annuler</string>
+    <string name="done">Terminé</string>
+    <string name="save">Enregistrer</string>
+    <string name="delete">Supprimer</string>
+    <string name="confirm">Confirmer</string>
+    <string name="success">Succès</string>
+    <string name="review">avis</string>
+    <string name="reviews_plural">avis</string>
+
+    <!-- Languages -->
+    <string name="select_language">Sélectionner la langue</string>
+    <string name="language_english">English</string>
+    <string name="language_french">Français</string>
+    <string name="language_arabic">العربية</string>
+    <string name="language_changed">Langue modifiée</string>
+</resources>

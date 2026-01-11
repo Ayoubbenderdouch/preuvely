@@ -1,0 +1,1517 @@
+openapi: 3.0.3
+info:
+  title: 'Preuvely API Documentation'
+  description: 'API for Preuvely - Trusted Store Reviews Platform for Algeria'
+  version: 1.0.0
+  contact:
+    name: 'Preuvely Support'
+    email: support@preuvely.dz
+servers:
+  -
+    url: 'http://localhost'
+tags:
+  -
+    name: Authentication
+    description: "\nAPIs for user authentication"
+  -
+    name: Categories
+    description: "\nAPIs for browsing categories"
+  -
+    name: Stores
+    description: "\nAPIs for browsing and managing stores"
+  -
+    name: Reviews
+    description: "\nAPIs for managing store reviews"
+  -
+    name: 'Store Claims'
+    description: "\nAPIs for claiming store ownership"
+  -
+    name: Reports
+    description: "\nAPIs for reporting content"
+  -
+    name: 'Social Authentication'
+    description: "\nAPIs for OAuth social login (Google, Apple)"
+components:
+  securitySchemes:
+    default:
+      type: http
+      scheme: bearer
+      description: 'Obtain your token by calling POST `/api/v1/auth/login` or POST `/api/v1/auth/register`. Include the token in the Authorization header as `Bearer {token}`.'
+security:
+  -
+    default: []
+paths:
+  /api/v1/auth/register:
+    post:
+      summary: 'Register a new user'
+      operationId: registerANewUser
+      description: 'Create a new user account and return an API token.'
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'User registered successfully'
+                  user:
+                    id: 1
+                    name: 'John Doe'
+                    email: john@example.com
+                  token: 1|abcdef123456...
+                properties:
+                  message:
+                    type: string
+                    example: 'User registered successfully'
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: 'John Doe'
+                      email:
+                        type: string
+                        example: john@example.com
+                  token:
+                    type: string
+                    example: 1|abcdef123456...
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: "The user's full name."
+                  example: 'John Doe'
+                email:
+                  type: string
+                  description: "The user's email address (required if phone not provided)."
+                  example: john@example.com
+                  nullable: true
+                phone:
+                  type: string
+                  description: "The user's phone number (required if email not provided)."
+                  example: '+213555123456'
+                  nullable: true
+                password:
+                  type: string
+                  description: 'The password (min 8 chars).'
+                  example: password123
+                password_confirmation:
+                  type: string
+                  description: 'Password confirmation.'
+                  example: password123
+              required:
+                - name
+                - password
+                - password_confirmation
+      security: []
+  /api/v1/auth/login:
+    post:
+      summary: 'Login user'
+      operationId: loginUser
+      description: 'Authenticate user and return an API token.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Login successful'
+                  user:
+                    id: 1
+                    name: 'John Doe'
+                    email: john@example.com
+                  token: 1|abcdef123456...
+                properties:
+                  message:
+                    type: string
+                    example: 'Login successful'
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: 'John Doe'
+                      email:
+                        type: string
+                        example: john@example.com
+                  token:
+                    type: string
+                    example: 1|abcdef123456...
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Invalid credentials'
+                properties:
+                  message:
+                    type: string
+                    example: 'Invalid credentials'
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: "The user's email (required if phone not provided)."
+                  example: john@example.com
+                  nullable: true
+                phone:
+                  type: string
+                  description: "The user's phone (required if email not provided)."
+                  example: '+213555123456'
+                  nullable: true
+                password:
+                  type: string
+                  description: "The user's password."
+                  example: password123
+              required:
+                - password
+      security: []
+  '/api/v1/auth/email/verify/{id}/{hash}':
+    get:
+      summary: 'Verify email address'
+      operationId: verifyEmailAddress
+      description: "Verify the user's email address using a signed URL."
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Email verified successfully'
+                properties:
+                  message:
+                    type: string
+                    example: 'Email verified successfully'
+        403:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Invalid verification link'
+                properties:
+                  message:
+                    type: string
+                    example: 'Invalid verification link'
+      tags:
+        - Authentication
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The user ID.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: hash
+        description: 'The verification hash.'
+        example: architecto
+        required: true
+        schema:
+          type: string
+  /api/v1/auth/logout:
+    post:
+      summary: 'Logout user'
+      operationId: logoutUser
+      description: 'Revoke the current API token.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Logged out successfully'
+                properties:
+                  message:
+                    type: string
+                    example: 'Logged out successfully'
+      tags:
+        - Authentication
+  /api/v1/auth/me:
+    get:
+      summary: 'Get current user'
+      operationId: getCurrentUser
+      description: "Get the authenticated user's profile."
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  user:
+                    id: 1
+                    name: 'John Doe'
+                    email: john@example.com
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: 'John Doe'
+                      email:
+                        type: string
+                        example: john@example.com
+      tags:
+        - Authentication
+  /api/v1/auth/email/resend:
+    post:
+      summary: 'Resend verification email'
+      operationId: resendVerificationEmail
+      description: 'Resend the email verification notification.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Verification email resent successfully'
+                properties:
+                  message:
+                    type: string
+                    example: 'Verification email resent successfully'
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Email already verified'
+                properties:
+                  message:
+                    type: string
+                    example: 'Email already verified'
+      tags:
+        - Authentication
+  /api/v1/categories:
+    get:
+      summary: 'List all categories'
+      operationId: listAllCategories
+      description: 'Get a list of all available store categories.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      name: Electronics
+                      slug: electronics
+                      is_high_risk: false
+                    -
+                      id: 2
+                      name: 'Digital Services'
+                      slug: digital-services
+                      is_high_risk: true
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        name: Electronics
+                        slug: electronics
+                        is_high_risk: false
+                      -
+                        id: 2
+                        name: 'Digital Services'
+                        slug: digital-services
+                        is_high_risk: true
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: Electronics
+                        slug:
+                          type: string
+                          example: electronics
+                        is_high_risk:
+                          type: boolean
+                          example: false
+      tags:
+        - Categories
+      security: []
+  '/api/v1/categories/{slug}':
+    get:
+      summary: 'Get category details'
+      operationId: getCategoryDetails
+      description: 'Get details of a specific category by slug.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    id: 1
+                    name: Electronics
+                    slug: electronics
+                    is_high_risk: false
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Electronics
+                      slug:
+                        type: string
+                        example: electronics
+                      is_high_risk:
+                        type: boolean
+                        example: false
+      tags:
+        - Categories
+      security: []
+    parameters:
+      -
+        in: path
+        name: slug
+        description: 'The category slug.'
+        example: electronics
+        required: true
+        schema:
+          type: string
+  /api/v1/stores/search:
+    get:
+      summary: 'Search stores'
+      operationId: searchStores
+      description: 'Search for stores by name or description.'
+      parameters:
+        -
+          in: query
+          name: q
+          description: 'Search query.'
+          example: electronics
+          required: false
+          schema:
+            type: string
+            description: 'Search query.'
+            example: electronics
+        -
+          in: query
+          name: category
+          description: 'Filter by category slug.'
+          example: electronics
+          required: false
+          schema:
+            type: string
+            description: 'Filter by category slug.'
+            example: electronics
+        -
+          in: query
+          name: city
+          description: 'Filter by city.'
+          example: Algiers
+          required: false
+          schema:
+            type: string
+            description: 'Filter by city.'
+            example: Algiers
+        -
+          in: query
+          name: verified
+          description: 'Filter verified stores only.'
+          example: true
+          required: false
+          schema:
+            type: boolean
+            description: 'Filter verified stores only.'
+            example: true
+        -
+          in: query
+          name: per_page
+          description: 'Results per page (max 50).'
+          example: 15
+          required: false
+          schema:
+            type: integer
+            description: 'Results per page (max 50).'
+            example: 15
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      name: 'Tech Store'
+                      slug: tech-store
+                      avg_rating: 4.5
+                      reviews_count: 25
+                  meta:
+                    current_page: 1
+                    last_page: 5
+                    per_page: 15
+                    total: 75
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        name: 'Tech Store'
+                        slug: tech-store
+                        avg_rating: 4.5
+                        reviews_count: 25
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: 'Tech Store'
+                        slug:
+                          type: string
+                          example: tech-store
+                        avg_rating:
+                          type: number
+                          example: 4.5
+                        reviews_count:
+                          type: integer
+                          example: 25
+                  meta:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                        example: 1
+                      last_page:
+                        type: integer
+                        example: 5
+                      per_page:
+                        type: integer
+                        example: 15
+                      total:
+                        type: integer
+                        example: 75
+      tags:
+        - Stores
+      security: []
+  '/api/v1/stores/{slug}':
+    get:
+      summary: 'Get store details'
+      operationId: getStoreDetails
+      description: 'Get detailed information about a specific store.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"Tech Store\",\n    \"slug\": \"tech-store\",\n    \"description\": \"Your one-stop electronics shop\",\n    \"is_verified\": true,\n    \"avg_rating\": 4.5,\n    \"reviews_count\": 25,\n    \"categories\": [...],\n    \"links\": [...],\n    \"contacts\": {...}\n  }\n}"
+      tags:
+        - Stores
+      security: []
+    parameters:
+      -
+        in: path
+        name: slug
+        description: 'The store slug.'
+        example: tech-store
+        required: true
+        schema:
+          type: string
+  '/api/v1/stores/{slug}/summary':
+    get:
+      summary: 'Get store summary'
+      operationId: getStoreSummary
+      description: 'Get a summary of store ratings and verification status.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    avg_rating: 4.5
+                    reviews_count: 25
+                    is_verified: true
+                    rating_breakdown:
+                      '1': 2
+                      '2': 1
+                      '3': 5
+                      '4': 8
+                      '5': 9
+                    proof_badge: true
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      avg_rating:
+                        type: number
+                        example: 4.5
+                      reviews_count:
+                        type: integer
+                        example: 25
+                      is_verified:
+                        type: boolean
+                        example: true
+                      rating_breakdown:
+                        type: object
+                        properties:
+                          1:
+                            type: integer
+                            example: 2
+                          2:
+                            type: integer
+                            example: 1
+                          3:
+                            type: integer
+                            example: 5
+                          4:
+                            type: integer
+                            example: 8
+                          5:
+                            type: integer
+                            example: 9
+                      proof_badge:
+                        type: boolean
+                        example: true
+      tags:
+        - Stores
+      security: []
+    parameters:
+      -
+        in: path
+        name: slug
+        description: 'The store slug.'
+        example: tech-store
+        required: true
+        schema:
+          type: string
+  /api/v1/stores:
+    post:
+      summary: 'Create a new store'
+      operationId: createANewStore
+      description: 'Submit a new store for listing.'
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Store created successfully'
+                  data:
+                    id: 1
+                    name: 'My Store'
+                    slug: my-store-abc123
+                properties:
+                  message:
+                    type: string
+                    example: 'Store created successfully'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: 'My Store'
+                      slug:
+                        type: string
+                        example: my-store-abc123
+      tags:
+        - Stores
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'The store name.'
+                  example: 'My Store'
+                description:
+                  type: string
+                  description: 'Store description.'
+                  example: 'A great store for electronics'
+                  nullable: true
+                city:
+                  type: string
+                  description: 'Store city.'
+                  example: Algiers
+                  nullable: true
+                category_ids:
+                  type: array
+                  description: 'Array of category IDs.'
+                  example:
+                    - 1
+                    - 2
+                  items:
+                    type: string
+                links:
+                  type: array
+                  description: 'Store social media links.'
+                  example:
+                    - architecto
+                  items:
+                    type: string
+                    nullable: true
+                contacts:
+                  type: object
+                  description: 'Store contact information.'
+                  example: []
+                  properties:
+                    whatsapp:
+                      type: string
+                      description: 'WhatsApp number.'
+                      example: '+213555123456'
+                      nullable: true
+                    phone:
+                      type: string
+                      description: 'Phone number.'
+                      example: '+213555123456'
+                      nullable: true
+                  nullable: true
+              required:
+                - name
+                - category_ids
+  '/api/v1/stores/{store_id}/reviews':
+    get:
+      summary: 'List store reviews'
+      operationId: listStoreReviews
+      description: 'Get approved reviews for a specific store.'
+      parameters:
+        -
+          in: query
+          name: per_page
+          description: 'Results per page (max 50).'
+          example: 15
+          required: false
+          schema:
+            type: integer
+            description: 'Results per page (max 50).'
+            example: 15
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      stars: 5
+                      comment: 'Great store!'
+                      user:
+                        id: 1
+                        name: John
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        stars: 5
+                        comment: 'Great store!'
+                        user:
+                          id: 1
+                          name: John
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        stars:
+                          type: integer
+                          example: 5
+                        comment:
+                          type: string
+                          example: 'Great store!'
+                        user:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            name:
+                              type: string
+                              example: John
+      tags:
+        - Reviews
+      security: []
+    post:
+      summary: 'Create a review'
+      operationId: createAReview
+      description: "Submit a review for a store. Each user can only review a store once.\nHigh-risk stores require proof upload and admin approval."
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Review submitted successfully'
+                  requires_proof: true
+                  data:
+                    id: 1
+                    stars: 5
+                    comment: 'Great experience!'
+                    status: pending
+                properties:
+                  message:
+                    type: string
+                    example: 'Review submitted successfully'
+                  requires_proof:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      stars:
+                        type: integer
+                        example: 5
+                      comment:
+                        type: string
+                        example: 'Great experience!'
+                      status:
+                        type: string
+                        example: pending
+        409:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'You have already reviewed this store'
+                properties:
+                  message:
+                    type: string
+                    example: 'You have already reviewed this store'
+        429:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Daily review limit reached'
+                properties:
+                  message:
+                    type: string
+                    example: 'Daily review limit reached'
+      tags:
+        - Reviews
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stars:
+                  type: integer
+                  description: 'Rating 1-5.'
+                  example: 5
+                comment:
+                  type: string
+                  description: 'Review text (8-500 chars).'
+                  example: 'Great experience with this store!'
+              required:
+                - stars
+                - comment
+    parameters:
+      -
+        in: path
+        name: store_id
+        description: 'The ID of the store.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: store
+        description: 'The store ID.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/v1/stores/{store_id}/my-review':
+    get:
+      summary: "Get user's review for a store"
+      operationId: getUsersReviewForAStore
+      description: 'Check if the authenticated user has already reviewed a store.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      has_reviewed: true
+                      data:
+                        id: 1
+                        stars: 5
+                        comment: Great!
+                    properties:
+                      has_reviewed:
+                        type: boolean
+                        example: true
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          stars:
+                            type: integer
+                            example: 5
+                          comment:
+                            type: string
+                            example: Great!
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      has_reviewed: false
+                      data: null
+                    properties:
+                      has_reviewed:
+                        type: boolean
+                        example: false
+                      data:
+                        type: string
+                        example: null
+      tags:
+        - Reviews
+    parameters:
+      -
+        in: path
+        name: store_id
+        description: 'The ID of the store.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: store
+        description: 'The store ID.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/v1/reviews/{review_id}/proof':
+    post:
+      summary: 'Upload proof for review'
+      operationId: uploadProofForReview
+      description: 'Upload proof image for a high-risk review. Only the review owner can upload.'
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Proof uploaded successfully'
+                  data:
+                    id: 1
+                    status: pending
+                properties:
+                  message:
+                    type: string
+                    example: 'Proof uploaded successfully'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      status:
+                        type: string
+                        example: pending
+        403:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Not authorized to upload proof for this review'
+                properties:
+                  message:
+                    type: string
+                    example: 'Not authorized to upload proof for this review'
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'This review does not require proof'
+                properties:
+                  message:
+                    type: string
+                    example: 'This review does not require proof'
+      tags:
+        - Reviews
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                proof:
+                  type: string
+                  format: binary
+                  description: 'Proof image (jpg, png, webp; max 5MB).'
+              required:
+                - proof
+    parameters:
+      -
+        in: path
+        name: review_id
+        description: 'The ID of the review.'
+        example: 16
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: review
+        description: 'The review ID.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/v1/reviews/{review_id}/reply':
+    post:
+      summary: 'Reply to a review'
+      operationId: replyToAReview
+      description: "Store owner can reply to a review. Only one reply per review.\nStore must be verified and user must be an owner."
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Reply submitted successfully'
+                  data:
+                    id: 1
+                    reply_text: 'Thank you!'
+                properties:
+                  message:
+                    type: string
+                    example: 'Reply submitted successfully'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      reply_text:
+                        type: string
+                        example: 'Thank you!'
+        403:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Store must be verified to reply'
+                properties:
+                  message:
+                    type: string
+                    example: 'Store must be verified to reply'
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Reply already exists for this review'
+                properties:
+                  message:
+                    type: string
+                    example: 'Reply already exists for this review'
+      tags:
+        - Reviews
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reply_text:
+                  type: string
+                  description: 'Reply text (max 300 chars).'
+                  example: 'Thank you for your feedback!'
+              required:
+                - reply_text
+    parameters:
+      -
+        in: path
+        name: review_id
+        description: 'The ID of the review.'
+        example: 16
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: review
+        description: 'The review ID.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/v1/stores/{store_id}/claim':
+    post:
+      summary: 'Submit a claim request'
+      operationId: submitAClaimRequest
+      description: 'Request ownership of a store. The claim will be reviewed by admin.'
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Claim request submitted successfully'
+                  data:
+                    id: 1
+                    status: pending
+                properties:
+                  message:
+                    type: string
+                    example: 'Claim request submitted successfully'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      status:
+                        type: string
+                        example: pending
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'You have already submitted a pending claim for this store'
+                properties:
+                  message:
+                    type: string
+                    example: 'You have already submitted a pending claim for this store'
+      tags:
+        - 'Store Claims'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                requester_name:
+                  type: string
+                  description: 'Your full name.'
+                  example: 'John Doe'
+                requester_phone:
+                  type: string
+                  description: 'Your phone number.'
+                  example: '+213555123456'
+                note:
+                  type: string
+                  description: 'Additional note for the admin.'
+                  example: 'I am the owner...'
+                  nullable: true
+              required:
+                - requester_name
+                - requester_phone
+    parameters:
+      -
+        in: path
+        name: store_id
+        description: 'The ID of the store.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: store
+        description: 'The store ID.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/v1/claims:
+    get:
+      summary: "Get user's claim requests"
+      operationId: getUsersClaimRequests
+      description: 'Get all claim requests submitted by the authenticated user.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      store_id: 5
+                      status: pending
+                      created_at: '2024-01-01T00:00:00Z'
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        store_id: 5
+                        status: pending
+                        created_at: '2024-01-01T00:00:00Z'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        store_id:
+                          type: integer
+                          example: 5
+                        status:
+                          type: string
+                          example: pending
+                        created_at:
+                          type: string
+                          example: '2024-01-01T00:00:00Z'
+      tags:
+        - 'Store Claims'
+  /api/v1/reports:
+    post:
+      summary: 'Submit a report'
+      operationId: submitAReport
+      description: 'Report a review, reply, or store for moderation.'
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Report submitted successfully'
+                  data:
+                    id: 1
+                    reason: spam
+                    status: open
+                properties:
+                  message:
+                    type: string
+                    example: 'Report submitted successfully'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      reason:
+                        type: string
+                        example: spam
+                      status:
+                        type: string
+                        example: open
+        429:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Daily report limit reached'
+                properties:
+                  message:
+                    type: string
+                    example: 'Daily report limit reached'
+      tags:
+        - Reports
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reportable_type:
+                  type: string
+                  description: 'Type of content (review, reply, store).'
+                  example: review
+                reportable_id:
+                  type: integer
+                  description: 'ID of the content.'
+                  example: 1
+                reason:
+                  type: string
+                  description: 'Reason for report (spam, abuse, fake, other).'
+                  example: spam
+                note:
+                  type: string
+                  description: 'Additional details.'
+                  example: 'This review looks suspicious...'
+                  nullable: true
+              required:
+                - reportable_type
+                - reportable_id
+                - reason
+    get:
+      summary: "Get user's reports"
+      operationId: getUsersReports
+      description: 'Get all reports submitted by the authenticated user.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      reportable_type: Review
+                      reason: spam
+                      status: open
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        reportable_type: Review
+                        reason: spam
+                        status: open
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        reportable_type:
+                          type: string
+                          example: Review
+                        reason:
+                          type: string
+                          example: spam
+                        status:
+                          type: string
+                          example: open
+      tags:
+        - Reports
+  '/api/v1/auth/social/{provider}/redirect':
+    get:
+      summary: 'Get OAuth redirect URL'
+      operationId: getOAuthRedirectURL
+      description: "Returns the OAuth provider's authorization URL."
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  url: 'https://accounts.google.com/o/oauth2/auth?...'
+                properties:
+                  url:
+                    type: string
+                    example: 'https://accounts.google.com/o/oauth2/auth?...'
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Unsupported provider: facebook'
+                properties:
+                  message:
+                    type: string
+                    example: 'Unsupported provider: facebook'
+      tags:
+        - 'Social Authentication'
+      security: []
+    parameters:
+      -
+        in: path
+        name: provider
+        description: 'The OAuth provider (google or apple).'
+        example: google
+        required: true
+        schema:
+          type: string
+  '/api/v1/auth/social/{provider}/callback':
+    get:
+      summary: 'Handle OAuth callback (GET)'
+      operationId: handleOAuthCallbackGET
+      description: 'Handles the OAuth callback for providers that use GET (like Google).'
+      parameters:
+        -
+          in: query
+          name: code
+          description: 'The authorization code.'
+          example: architecto
+          required: true
+          schema:
+            type: string
+            description: 'The authorization code.'
+            example: architecto
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"message": "Login successful", "user": {...}, "token": "...", "is_new_user": false}'
+      tags:
+        - 'Social Authentication'
+      security: []
+    post:
+      summary: 'Handle OAuth callback (POST)'
+      operationId: handleOAuthCallbackPOST
+      description: 'Handles OAuth callback via POST (Apple sends POST requests).'
+      parameters: []
+      responses: {  }
+      tags:
+        - 'Social Authentication'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: 'The authorization code.'
+                  example: architecto
+              required:
+                - code
+      security: []
+    parameters:
+      -
+        in: path
+        name: provider
+        description: 'The OAuth provider.'
+        example: google
+        required: true
+        schema:
+          type: string

@@ -1,0 +1,385 @@
+/* French Localization for Preuvely */
+/* Traduction française pour Preuvely */
+
+// MARK: - Common
+"app_name" = "Preuvely";
+"common_cancel" = "Annuler";
+"common_done" = "Terminé";
+"common_save" = "Enregistrer";
+"common_delete" = "Supprimer";
+"common_edit" = "Modifier";
+"common_submit" = "Envoyer";
+"common_loading" = "Chargement...";
+"common_error" = "Erreur";
+"common_retry" = "Réessayer";
+"common_success" = "Succès";
+"common_search" = "Rechercher";
+"common_see_all" = "Voir tout";
+"common_no_results" = "Aucun résultat";
+"common_ok" = "OK";
+"common_all" = "Tous";
+"common_optional" = "Optionnel";
+"common_more" = "Plus";
+"common_reset" = "Réinitialiser";
+"common_apply" = "Appliquer";
+"common_verified" = "Vérifié";
+"common_try_again" = "Réessayer";
+"common_oops" = "Oups !";
+
+// MARK: - Onboarding
+"onboarding_page1_title" = "L'appli #1 des avis en Algérie";
+"onboarding_page1_subtitle" = "Trouvez des boutiques fiables et lisez les avis d'acheteurs algériens";
+"onboarding_page2_title" = "Des avis avec preuves";
+"onboarding_page2_subtitle" = "Des avis vérifiés pour des achats en toute sécurité";
+"onboarding_page3_title" = "Fait pour l'Algérie";
+"onboarding_page3_subtitle" = "Soutenir les commerces locaux et protéger les consommateurs algériens";
+"onboarding_get_started" = "Commencer";
+"onboarding_continue" = "Continuer";
+"onboarding_skip" = "Passer";
+
+// MARK: - Tabs
+"tab_home" = "Accueil";
+"tab_search" = "Recherche";
+"tab_add" = "Ajouter";
+"tab_profile" = "Profil";
+"tab_account" = "Compte";
+
+// MARK: - Home
+"home_tagline" = "La confiance par la preuve";
+"home_categories" = "Catégories";
+"home_trending" = "Tendances de la semaine";
+"home_top_rated" = "Les mieux notés";
+"home_top_reviewed" = "Les plus commentés";
+"home_search_placeholder" = "Rechercher une boutique...";
+"home_all_categories" = "Toutes les catégories";
+"home_discover_trusted_stores" = "Découvrez des boutiques fiables";
+"home_verified_reviews_trust" = "Des avis vérifiés en qui vous pouvez avoir confiance";
+"home_new_stores_week" = "Nouvelles boutiques cette semaine";
+"home_check_latest" = "Découvrez les derniers ajouts";
+"home_high_risk_protection" = "Protection haut risque";
+"home_proof_verified_reviews" = "Avis vérifiés par preuves pour votre sécurité";
+"home_claim_your_store" = "Revendiquez votre boutique";
+"home_get_verified_respond" = "Obtenez la vérification et répondez aux avis";
+"home_reviews_count" = "%d avis";
+"home_discover_stores" = "Découvrez des boutiques fiables en Algérie";
+"home_learn_more" = "En savoir plus";
+
+// MARK: - Search
+"search_placeholder" = "Rechercher des boutiques...";
+"search_filters" = "Filtres";
+"search_category" = "Catégorie";
+"search_verified_only" = "Vérifiés uniquement";
+"search_sort_by" = "Trier par";
+"search_best_rated" = "Les mieux notés";
+"search_most_reviewed" = "Les plus commentés";
+"search_newest" = "Les plus récents";
+"search_no_store_found" = "Aucune boutique trouvée";
+"search_add_this_store" = "Ajouter cette boutique";
+"search_searching" = "Recherche en cours...";
+"search_adjust_or_add" = "Essayez d'ajuster votre recherche ou ajoutez cette boutique";
+"search_for_stores" = "Rechercher des boutiques";
+"search_find_by_name" = "Trouvez des boutiques par nom, identifiant ou description";
+"search_verified_only_desc" = "Afficher uniquement les boutiques vérifiées";
+"search_hint_title" = "Rechercher par";
+"search_hint_name" = "Nom de la boutique";
+"search_hint_tiktok" = "Nom d'utilisateur TikTok";
+"search_hint_instagram" = "Identifiant Instagram";
+"search_hint_facebook" = "Page Facebook";
+"search_hint_whatsapp" = "Numero WhatsApp";
+"search_hint_phone" = "Numero de telephone";
+"search_hint_link" = "Site web ou lien";
+
+// MARK: - Store
+"store_verified" = "Vérifié";
+"store_reviews" = "Avis";
+"store_rating" = "Note";
+"store_write_review" = "Rédiger un avis";
+"store_claim" = "Revendiquer cette boutique";
+"store_report" = "Signaler la boutique";
+"store_links" = "Liens";
+"store_contact" = "Contact";
+"store_rating_breakdown" = "Répartition des notes";
+"store_no_reviews_yet" = "Aucun avis pour le moment";
+"store_be_first_review" = "Soyez le premier à donner votre avis sur cette boutique";
+"store_call" = "Appeler";
+"store_submitted_by" = "Ajouté par";
+"store_submitter_stats" = "%d boutiques ajoutées \u{2022} %d avis";
+
+// MARK: - Review
+"review_your_rating" = "Votre note";
+"review_write_comment" = "Votre avis";
+"review_comment_placeholder" = "Partagez votre expérience avec cette boutique...";
+"review_proof_required" = "Preuve requise";
+"review_upload_proof" = "Téléverser une preuve";
+"review_proof_pending" = "En attente de validation";
+"review_proof_approved" = "Approuvée";
+"review_proof_rejected" = "Refusée";
+"review_submit" = "Publier l'avis";
+"review_has_proof" = "Achat vérifié";
+"review_merchant_reply" = "Réponse du vendeur";
+"review_success_title" = "Succès";
+"review_success_message" = "Votre avis a été soumis avec succès !";
+"review_success_message_proof" = "Votre avis a été soumis. Veuillez téléverser une preuve pour la vérification.";
+"review_min_characters" = "Minimum 8 caractères requis";
+"review_high_risk_explanation" = "Il s'agit d'une catégorie à haut risque. Veuillez téléverser une preuve de votre transaction (capture d'écran, reçu, etc.)";
+"review_rating_1" = "Terrible";
+"review_rating_2" = "Mauvais";
+"review_rating_3" = "Moyen";
+"review_rating_4" = "Bon";
+"review_rating_5" = "Excellent";
+"review_submitting" = "Envoi en cours...";
+"review_thank_you_title" = "Merci !";
+"review_thank_you_message" = "Votre avis aide les autres à prendre de meilleures décisions";
+"review_already_exists" = "Vous avez déjà donné votre avis sur cette boutique";
+"auth_required_review" = "Veuillez vous connecter pour rédiger un avis";
+"review_add_proof" = "Ajouter une preuve";
+"review_proof_boost_message" = "Téléversez une capture d'écran ou un reçu pour vérifier votre achat et renforcer la crédibilité de votre avis";
+"review_proof_verified" = "Achat vérifié";
+"you_already_reviewed" = "Vous avez déjà donné votre avis sur cette boutique";
+"load_more_reviews" = "Charger plus d'avis";
+
+// MARK: - Add Store
+"add_store_title" = "Ajouter une boutique";
+"add_store_name" = "Nom de la boutique";
+"add_store_platform" = "Plateforme";
+"add_store_link" = "Lien / Identifiant";
+"add_store_whatsapp" = "WhatsApp";
+"add_store_phone" = "Téléphone";
+"add_store_categories" = "Catégories";
+"add_store_city" = "Ville";
+"add_store_submit" = "Ajouter la boutique";
+"add_store_success" = "Boutique ajoutée avec succès !";
+"add_store_to_preuvely" = "Ajoutez votre boutique sur Preuvely";
+"add_store_help_discover" = "Aidez les autres à découvrir votre entreprise et renforcez la confiance avec les avis.";
+"add_store_name_placeholder" = "Nom de votre boutique";
+"add_store_select_categories" = "Sélectionner des catégories";
+"add_store_city_placeholder" = "ex: Alger";
+"add_store_enter_link" = "Entrez le lien ou l'identifiant";
+"add_store_added_title" = "Boutique ajoutée !";
+"add_store_added_message" = "Votre boutique a été ajoutée avec succès. Elle sera visible par tous.";
+"add_store_view_store" = "Voir la boutique";
+"add_store_add_another" = "Ajouter une autre";
+"add_store_high_risk" = "Haut risque";
+"add_store_pending_review" = "Votre soumission est en attente de vérification. Notre équipe la vérifiera et la publiera bientôt.";
+"add_store_review_notice_title" = "En attente de vérification";
+"add_store_review_notice_message" = "Toutes les soumissions de boutiques sont vérifiées par notre équipe avant publication pour garantir la qualité.";
+"add_store_logo" = "Logo de la boutique";
+"add_store_add_logo" = "Ajouter un logo";
+"add_store_logo_hint" = "Ajoutez un logo pour faire ressortir votre boutique";
+"add_store_error_generic" = "Une erreur s'est produite. Veuillez réessayer.";
+
+// MARK: - Duplicate Store
+"duplicate_store_title" = "Boutique existante";
+"duplicate_store_message" = "Une boutique avec un nom ou un identifiant similaire existe déjà sur Preuvely. Voulez-vous la consulter ?";
+"duplicate_store_view_existing" = "Voir la boutique existante";
+
+// MARK: - Admin Dashboard
+"admin_dashboard" = "Tableau de bord";
+"admin_pending_stores" = "Boutiques en attente";
+"admin_pending_reviews" = "Avis en attente";
+"admin_pending_claims" = "Revendications en attente";
+"admin_reports" = "Signalements";
+"admin_statistics" = "Statistiques";
+"admin_total_stores" = "Total boutiques";
+"admin_total_reviews" = "Total avis";
+"admin_total_users" = "Total utilisateurs";
+"admin_approve" = "Approuver";
+"admin_reject" = "Rejeter";
+"admin_view_details" = "Voir détails";
+"admin_no_pending" = "Aucun élément en attente";
+"admin_submitted_by" = "Soumis par";
+"admin_submitted_on" = "Soumis le";
+"admin_manage_desc" = "Gérer les boutiques, avis et revendications";
+
+// MARK: - Auth
+"auth_sign_in" = "Se connecter";
+"auth_sign_up" = "Créer un compte";
+"auth_email" = "Adresse e-mail";
+"auth_password" = "Mot de passe";
+"auth_confirm_password" = "Confirmer le mot de passe";
+"auth_forgot_password" = "Mot de passe oublié ?";
+"auth_or_continue_with" = "ou continuer avec";
+"auth_google" = "Continuer avec Google";
+"auth_apple" = "Continuer avec Apple";
+"auth_verify_email" = "Vérifiez votre adresse e-mail";
+"auth_verify_email_message" = "Veuillez consulter votre boîte de réception et confirmer votre adresse e-mail pour accéder à toutes les fonctionnalités.";
+"auth_resend_email" = "Renvoyer l'e-mail de vérification";
+"auth_no_account" = "Vous n'avez pas de compte ?";
+"auth_have_account" = "Vous avez déjà un compte ?";
+"auth_logout" = "Se déconnecter";
+"auth_name" = "Nom";
+"auth_name_placeholder" = "Votre nom complet";
+"auth_email_placeholder" = "vous@exemple.com";
+"auth_password_placeholder" = "Min. 8 caractères";
+"auth_password_min" = "Min. 8 caractères";
+"auth_passwords_mismatch" = "Les mots de passe ne correspondent pas";
+"auth_trust_through_proof" = "La confiance par la preuve";
+"auth_sign_in_to_review" = "Connectez-vous pour partager votre avis";
+"auth_sign_in_to_review_subtitle" = "Vos retours aident les autres a prendre des decisions eclairees";
+"auth_reviewing" = "Vous evaluez";
+"auth_sign_in_with_email" = "Se connecter par e-mail";
+"auth_terms_agreement" = "En vous connectant, vous acceptez nos Conditions d'utilisation et notre Politique de confidentialite";
+
+// Social Login Not Available
+"social_login_not_available_title" = "Bientot disponible";
+"social_login_not_available_message" = "La connexion sociale n'est pas encore disponible. Veuillez utiliser la connexion par e-mail.";
+
+// MARK: - Profile
+"profile_guest" = "Invité";
+"profile_my_reviews" = "Mes avis";
+"profile_my_claims" = "Mes revendications";
+"profile_settings" = "Paramètres";
+"profile_language" = "Langue";
+"profile_support" = "Assistance";
+"profile_terms" = "Conditions d'utilisation";
+"profile_privacy" = "Politique de confidentialité";
+"profile_about" = "À propos";
+"profile_sign_in_to_access" = "Connectez-vous pour rédiger des avis, revendiquer des boutiques, et plus encore";
+"profile_no_reviews_yet" = "Vous n'avez pas encore rédigé d'avis";
+"profile_no_claims_yet" = "Vous n'avez pas encore revendiqué de boutiques";
+"profile_see_all_reviews" = "Voir tous les avis";
+"profile_follow_us" = "Suivez-nous";
+"profile_edit" = "Modifier le profil";
+"profile_edit_hint" = "· Modifier";
+"profile_tap_to_change_photo" = "Appuyez pour changer la photo";
+"profile_name_required" = "Le nom est requis";
+"profile_email_cannot_change" = "L'e-mail ne peut pas être modifié";
+"profile_phone_placeholder" = "+213 555 123 456";
+
+// MARK: - Claims
+"claim_title" = "Revendiquer la boutique";
+"claim_owner_name" = "Nom du propriétaire";
+"claim_phone" = "Numéro de téléphone";
+"claim_note" = "Informations complémentaires";
+"claim_submit" = "Soumettre la demande";
+"claim_pending" = "En attente";
+"claim_approved" = "Approuvée";
+"claim_rejected" = "Refusée";
+"claim_submitted_title" = "Demande soumise";
+"claim_submitted_message" = "Votre demande a été soumise et sera examinée par notre équipe.";
+"claim_store_name" = "Revendiquer %@";
+"claim_owner_benefits" = "Si vous êtes le propriétaire de cette boutique, vous pouvez la revendiquer pour obtenir le statut vérifié et répondre aux avis.";
+"claim_owner_name_placeholder" = "Votre nom complet";
+"claim_note_placeholder" = "Toute information supplémentaire pour vérifier votre propriété...";
+"claim_whatsapp" = "Numéro WhatsApp";
+"claim_whatsapp_placeholder" = "+213 5XX XXX XXX";
+"claim_success_title" = "Demande soumise !";
+"claim_success_message" = "Nous vous contacterons via WhatsApp dans les 24 heures pour vérifier votre propriété.";
+"claim_got_it" = "Compris";
+
+// MARK: - Report
+"report_title" = "Signaler";
+"report_reason" = "Motif";
+"report_note" = "Détails complémentaires";
+"report_submit" = "Envoyer le signalement";
+"report_success" = "Signalement envoyé avec succès";
+"report_submitted_title" = "Signalement envoyé";
+"report_submitted_message" = "Merci pour votre signalement. Notre équipe l'examinera prochainement.";
+"report_thank_you_message" = "Merci de contribuer à la sécurité de notre communauté";
+"report_reporting" = "Signalement";
+"report_note_placeholder" = "Fournissez plus de détails sur votre signalement...";
+
+// MARK: - Report Reasons
+"report_reason_spam" = "Spam";
+"report_reason_abuse" = "Abus";
+"report_reason_fake" = "Contenu faux ou trompeur";
+"report_reason_other" = "Autre";
+
+// MARK: - Notifications
+"notification_title" = "Notifications";
+"notification_empty_title" = "Aucune notification";
+"notification_empty_message" = "Vous êtes à jour ! Nous vous informerons lorsque quelque chose d'important se produira.";
+"notification_mark_all_read" = "Tout marquer comme lu";
+"notification_mark_read" = "Marquer comme lu";
+"notification_today" = "Aujourd'hui";
+"notification_yesterday" = "Hier";
+"notification_this_week" = "Cette semaine";
+"notification_older" = "Plus ancien";
+
+// Notification Types - Titles
+"notification_review_received_title" = "Nouvel avis";
+"notification_review_approved_title" = "Avis approuvé";
+"notification_review_rejected_title" = "Avis non approuvé";
+"notification_claim_approved_title" = "Revendication approuvée";
+"notification_claim_rejected_title" = "Revendication non approuvée";
+"notification_store_approved_title" = "Boutique publiée";
+"notification_new_reply_title" = "Nouvelle réponse";
+"notification_store_verified_title" = "Boutique vérifiée";
+
+// Notification Types - Messages
+"notification_review_received_message" = "Votre boutique a reçu un avis de %@";
+"notification_review_approved_message" = "Votre avis a été approuvé ! Merci pour votre retour.";
+"notification_review_rejected_message" = "Votre avis n'a pas été approuvé. Veuillez vous assurer qu'il respecte nos directives.";
+"notification_claim_approved_message" = "Votre revendication de boutique a été approuvée ! Vous pouvez maintenant gérer votre boutique.";
+"notification_claim_rejected_message" = "Votre revendication de boutique n'a pas été approuvée. Veuillez fournir une vérification supplémentaire.";
+"notification_store_approved_message" = "Votre boutique a été publiée ! Elle est maintenant visible par tous.";
+"notification_new_reply_message" = "Un propriétaire de boutique a répondu à votre avis.";
+"notification_store_verified_message" = "Votre boutique a été vérifiée ! Vous pouvez maintenant répondre aux avis.";
+
+// MARK: - Category
+"category_no_stores" = "Pas encore de boutiques";
+"category_no_stores_description" = "Il n'y a pas encore de boutiques dans cette catégorie. Soyez le premier à en ajouter une !";
+
+// MARK: - My Stores (Mes boutiques)
+"my_stores_title" = "Mes boutiques";
+"my_stores_empty_title" = "Aucune boutique";
+"my_stores_empty_message" = "Vous ne possédez pas encore de boutiques. Revendiquez une boutique pour la gérer ici.";
+
+// MARK: - Edit Store (Modifier la boutique)
+"edit_store_title" = "Modifier la boutique";
+"edit_store_name" = "Nom de la boutique";
+"edit_store_name_placeholder" = "Entrez le nom de la boutique";
+"edit_store_name_required" = "Le nom de la boutique est requis";
+"edit_store_description" = "Description";
+"edit_store_description_placeholder" = "Décrivez votre boutique...";
+"edit_store_city" = "Ville";
+"edit_store_city_placeholder" = "ex: Alger";
+"edit_store_tap_change_logo" = "Appuyez pour changer le logo";
+"edit_store_choose_photo" = "Choisir une photo";
+"edit_store_take_photo" = "Prendre une photo";
+"edit_store_choose_library" = "Choisir dans la bibliothèque";
+"edit_store_links" = "Liens sociaux";
+"edit_store_links_subtitle" = "Gérez vos liens de réseaux sociaux et site web";
+
+// MARK: - Edit Store Links (Modifier les liens)
+"edit_store_links_title" = "Liens sociaux";
+"edit_store_links_header" = "Ajoutez vos liens";
+"edit_store_links_description" = "Ajoutez votre site web et vos liens de réseaux sociaux pour que les clients puissent vous trouver.";
+
+// MARK: - User Profile (Profil utilisateur)
+"user_profile_title" = "Profil";
+"user_profile_member_since" = "Membre depuis %@";
+"user_profile_stores_submitted" = "Boutiques";
+"user_profile_reviews_written" = "Avis";
+"user_profile_stores" = "Boutiques";
+"user_profile_reviews" = "Avis";
+"user_profile_no_stores_title" = "Aucune boutique";
+"user_profile_no_stores_message" = "Cet utilisateur n'a pas encore soumis de boutiques.";
+"user_profile_no_reviews_title" = "Aucun avis";
+"user_profile_no_reviews_message" = "Cet utilisateur n'a pas encore écrit d'avis.";
+
+// MARK: - Shake Feedback
+"shake_feedback_title" = "Envoyer un commentaire";
+"shake_feedback_subtitle" = "Secouez votre telephone pour nous envoyer un commentaire";
+"shake_feedback_what_type" = "Quel type de commentaire ?";
+"shake_feedback_bug" = "Signaler un bug";
+"shake_feedback_suggestion" = "Suggestion";
+"shake_feedback_content" = "Probleme de contenu";
+"shake_feedback_other" = "Autre";
+"shake_feedback_describe" = "Decrivez votre commentaire";
+"shake_feedback_placeholder" = "Dites-nous ce qui s'est passe ou ce qui pourrait etre ameliore...";
+"shake_feedback_include_screenshot" = "Inclure une capture d'ecran";
+"shake_feedback_screenshot_hint" = "Nous aide a mieux comprendre le probleme";
+"shake_feedback_send" = "Envoyer";
+"shake_feedback_sending" = "Envoi en cours...";
+"shake_feedback_done" = "Termine";
+"shake_feedback_thanks_title" = "Merci !";
+"shake_feedback_thanks_message" = "Vos commentaires nous aident a ameliorer Preuvely pour tous.";
+"shake_feedback_close" = "Fermer";
+
+// MARK: - Shake Contact
+"shake_contact_title" = "Besoin d'aide ?";
+"shake_contact_subtitle" = "Contactez-nous directement sur WhatsApp";
+"shake_contact_whatsapp" = "Discuter sur WhatsApp";
+"shake_contact_close" = "Fermer";
+"shake_contact_message" = "Bonjour ! J'ai besoin d'aide avec l'application Preuvely.";

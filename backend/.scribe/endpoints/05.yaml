@@ -1,0 +1,166 @@
+name: 'Store Claims'
+description: |-
+
+  APIs for claiming store ownership
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/v1/stores/{store_id}/claim'
+    metadata:
+      custom: []
+      groupName: 'Store Claims'
+      groupDescription: |-
+
+        APIs for claiming store ownership
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Submit a claim request'
+      description: 'Request ownership of a store. The claim will be reviewed by admin.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      store_id:
+        custom: []
+        name: store_id
+        description: 'The ID of the store.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      store:
+        custom: []
+        name: store
+        description: 'The store ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      store_id: 1
+      store: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      requester_name:
+        custom: []
+        name: requester_name
+        description: 'Your full name.'
+        required: true
+        example: 'John Doe'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      requester_phone:
+        custom: []
+        name: requester_phone
+        description: 'Your phone number.'
+        required: true
+        example: '+213555123456'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      note:
+        custom: []
+        name: note
+        description: 'Additional note for the admin.'
+        required: false
+        example: 'I am the owner...'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      requester_name: 'John Doe'
+      requester_phone: '+213555123456'
+      note: 'I am the owner...'
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 201
+        content: |-
+          {
+            "message": "Claim request submitted successfully",
+            "data": {"id": 1, "status": "pending"}
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 422
+        content: '{"message": "You have already submitted a pending claim for this store"}'
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/v1/claims
+    metadata:
+      custom: []
+      groupName: 'Store Claims'
+      groupDescription: |-
+
+        APIs for claiming store ownership
+      subgroup: ''
+      subgroupDescription: ''
+      title: "Get user's claim requests"
+      description: 'Get all claim requests submitted by the authenticated user.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "data": [
+              {"id": 1, "store_id": 5, "status": "pending", "created_at": "2024-01-01T00:00:00Z"}
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

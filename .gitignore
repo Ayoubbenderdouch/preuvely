@@ -1,0 +1,41 @@
+# OS files
+.DS_Store
+*.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# iOS
+ios/Preuvely/Preuvely.xcodeproj/project.xcworkspace/xcuserdata/
+ios/Preuvely/Preuvely.xcodeproj/xcuserdata/
+ios/*.xcuserstate
+ios/DerivedData/
+
+# Android
+android/.gradle/
+android/app/build/
+android/build/
+android/local.properties
+android/*.iml
+android/.idea/
+
+# Node
+node_modules/
+
+# Laravel (handled by backend/.gitignore)
+backend/vendor/
+backend/node_modules/
+backend/.env
+backend/storage/*.key
+backend/public/storage
+backend/public/hot
+backend/public/build

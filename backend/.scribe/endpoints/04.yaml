@@ -1,0 +1,182 @@
+name: 'Social Authentication'
+description: |-
+
+  APIs for OAuth social login (Google, Apple)
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/v1/auth/social/{provider}/redirect'
+    metadata:
+      custom: []
+      groupName: 'Social Authentication'
+      groupDescription: |-
+
+        APIs for OAuth social login (Google, Apple)
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get OAuth redirect URL'
+      description: "Returns the OAuth provider's authorization URL."
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      provider:
+        custom: []
+        name: provider
+        description: 'The OAuth provider (google or apple).'
+        required: true
+        example: google
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      provider: google
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"url": "https://accounts.google.com/o/oauth2/auth?..."}'
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 400
+        content: '{"message": "Unsupported provider: facebook"}'
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/v1/auth/social/{provider}/callback'
+    metadata:
+      custom: []
+      groupName: 'Social Authentication'
+      groupDescription: |-
+
+        APIs for OAuth social login (Google, Apple)
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Handle OAuth callback (GET)'
+      description: 'Handles the OAuth callback for providers that use GET (like Google).'
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      provider:
+        custom: []
+        name: provider
+        description: 'The OAuth provider.'
+        required: true
+        example: google
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      provider: google
+    queryParameters:
+      code:
+        custom: []
+        name: code
+        description: 'The authorization code.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanQueryParameters:
+      code: architecto
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"message": "Login successful", "user": {...}, "token": "...", "is_new_user": false}'
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/v1/auth/social/{provider}/callback'
+    metadata:
+      custom: []
+      groupName: 'Social Authentication'
+      groupDescription: |-
+
+        APIs for OAuth social login (Google, Apple)
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Handle OAuth callback (POST)'
+      description: 'Handles OAuth callback via POST (Apple sends POST requests).'
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      provider:
+        custom: []
+        name: provider
+        description: 'The OAuth provider.'
+        required: true
+        example: apple
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      provider: apple
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      code:
+        custom: []
+        name: code
+        description: 'The authorization code.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      code: architecto
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null

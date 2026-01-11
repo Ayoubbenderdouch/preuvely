@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">بريوفلي</string>
+
+    <!-- Tab Bar -->
+    <string name="tab_home">الرئيسية</string>
+    <string name="tab_search">البحث</string>
+    <string name="tab_add">إضافة</string>
+    <string name="tab_profile">الحساب</string>
+
+    <!-- Home -->
+    <string name="home_categories">الفئات</string>
+    <string name="home_see_all">عرض الكل</string>
+    <string name="home_top_reviewed">الأكثر تقييماً</string>
+    <string name="home_search_placeholder">ابحث عن متجر…</string>
+
+    <!-- Search -->
+    <string name="search_title">البحث</string>
+    <string name="search_placeholder">ابحث عن متجر…</string>
+    <string name="search_filters">التصفية</string>
+    <string name="search_all_categories">جميع الفئات</string>
+    <string name="search_verified_only">الموثقة فقط</string>
+    <string name="search_verified_only_desc">عرض المتاجر الموثقة فقط</string>
+    <string name="search_sort_by">ترتيب حسب</string>
+    <string name="search_sort_best_rated">الأعلى تقييماً</string>
+    <string name="search_sort_most_reviewed">الأكثر مراجعات</string>
+    <string name="search_sort_newest">الأحدث</string>
+    <string name="search_no_results">لم يتم العثور على متاجر</string>
+    <string name="search_try_different">جرب بحثاً مختلفاً أو أضف هذا المتجر</string>
+    <string name="search_add_store">أضف هذا المتجر</string>
+    <string name="search_apply">تطبيق</string>
+    <string name="search_reset">إعادة تعيين</string>
+    <string name="search_initial_title">البحث عن متاجر</string>
+    <string name="search_initial_message">البحث بالاسم، انستغرام، تيك توك أو رقم الهاتف</string>
+    <string name="search_hint_name">الاسم</string>
+    <string name="search_hint_phone">الهاتف</string>
+    <string name="search_hint_website">الموقع</string>
+    <string name="search_category">الفئة</string>
+
+    <!-- Store Details -->
+    <string name="store_verified">موثق</string>
+    <string name="store_reviews">المراجعات</string>
+    <string name="store_rating_breakdown">توزيع التقييمات</string>
+    <string name="store_write_review">اكتب مراجعة</string>
+    <string name="store_claim">المطالبة بالمتجر</string>
+    <string name="store_report">إبلاغ</string>
+    <string name="store_no_reviews">لا توجد مراجعات</string>
+    <string name="store_be_first">كن أول من يراجع هذا المتجر</string>
+    <string name="store_load_more">تحميل المزيد</string>
+
+    <!-- Write Review -->
+    <string name="review_title">اكتب مراجعة</string>
+    <string name="review_rating">تقييمك</string>
+    <string name="review_comment">مراجعتك</string>
+    <string name="review_comment_hint">شارك تجربتك مع هذا المتجر…</string>
+    <string name="review_proof">رفع إثبات</string>
+    <string name="review_proof_required">الإثبات مطلوب لهذه الفئة</string>
+    <string name="review_proof_optional">الإثبات اختياري لكنه موصى به</string>
+    <string name="review_submit">إرسال المراجعة</string>
+    <string name="review_success">تم إرسال المراجعة!</string>
+    <string name="review_success_message">شكراً لمشاركتك</string>
+    <string name="review_min_chars">الحد الأدنى 8 أحرف</string>
+
+    <!-- Add Store -->
+    <string name="add_store_title">أضف إلى بريوفلي</string>
+    <string name="add_store_subtitle">ساعد الآخرين على اكتشاف متاجر موثوقة</string>
+    <string name="add_store_name">اسم المتجر</string>
+    <string name="add_store_name_placeholder">أدخل اسم المتجر</string>
+    <string name="add_store_name_required">اسم المتجر *</string>
+    <string name="add_store_platform">المنصة</string>
+    <string name="add_store_link">أدخل الرابط أو المعرف</string>
+    <string name="add_store_whatsapp">واتساب</string>
+    <string name="add_store_categories">الفئات</string>
+    <string name="add_store_logo">شعار المتجر</string>
+    <string name="add_store_submit">إضافة المتجر</string>
+    <string name="add_store_pending">سيتم مراجعة متجرك قبل نشره</string>
+    <string name="add_store_duplicate_title">المتجر موجود</string>
+    <string name="add_store_duplicate_message">هل تقصد هذا المتجر؟</string>
+    <string name="add_store_view_existing">عرض المتجر الموجود</string>
+    <string name="add_store_required">مطلوب</string>
+    <string name="add_store_optional">اختياري</string>
+    <string name="add_store_review_notice_title">المراجعة مطلوبة</string>
+    <string name="add_store_review_notice_message">سيتم مراجعة متجرك قبل نشره</string>
+
+    <!-- Profile -->
+    <string name="profile_guest">زائر</string>
+    <string name="profile_sign_in_prompt">سجل دخولك للوصول إلى جميع الميزات</string>
+    <string name="profile_sign_in">تسجيل الدخول</string>
+    <string name="profile_sign_out">تسجيل الخروج</string>
+    <string name="profile_edit">تعديل الملف الشخصي</string>
+    <string name="profile_my_reviews">مراجعاتي</string>
+    <string name="profile_my_claims">مطالباتي</string>
+    <string name="profile_my_stores">متاجري</string>
+    <string name="profile_settings">الإعدادات</string>
+    <string name="profile_language">اللغة</string>
+    <string name="profile_support">الدعم</string>
+    <string name="profile_terms">شروط الخدمة</string>
+    <string name="profile_privacy">سياسة الخصوصية</string>
+    <string name="profile_verify_email">تأكيد البريد الإلكتروني</string>
+    <string name="profile_verify_email_message">يرجى تأكيد بريدك الإلكتروني للوصول إلى جميع الميزات</string>
+    <string name="profile_resend_email">إعادة إرسال البريد</string>
+
+    <!-- Auth -->
+    <string name="auth_login">تسجيل الدخول</string>
+    <string name="auth_register">إنشاء حساب</string>
+    <string name="auth_email">البريد الإلكتروني</string>
+    <string name="auth_password">كلمة المرور</string>
+    <string name="auth_confirm_password">تأكيد كلمة المرور</string>
+    <string name="auth_name">الاسم الكامل</string>
+    <string name="auth_phone">الهاتف (اختياري)</string>
+    <string name="auth_forgot_password">نسيت كلمة المرور؟</string>
+    <string name="auth_or_continue">أو تابع مع</string>
+    <string name="auth_google">تسجيل بحساب Google</string>
+    <string name="auth_apple">تسجيل بحساب Apple</string>
+    <string name="auth_no_account">ليس لديك حساب؟</string>
+    <string name="auth_have_account">لديك حساب بالفعل؟</string>
+    <string name="auth_passwords_not_match">كلمات المرور غير متطابقة</string>
+
+    <!-- Notifications -->
+    <string name="notifications_title">الإشعارات</string>
+    <string name="notifications_empty">لا توجد إشعارات</string>
+    <string name="notifications_empty_message">أنت على اطلاع!</string>
+    <string name="notifications_mark_all_read">تحديد الكل كمقروء</string>
+    <string name="notifications_today">اليوم</string>
+    <string name="notifications_yesterday">أمس</string>
+    <string name="notifications_this_week">هذا الأسبوع</string>
+    <string name="notifications_older">أقدم</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_skip">تخطي</string>
+    <string name="onboarding_continue">متابعة</string>
+    <string name="onboarding_get_started">ابدأ الآن</string>
+    <string name="onboarding_1_title">ابحث عن متاجر موثوقة</string>
+    <string name="onboarding_1_subtitle">ابحث واكتشف متاجر موثقة مع مراجعات حقيقية</string>
+    <string name="onboarding_2_title">شارك تجربتك</string>
+    <string name="onboarding_2_subtitle">اترك مراجعات موثقة وساعد الآخرين</string>
+    <string name="onboarding_3_title">إثبات موثق</string>
+    <string name="onboarding_3_subtitle">ارفع إثبات الشراء لمراجعات موثقة</string>
+
+    <!-- Claim Store -->
+    <string name="claim_title">المطالبة بالمتجر</string>
+    <string name="claim_owner_name">اسمك</string>
+    <string name="claim_whatsapp">رقم واتساب</string>
+    <string name="claim_note">ملاحظات إضافية (اختياري)</string>
+    <string name="claim_submit">إرسال المطالبة</string>
+    <string name="claim_success">تم إرسال المطالبة!</string>
+    <string name="claim_success_message">سنراجع طلبك ونتواصل معك</string>
+
+    <!-- Report -->
+    <string name="report_title">إبلاغ</string>
+    <string name="report_reason">اختر السبب</string>
+    <string name="report_spam">محتوى مزعج</string>
+    <string name="report_abuse">محتوى مسيء</string>
+    <string name="report_fake">مراجعة مزيفة</string>
+    <string name="report_other">أخرى</string>
+    <string name="report_note">تفاصيل إضافية (اختياري)</string>
+    <string name="report_submit">إرسال البلاغ</string>
+    <string name="report_success">تم إرسال البلاغ</string>
+    <string name="report_success_message">شكراً لمساعدتنا في الحفاظ على منصتنا آمنة</string>
+
+    <!-- My Stores -->
+    <string name="my_stores_title">متاجري</string>
+    <string name="my_stores_empty">لم تضف أي متاجر بعد</string>
+    <string name="my_stores_empty_message">ابدأ بإضافة متجرك الأول</string>
+    <string name="edit_store_title">تعديل المتجر</string>
+    <string name="edit_store_name">اسم المتجر</string>
+    <string name="edit_store_description">الوصف</string>
+    <string name="edit_store_city">المدينة</string>
+    <string name="edit_store_links">روابط التواصل</string>
+    <string name="edit_store_save">حفظ التغييرات</string>
+    <string name="edit_store_logo">تغيير الشعار</string>
+
+    <!-- Common -->
+    <string name="loading">جاري التحميل…</string>
+    <string name="error">خطأ</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="cancel">إلغاء</string>
+    <string name="done">تم</string>
+    <string name="save">حفظ</string>
+    <string name="delete">حذف</string>
+    <string name="confirm">تأكيد</string>
+    <string name="success">تم بنجاح</string>
+    <string name="review">مراجعة</string>
+    <string name="reviews_plural">مراجعات</string>
+
+    <!-- Languages -->
+    <string name="select_language">اختر اللغة</string>
+    <string name="language_english">English</string>
+    <string name="language_french">Français</string>
+    <string name="language_arabic">العربية</string>
+    <string name="language_changed">تم تغيير اللغة</string>
+</resources>

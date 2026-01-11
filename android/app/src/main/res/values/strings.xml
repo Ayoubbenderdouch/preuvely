@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Preuvely</string>
+
+    <!-- Tab Bar -->
+    <string name="tab_home">Home</string>
+    <string name="tab_search">Search</string>
+    <string name="tab_add">Add</string>
+    <string name="tab_profile">Profile</string>
+
+    <!-- Home -->
+    <string name="home_categories">Categories</string>
+    <string name="home_see_all">See All</string>
+    <string name="home_top_reviewed">Top Reviewed</string>
+    <string name="home_search_placeholder">Search for stores...</string>
+
+    <!-- Search -->
+    <string name="search_title">Search</string>
+    <string name="search_placeholder">Search for stores…</string>
+    <string name="search_filters">Filters</string>
+    <string name="search_all_categories">All Categories</string>
+    <string name="search_verified_only">Verified Only</string>
+    <string name="search_verified_only_desc">Show only verified stores</string>
+    <string name="search_sort_by">Sort By</string>
+    <string name="search_sort_best_rated">Best Rated</string>
+    <string name="search_sort_most_reviewed">Most Reviewed</string>
+    <string name="search_sort_newest">Newest</string>
+    <string name="search_no_results">No stores found</string>
+    <string name="search_try_different">Try a different search term or add this store</string>
+    <string name="search_add_store">Add this store</string>
+    <string name="search_apply">Apply</string>
+    <string name="search_reset">Reset</string>
+    <string name="search_initial_title">Search for stores</string>
+    <string name="search_initial_message">Find stores by name, Instagram, TikTok, or phone number</string>
+    <string name="search_hint_name">Name</string>
+    <string name="search_hint_phone">Phone</string>
+    <string name="search_hint_website">Website</string>
+    <string name="search_category">Category</string>
+
+    <!-- Store Details -->
+    <string name="store_verified">Verified</string>
+    <string name="store_reviews">Reviews</string>
+    <string name="store_rating_breakdown">Rating Breakdown</string>
+    <string name="store_write_review">Write Review</string>
+    <string name="store_claim">Claim this store</string>
+    <string name="store_report">Report</string>
+    <string name="store_no_reviews">No reviews yet</string>
+    <string name="store_be_first">Be the first to review this store</string>
+    <string name="store_load_more">Load More</string>
+
+    <!-- Write Review -->
+    <string name="review_title">Write Review</string>
+    <string name="review_rating">Your Rating</string>
+    <string name="review_comment">Your Review</string>
+    <string name="review_comment_hint">Share your experience with this store...</string>
+    <string name="review_proof">Upload Proof</string>
+    <string name="review_proof_required">Proof required for this category</string>
+    <string name="review_proof_optional">Proof is optional but recommended</string>
+    <string name="review_submit">Submit Review</string>
+    <string name="review_success">Review Submitted!</string>
+    <string name="review_success_message">Thank you for your feedback</string>
+    <string name="review_min_chars">Minimum 8 characters required</string>
+
+    <!-- Add Store -->
+    <string name="add_store_title">Add to Preuvely</string>
+    <string name="add_store_subtitle">Help others discover trustworthy stores</string>
+    <string name="add_store_name">Store Name</string>
+    <string name="add_store_name_placeholder">Enter store name</string>
+    <string name="add_store_name_required">Store Name *</string>
+    <string name="add_store_platform">Platform</string>
+    <string name="add_store_link">Enter link or handle</string>
+    <string name="add_store_whatsapp">WhatsApp</string>
+    <string name="add_store_categories">Categories</string>
+    <string name="add_store_logo">Store Logo</string>
+    <string name="add_store_submit">Add Store</string>
+    <string name="add_store_pending">Your store will be reviewed before appearing publicly</string>
+    <string name="add_store_duplicate_title">Store Already Exists</string>
+    <string name="add_store_duplicate_message">Did you mean this store?</string>
+    <string name="add_store_view_existing">View Existing Store</string>
+    <string name="add_store_required">Required</string>
+    <string name="add_store_optional">Optional</string>
+    <string name="add_store_review_notice_title">Review Required</string>
+    <string name="add_store_review_notice_message">Your store will be reviewed before appearing publicly</string>
+
+    <!-- Profile -->
+    <string name="profile_guest">Guest</string>
+    <string name="profile_sign_in_prompt">Sign in to access all features</string>
+    <string name="profile_sign_in">Sign In</string>
+    <string name="profile_sign_out">Sign Out</string>
+    <string name="profile_edit">Edit Profile</string>
+    <string name="profile_my_reviews">My Reviews</string>
+    <string name="profile_my_claims">My Claims</string>
+    <string name="profile_my_stores">My Stores</string>
+    <string name="profile_settings">Settings</string>
+    <string name="profile_language">Language</string>
+    <string name="profile_support">Support</string>
+    <string name="profile_terms">Terms of Service</string>
+    <string name="profile_privacy">Privacy Policy</string>
+    <string name="profile_verify_email">Verify Your Email</string>
+    <string name="profile_verify_email_message">Please verify your email to access all features</string>
+    <string name="profile_resend_email">Resend Email</string>
+
+    <!-- Auth -->
+    <string name="auth_login">Sign In</string>
+    <string name="auth_register">Sign Up</string>
+    <string name="auth_email">Email</string>
+    <string name="auth_password">Password</string>
+    <string name="auth_confirm_password">Confirm Password</string>
+    <string name="auth_name">Full Name</string>
+    <string name="auth_phone">Phone (optional)</string>
+    <string name="auth_forgot_password">Forgot Password?</string>
+    <string name="auth_or_continue">or continue with</string>
+    <string name="auth_google">Sign in with Google</string>
+    <string name="auth_apple">Sign in with Apple</string>
+    <string name="auth_no_account">Don\'t have an account?</string>
+    <string name="auth_have_account">Already have an account?</string>
+    <string name="auth_passwords_not_match">Passwords do not match</string>
+
+    <!-- Notifications -->
+    <string name="notifications_title">Notifications</string>
+    <string name="notifications_empty">No notifications</string>
+    <string name="notifications_empty_message">You\'re all caught up!</string>
+    <string name="notifications_mark_all_read">Mark all as read</string>
+    <string name="notifications_today">Today</string>
+    <string name="notifications_yesterday">Yesterday</string>
+    <string name="notifications_this_week">This Week</string>
+    <string name="notifications_older">Older</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_continue">Continue</string>
+    <string name="onboarding_get_started">Get Started</string>
+    <string name="onboarding_1_title">Find Trustworthy Stores</string>
+    <string name="onboarding_1_subtitle">Search and discover verified stores with real reviews</string>
+    <string name="onboarding_2_title">Share Your Experience</string>
+    <string name="onboarding_2_subtitle">Leave verified reviews and help others make better decisions</string>
+    <string name="onboarding_3_title">Verified Proof</string>
+    <string name="onboarding_3_subtitle">Upload proof of purchase for verified reviews</string>
+
+    <!-- Claim Store -->
+    <string name="claim_title">Claim This Store</string>
+    <string name="claim_owner_name">Your Name</string>
+    <string name="claim_whatsapp">WhatsApp Number</string>
+    <string name="claim_note">Additional Notes (optional)</string>
+    <string name="claim_submit">Submit Claim</string>
+    <string name="claim_success">Claim Submitted!</string>
+    <string name="claim_success_message">We will review your claim and get back to you</string>
+
+    <!-- Report -->
+    <string name="report_title">Report</string>
+    <string name="report_reason">Select a reason</string>
+    <string name="report_spam">Spam</string>
+    <string name="report_abuse">Abusive Content</string>
+    <string name="report_fake">Fake Review</string>
+    <string name="report_other">Other</string>
+    <string name="report_note">Additional details (optional)</string>
+    <string name="report_submit">Submit Report</string>
+    <string name="report_success">Report Submitted</string>
+    <string name="report_success_message">Thank you for helping keep our platform safe</string>
+
+    <!-- My Stores -->
+    <string name="my_stores_title">My Stores</string>
+    <string name="my_stores_empty">You haven\'t added any stores yet</string>
+    <string name="my_stores_empty_message">Start by adding your first store</string>
+    <string name="edit_store_title">Edit Store</string>
+    <string name="edit_store_name">Store Name</string>
+    <string name="edit_store_description">Description</string>
+    <string name="edit_store_city">City</string>
+    <string name="edit_store_links">Social Links</string>
+    <string name="edit_store_save">Save Changes</string>
+    <string name="edit_store_logo">Change Logo</string>
+
+    <!-- Common -->
+    <string name="loading">Loading...</string>
+    <string name="error">Error</string>
+    <string name="retry">Retry</string>
+    <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="confirm">Confirm</string>
+    <string name="success">Success</string>
+    <string name="review">review</string>
+    <string name="reviews_plural">reviews</string>
+
+    <!-- Languages -->
+    <string name="select_language">Select Language</string>
+    <string name="language_english">English</string>
+    <string name="language_french">Français</string>
+    <string name="language_arabic">العربية</string>
+    <string name="language_changed">Language changed</string>
+</resources>
