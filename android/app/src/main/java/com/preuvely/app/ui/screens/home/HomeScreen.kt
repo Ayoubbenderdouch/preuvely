@@ -441,11 +441,12 @@ private fun ModernStoreCard(
         colors = CardDefaults.cardColors(containerColor = CardBackground)
     ) {
         Column {
-            // Image section
+            // Image section with rounded top corners
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp)
+                    .height(120.dp)
+                    .clip(RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp))
                     .background(Gray6),
                 contentAlignment = Alignment.Center
             ) {

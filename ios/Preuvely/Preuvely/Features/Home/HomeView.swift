@@ -327,7 +327,7 @@ struct ModernStoreCard: View {
                     placeholderView
                 }
             }
-            .frame(height: 100)
+            .frame(height: 120)
             .clipped()
 
             // Store Info
