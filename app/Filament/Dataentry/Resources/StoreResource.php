@@ -6,12 +6,14 @@ use App\Filament\Dataentry\Resources\StoreResource\Pages;
 use App\Models\Store;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class StoreResource extends Resource
 {
@@ -72,19 +74,36 @@ class StoreResource extends Resource
                     ->description('Upload the store logo')
                     ->icon('heroicon-o-photo')
                     ->schema([
-                        Forms\Components\FileUpload::make('logo')
-                            ->label('')
-                            ->required()
+                        Forms\Components\FileUpload::make('logo_upload')
+                            ->label('Upload Logo')
                             ->image()
-                            ->disk('public')
-                            ->imageEditor()
+                            ->imageResizeMode('cover')
                             ->imageCropAspectRatio('1:1')
                             ->imageResizeTargetWidth('400')
                             ->imageResizeTargetHeight('400')
-                            ->directory('store-logos')
-                            ->visibility('public')
-                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                            ->maxSize(2048),
+                            ->maxSize(2048)
+                            ->disk('local')
+                            ->directory('temp-logos')
+                            ->visibility('private')
+                            ->dehydrated(false)
+                            ->afterStateUpdated(function ($state, Set $set) {
+                                if ($state instanceof TemporaryUploadedFile) {
+                                    $contents = file_get_contents($state->getRealPath());
+                                    $mimeType = $state->getMimeType();
+                                    $base64 = 'data:' . $mimeType . ';base64,' . base64_encode($contents);
+                                    $set('logo_data', $base64);
+                                }
+                            })
+                            ->required(fn ($record) => $record === null || empty($record->logo_data)),
+                        Forms\Components\Hidden::make('logo_data'),
+                        Forms\Components\Placeholder::make('current_logo')
+                            ->label('Current Logo')
+                            ->content(fn ($record) => $record && $record->logo_data
+                                ? new \Illuminate\Support\HtmlString('<img src="' . $record->logo_data . '" style="max-width: 150px; border-radius: 12px;" />')
+                                : ($record && $record->logo
+                                    ? new \Illuminate\Support\HtmlString('<img src="' . $record->full_logo_url . '" style="max-width: 150px; border-radius: 12px;" />')
+                                    : 'No logo uploaded'))
+                            ->visible(fn ($record) => $record !== null),
                     ]),
 
                 // Social Links
@@ -134,12 +153,11 @@ class StoreResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('logo')
+                Tables\Columns\ImageColumn::make('full_logo_url')
                     ->label('')
-                    ->disk('public')
                     ->circular()
                     ->size(45)
-                    ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->name ?? 'S') . '&color=10b981&background=d1fae5&size=100'),
+                    ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->name ?? 'S') . '&color=007359&background=d1fae5&size=100'),
 
                 Tables\Columns\TextColumn::make('name')
                     ->label('Store')

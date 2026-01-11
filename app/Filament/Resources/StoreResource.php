@@ -12,6 +12,8 @@ use App\Models\Store;
 use App\Services\NotificationService;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\Group;
 use Filament\Infolists\Components\ImageEntry;
@@ -37,14 +39,34 @@ class StoreResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Store Information')
                     ->schema([
-                        Forms\Components\FileUpload::make('logo')
+                        Forms\Components\FileUpload::make('logo_upload')
                             ->label('Store Logo')
                             ->image()
-                            ->disk('public')
-                            ->directory('store-logos')
-                            ->imageEditor()
-                            ->circleCropper()
+                            ->imageResizeMode('cover')
+                            ->imageResizeTargetWidth('400')
+                            ->imageResizeTargetHeight('400')
                             ->maxSize(2048)
+                            ->disk('local')
+                            ->directory('temp-logos')
+                            ->visibility('private')
+                            ->dehydrated(false)
+                            ->afterStateUpdated(function ($state, Set $set) {
+                                if ($state instanceof TemporaryUploadedFile) {
+                                    $contents = file_get_contents($state->getRealPath());
+                                    $mimeType = $state->getMimeType();
+                                    $base64 = 'data:' . $mimeType . ';base64,' . base64_encode($contents);
+                                    $set('logo_data', $base64);
+                                }
+                            }),
+                        Forms\Components\Hidden::make('logo_data'),
+                        Forms\Components\Placeholder::make('current_logo')
+                            ->label('Current Logo')
+                            ->content(fn ($record) => $record && $record->logo_data
+                                ? new \Illuminate\Support\HtmlString('<img src="' . $record->logo_data . '" style="max-width: 150px; border-radius: 12px;" />')
+                                : ($record && $record->logo
+                                    ? new \Illuminate\Support\HtmlString('<img src="' . $record->full_logo_url . '" style="max-width: 150px; border-radius: 12px;" />')
+                                    : 'No logo uploaded'))
+                            ->visible(fn ($record) => $record !== null)
                             ->columnSpanFull(),
                         Forms\Components\TextInput::make('name')
                             ->required()
@@ -142,10 +164,10 @@ class StoreResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('logo')
-                    ->disk('public')
+                Tables\Columns\ImageColumn::make('full_logo_url')
+                    ->label('Logo')
                     ->circular()
-                    ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->name) . '&background=22c55e&color=fff'),
+                    ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->name) . '&background=007359&color=fff'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
@@ -262,10 +284,10 @@ class StoreResource extends Resource
                         Grid::make(3)
                             ->schema([
                                 Group::make([
-                                    ImageEntry::make('logo')
-                                        ->disk('public')
+                                    ImageEntry::make('full_logo_url')
+                                        ->label('Logo')
                                         ->circular()
-                                        ->defaultImageUrl(fn (Store $record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->name) . '&background=22c55e&color=fff&size=128')
+                                        ->defaultImageUrl(fn (Store $record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->name) . '&background=007359&color=fff&size=128')
                                         ->size(100),
                                 ])->grow(false),
                                 Group::make([
