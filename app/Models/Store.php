@@ -219,7 +219,8 @@ class Store extends Model
             return $this->logo;
         }
 
-        // Local storage path - fallback (won't work on Laravel Cloud)
-        return asset('storage/' . $this->logo);
+        // Local storage paths don't work on Laravel Cloud - return null
+        // so the default image/initials will be shown
+        return null;
     }
 }
