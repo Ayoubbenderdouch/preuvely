@@ -2,6 +2,8 @@
 
 use App\Exceptions\DuplicateStoreException;
 use App\Http\Middleware\EnsureEmailIsVerified;
+use App\Http\Middleware\SecurityHeaders;
+use App\Http\Middleware\AdminRateLimiter;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -17,11 +19,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Global security headers
+        $middleware->append(SecurityHeaders::class);
+
         $middleware->alias([
             'verified.api' => EnsureEmailIsVerified::class,
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
+            'admin.rate-limit' => AdminRateLimiter::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

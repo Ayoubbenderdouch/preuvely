@@ -14,18 +14,24 @@ class AdminUserSeeder extends Seeder
         // Create admin role
         $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
 
+        // Get admin credentials from environment or use secure defaults
+        $adminEmail = env('ADMIN_EMAIL', 'admin@preuvely.dz');
+        $adminPassword = env('ADMIN_PASSWORD', 'Pr3uvely!@Adm1n#2025Secure');
+
         // Create admin user
         $admin = User::firstOrCreate(
-            ['email' => 'admin@preuvely.dz'],
+            ['email' => $adminEmail],
             [
                 'name' => 'Admin',
-                'email' => 'admin@preuvely.dz',
+                'email' => $adminEmail,
                 'phone' => '+213555000000',
-                'password' => Hash::make('password'),
+                'password' => Hash::make($adminPassword),
                 'email_verified_at' => now(),
             ]
         );
 
         $admin->assignRole($adminRole);
+
+        $this->command->info("Admin user created: {$adminEmail}");
     }
 }
