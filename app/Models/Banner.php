@@ -10,6 +10,13 @@ class Banner extends Model
 {
     use HasFactory;
 
+    /**
+     * Default attribute values
+     */
+    protected $attributes = [
+        'image_url' => '',
+    ];
+
     protected $fillable = [
         'title',
         'title_ar',
