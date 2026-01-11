@@ -56,7 +56,12 @@ class ReviewResource extends JsonResource
             return $avatar;
         }
 
-        // Otherwise, it's a local storage path
-        return Storage::disk('public')->url($avatar);
+        // If it's a base64 data URL, return as-is
+        if (str_starts_with($avatar, 'data:image')) {
+            return $avatar;
+        }
+
+        // Otherwise, it's a local storage path - use asset() like UserProfileResource
+        return asset('storage/' . $avatar);
     }
 }
