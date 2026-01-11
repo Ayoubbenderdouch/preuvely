@@ -282,15 +282,13 @@ final class APIClient: ObservableObject {
 
     // MARK: - Multipart Upload
 
-    /// Dedicated session for uploads that disables HTTP/3 to avoid QUIC issues
+    /// Dedicated session for uploads with longer timeouts
     private static let uploadSession: URLSession = {
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = 120
         config.timeoutIntervalForResource = 300
-        // Disable HTTP/3 (QUIC) which causes issues with large uploads on some servers
-        if #available(iOS 14.5, *) {
-            config.assumesHTTP3Capable = false
-        }
+        // Use HTTP/1.1 for more reliable uploads
+        config.httpAdditionalHeaders = ["Connection": "keep-alive"]
         return URLSession(configuration: config)
     }()
 
