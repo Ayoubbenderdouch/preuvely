@@ -16,7 +16,7 @@ class StoreResource extends JsonResource
             'slug' => $this->slug,
             'description' => $this->description,
             'city' => $this->city,
-            'logo' => $this->logo ? Storage::disk('public')->url($this->logo) : null,
+            'logo' => $this->getLogoUrl(),
             'status' => $this->status->value,
             'is_verified' => $this->is_verified ?? false,
             'avg_rating' => round($this->avg_rating_cache ?? 0, 1),
@@ -27,5 +27,27 @@ class StoreResource extends JsonResource
             'contacts' => $this->whenLoaded('contacts', fn () => $this->contacts ? new StoreContactResource($this->contacts) : null),
             'created_at' => $this->created_at?->toIso8601String(),
         ];
+    }
+
+    private function getLogoUrl(): ?string
+    {
+        $logo = $this->logo;
+
+        if (empty($logo)) {
+            return null;
+        }
+
+        // Already a full URL
+        if (str_starts_with($logo, 'http://') || str_starts_with($logo, 'https://')) {
+            return $logo;
+        }
+
+        // Base64 data URL
+        if (str_starts_with($logo, 'data:image')) {
+            return $logo;
+        }
+
+        // Local storage path - use asset() for Laravel Cloud compatibility
+        return asset('storage/' . $logo);
     }
 }
