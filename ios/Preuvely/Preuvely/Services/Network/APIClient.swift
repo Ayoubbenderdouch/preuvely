@@ -282,17 +282,29 @@ final class APIClient: ObservableObject {
 
     // MARK: - Multipart Upload
 
+    /// Dedicated session for uploads that disables HTTP/3 to avoid QUIC issues
+    private static let uploadSession: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 120
+        config.timeoutIntervalForResource = 300
+        // Disable HTTP/3 (QUIC) which causes issues with large uploads on some servers
+        if #available(iOS 14.5, *) {
+            config.assumesHTTP3Capable = false
+        }
+        return URLSession(configuration: config)
+    }()
+
     func uploadImage<T: Decodable>(
         _ endpoint: APIEndpoint,
         image: UIImage,
         fieldName: String = "image",
         maxRetries: Int = 3
     ) async throws -> T {
-        // Resize image if too large (max 1024px on longest side for avatars)
-        let resizedImage = image.resizedForUpload(maxDimension: 1024)
+        // Resize image aggressively (max 512px for avatars to keep under 500KB)
+        let resizedImage = image.resizedForUpload(maxDimension: 512)
 
-        // Use lower compression for faster upload
-        guard let imageData = resizedImage.jpegData(compressionQuality: 0.6) else {
+        // Use aggressive compression for reliable upload
+        guard let imageData = resizedImage.jpegData(compressionQuality: 0.5) else {
             throw APIError.invalidData
         }
 
@@ -306,7 +318,7 @@ final class APIClient: ObservableObject {
         request.httpMethod = HTTPMethod.post.rawValue
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.timeoutInterval = 60 // 60 second timeout for uploads
+        request.timeoutInterval = 120 // 2 minute timeout for uploads
 
         if let token = authToken {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
@@ -322,28 +334,31 @@ final class APIClient: ObservableObject {
         request.httpBody = body
 
         #if DEBUG
-        print("[API] UPLOAD \(request.url?.absoluteString ?? "")")
+        print("[API] UPLOAD \(request.url?.absoluteString ?? "") (using HTTP/1.1)")
         #endif
 
-        // Retry logic for network issues
+        // Retry logic for network issues - use dedicated upload session without HTTP/3
         var lastError: Error?
         for attempt in 1...maxRetries {
             do {
-                let (data, response) = try await session.data(for: request)
+                let (data, response) = try await Self.uploadSession.data(for: request)
                 return try handleResponse(data, response)
             } catch {
                 lastError = error
                 let nsError = error as NSError
-                // Only retry on network connection errors (-1005, -1009, etc.)
-                if nsError.domain == NSURLErrorDomain &&
-                   (nsError.code == NSURLErrorNetworkConnectionLost ||
-                    nsError.code == NSURLErrorNotConnectedToInternet ||
-                    nsError.code == NSURLErrorTimedOut) {
+                // Retry on network connection errors (-1005, -1009, -1017, etc.)
+                let retryableCodes = [
+                    NSURLErrorNetworkConnectionLost,
+                    NSURLErrorNotConnectedToInternet,
+                    NSURLErrorTimedOut,
+                    NSURLErrorCannotParseResponse
+                ]
+                if nsError.domain == NSURLErrorDomain && retryableCodes.contains(nsError.code) {
                     #if DEBUG
                     print("[API] Upload attempt \(attempt) failed, retrying... Error: \(error.localizedDescription)")
                     #endif
                     // Wait before retrying (exponential backoff)
-                    try? await Task.sleep(nanoseconds: UInt64(pow(2.0, Double(attempt))) * 500_000_000)
+                    try? await Task.sleep(nanoseconds: UInt64(pow(2.0, Double(attempt))) * 1_000_000_000)
                     continue
                 }
                 throw error
