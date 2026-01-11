@@ -1,5 +1,5 @@
 import SwiftUI
-import UIKit
+import Combine
 
 struct EmailVerificationSheet: View {
     @Environment(\.dismiss) private var dismiss
@@ -270,10 +270,12 @@ class EmailVerificationViewModel: ObservableObject {
         } catch let error as APIError {
             isLoading = false
             switch error {
-            case .serverError(let message):
+            case .validation(let message):
                 errorMessage = message
+            case .serverError:
+                errorMessage = "Server error. Please try again."
             default:
-                errorMessage = "Verification failed. Please try again."
+                errorMessage = error.localizedDescription
             }
             // Clear the digits on error
             digits = Array(repeating: "", count: 6)
