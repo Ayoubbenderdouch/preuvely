@@ -285,21 +285,31 @@ final class APIClient: ObservableObject {
     func uploadImage<T: Decodable>(
         _ endpoint: APIEndpoint,
         image: UIImage,
-        fieldName: String = "image"
+        fieldName: String = "image",
+        maxRetries: Int = 3
     ) async throws -> T {
+        // Resize image if too large (max 1024px on longest side for avatars)
+        let resizedImage = image.resizedForUpload(maxDimension: 1024)
+
+        // Use lower compression for faster upload
+        guard let imageData = resizedImage.jpegData(compressionQuality: 0.6) else {
+            throw APIError.invalidData
+        }
+
+        #if DEBUG
+        print("[API] Image size for upload: \(imageData.count / 1024) KB")
+        #endif
+
         let boundary = UUID().uuidString
 
         var request = URLRequest(url: endpoint.url)
         request.httpMethod = HTTPMethod.post.rawValue
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.timeoutInterval = 60 // 60 second timeout for uploads
 
         if let token = authToken {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        }
-
-        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
-            throw APIError.invalidData
         }
 
         var body = Data()
@@ -315,8 +325,48 @@ final class APIClient: ObservableObject {
         print("[API] UPLOAD \(request.url?.absoluteString ?? "")")
         #endif
 
-        let (data, response) = try await session.data(for: request)
-        return try handleResponse(data, response)
+        // Retry logic for network issues
+        var lastError: Error?
+        for attempt in 1...maxRetries {
+            do {
+                let (data, response) = try await session.data(for: request)
+                return try handleResponse(data, response)
+            } catch {
+                lastError = error
+                let nsError = error as NSError
+                // Only retry on network connection errors (-1005, -1009, etc.)
+                if nsError.domain == NSURLErrorDomain &&
+                   (nsError.code == NSURLErrorNetworkConnectionLost ||
+                    nsError.code == NSURLErrorNotConnectedToInternet ||
+                    nsError.code == NSURLErrorTimedOut) {
+                    #if DEBUG
+                    print("[API] Upload attempt \(attempt) failed, retrying... Error: \(error.localizedDescription)")
+                    #endif
+                    // Wait before retrying (exponential backoff)
+                    try? await Task.sleep(nanoseconds: UInt64(pow(2.0, Double(attempt))) * 500_000_000)
+                    continue
+                }
+                throw error
+            }
+        }
+        throw lastError ?? APIError.networkError
+    }
+}
+
+// MARK: - UIImage Extension for Resizing
+
+extension UIImage {
+    func resizedForUpload(maxDimension: CGFloat) -> UIImage {
+        let currentMax = max(size.width, size.height)
+        guard currentMax > maxDimension else { return self }
+
+        let scale = maxDimension / currentMax
+        let newSize = CGSize(width: size.width * scale, height: size.height * scale)
+
+        let renderer = UIGraphicsImageRenderer(size: newSize)
+        return renderer.image { _ in
+            draw(in: CGRect(origin: .zero, size: newSize))
+        }
     }
 }
 

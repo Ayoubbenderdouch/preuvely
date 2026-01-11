@@ -60,13 +60,22 @@ class Banner extends Model
     /**
      * Get full image URL
      */
-    public function getFullImageUrlAttribute(): string
+    public function getFullImageUrlAttribute(): ?string
     {
+        if (empty($this->image_url)) {
+            return null;
+        }
+
         if (str_starts_with($this->image_url, 'http')) {
             return $this->image_url;
         }
 
-        return Storage::disk('public')->url($this->image_url);
+        try {
+            return Storage::disk('public')->url($this->image_url);
+        } catch (\Exception $e) {
+            // Fallback: construct URL manually if Storage fails
+            return config('app.url') . '/storage/' . $this->image_url;
+        }
     }
 
     /**
