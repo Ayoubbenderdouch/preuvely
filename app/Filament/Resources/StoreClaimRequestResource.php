@@ -206,6 +206,35 @@ class StoreClaimRequestResource extends Resource
                             ->send();
                     }),
 
+                Tables\Actions\Action::make('resync_owner')
+                    ->label('Re-sync Owner')
+                    ->icon('heroicon-o-arrow-path')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->modalHeading('Re-sync Store Owner')
+                    ->modalDescription('This will re-add the user as store owner. Use this if the owner wasn\'t properly added during approval.')
+                    ->visible(fn (StoreClaimRequest $record) => $record->isApproved())
+                    ->action(function (StoreClaimRequest $record) {
+                        // Re-add user as store owner
+                        $record->store->owners()->syncWithoutDetaching([
+                            $record->user_id => ['role' => 'owner'],
+                        ]);
+
+                        // Log for debugging
+                        \Log::info('Re-synced store owner', [
+                            'claim_id' => $record->id,
+                            'store_id' => $record->store_id,
+                            'user_id' => $record->user_id,
+                            'owners_after' => $record->store->owners()->pluck('users.id')->toArray(),
+                        ]);
+
+                        Notification::make()
+                            ->title('Owner re-synced successfully')
+                            ->body('User ID ' . $record->user_id . ' is now owner of store ID ' . $record->store_id)
+                            ->success()
+                            ->send();
+                    }),
+
                 Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
