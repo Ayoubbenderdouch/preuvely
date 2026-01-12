@@ -14,6 +14,15 @@ class StoreResource extends JsonResource
         $isOwner = false;
         if ($request->user()) {
             $isOwner = $request->user()->isOwnerOf($this->resource);
+            // Debug log
+            \Log::info('StoreResource isOwner check', [
+                'store_id' => $this->id,
+                'store_name' => $this->name,
+                'user_id' => $request->user()->id,
+                'user_name' => $request->user()->name,
+                'is_owner' => $isOwner,
+                'owned_stores' => $request->user()->ownedStores()->pluck('stores.id')->toArray(),
+            ]);
         }
 
         return [
