@@ -22,6 +22,20 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
 
+    // Debug endpoint - REMOVE IN PRODUCTION
+    Route::get('debug/store-owners/{storeId}', function ($storeId) {
+        $store = \App\Models\Store::find($storeId);
+        if (!$store) {
+            return response()->json(['error' => 'Store not found']);
+        }
+        return response()->json([
+            'store_id' => $store->id,
+            'store_name' => $store->name,
+            'owners' => $store->owners->map(fn($u) => ['id' => $u->id, 'name' => $u->name, 'email' => $u->email]),
+            'store_owners_raw' => \DB::table('store_owners')->where('store_id', $storeId)->get(),
+        ]);
+    });
+
     // Public routes
     Route::get('banners', [BannerController::class, 'index']);
     Route::get('categories', [CategoryController::class, 'index']);
