@@ -11,7 +11,9 @@
             <div class="hidden md:block">
                 <a href="{{ route('filament.dataentry.resources.stores.create') }}"
                    class="inline-flex items-center px-6 py-3 bg-white text-emerald-700 font-semibold rounded-lg hover:bg-emerald-50 transition-colors shadow-md">
-                    <x-heroicon-o-plus-circle class="w-5 h-5 mr-2" />
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
                     Add New Store
                 </a>
             </div>
