@@ -24,8 +24,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.preuvely.app.ui.components.EmptyStateView
+import com.preuvely.app.ui.components.GridStoreCard
 import com.preuvely.app.ui.components.LoadingView
-import com.preuvely.app.ui.components.StoreCard
 import com.preuvely.app.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -121,8 +121,8 @@ fun CategoryStoresScreen(
                         columns = GridCells.Fixed(2),
                         state = gridState,
                         contentPadding = PaddingValues(Spacing.screenPadding),
-                        horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
-                        verticalArrangement = Arrangement.spacedBy(Spacing.sm)
+                        horizontalArrangement = Arrangement.spacedBy(Spacing.md),
+                        verticalArrangement = Arrangement.spacedBy(Spacing.md)
                     ) {
                         // Store count header
                         item(span = { GridItemSpan(2) }) {
@@ -152,7 +152,7 @@ fun CategoryStoresScreen(
                             items = uiState.stores,
                             key = { it.id }
                         ) { store ->
-                            StoreCard(
+                            GridStoreCard(
                                 store = store,
                                 onClick = { onNavigateToStore(store.slug) }
                             )

@@ -27,6 +27,8 @@ data class StoreDetailsUiState(
     val isSubmittingReview: Boolean = false,
     val isSubmittingClaim: Boolean = false,
     val isSubmittingReport: Boolean = false,
+    val isSubmittingReply: Boolean = false,
+    val isUpdatingStore: Boolean = false,
     val hasMoreReviews: Boolean = false,
     val error: String? = null,
     val reviewSubmitted: Boolean = false
@@ -251,4 +253,71 @@ class StoreDetailsViewModel @Inject constructor(
             }
         }
     }
+
+    fun createReply(
+        reviewId: Int,
+        replyText: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isSubmittingReply = true)
+
+            when (val result = reviewRepository.createReply(reviewId, replyText)) {
+                is Result.Success -> {
+                    _uiState.value = _uiState.value.copy(isSubmittingReply = false)
+                    refreshReviews()
+                    onSuccess()
+                }
+                is Result.Error -> {
+                    _uiState.value = _uiState.value.copy(isSubmittingReply = false)
+                    onError(result.message)
+                }
+                else -> {
+                    _uiState.value = _uiState.value.copy(isSubmittingReply = false)
+                }
+            }
+        }
+    }
+
+    fun updateStore(
+        description: String?,
+        whatsapp: String?,
+        phone: String?,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        val store = _uiState.value.store ?: return
+
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isUpdatingStore = true)
+
+            val contacts = if (whatsapp != null || phone != null) {
+                StoreContactInput(whatsapp = whatsapp, phone = phone)
+            } else null
+
+            val request = UpdateStoreRequest(
+                description = description,
+                contacts = contacts
+            )
+
+            when (val result = storeRepository.updateStore(store.id, request)) {
+                is Result.Success -> {
+                    _uiState.value = _uiState.value.copy(
+                        isUpdatingStore = false,
+                        store = result.data.toStore()
+                    )
+                    onSuccess()
+                }
+                is Result.Error -> {
+                    _uiState.value = _uiState.value.copy(isUpdatingStore = false)
+                    onError(result.message)
+                }
+                else -> {
+                    _uiState.value = _uiState.value.copy(isUpdatingStore = false)
+                }
+            }
+        }
+    }
+
 }

@@ -106,7 +106,26 @@ class StoreOwnerController extends Controller
             ], Response::HTTP_FORBIDDEN);
         }
 
-        $store->update($request->validated());
+        $validated = $request->validated();
+
+        // Extract contacts if present
+        $contacts = $validated['contacts'] ?? null;
+        unset($validated['contacts']);
+
+        // Update store basic fields
+        $store->update($validated);
+
+        // Update or create contacts if provided
+        if ($contacts !== null) {
+            $store->contacts()->updateOrCreate(
+                ['store_id' => $store->id],
+                [
+                    'whatsapp' => $contacts['whatsapp'] ?? null,
+                    'phone' => $contacts['phone'] ?? null,
+                ]
+            );
+        }
+
         $store->load(['categories', 'links', 'contacts']);
 
         // Attach pivot data for resource

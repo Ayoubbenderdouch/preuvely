@@ -53,6 +53,9 @@ fun StoreDetailsScreen(
     var showClaimStore by remember { mutableStateOf(false) }
     var showReport by remember { mutableStateOf(false) }
     var showMenu by remember { mutableStateOf(false) }
+    var showEditStore by remember { mutableStateOf(false) }
+    var showReplySheet by remember { mutableStateOf(false) }
+    var selectedReviewId by remember { mutableStateOf<Int?>(null) }
 
     Scaffold(
         topBar = {
@@ -72,24 +75,48 @@ fun StoreDetailsScreen(
                             expanded = showMenu,
                             onDismissRequest = { showMenu = false }
                         ) {
-                            DropdownMenuItem(
-                                text = {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Icon(
-                                            Icons.Default.Store,
-                                            contentDescription = null,
-                                            tint = PrimaryGreen,
-                                            modifier = Modifier.size(20.dp)
-                                        )
-                                        Spacer(modifier = Modifier.width(Spacing.sm))
-                                        Text(stringResource(R.string.store_claim))
+                            // Edit Store option (only for owners)
+                            if (uiState.store?.isOwner == true) {
+                                DropdownMenuItem(
+                                    text = {
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            Icon(
+                                                Icons.Default.Edit,
+                                                contentDescription = null,
+                                                tint = PrimaryGreen,
+                                                modifier = Modifier.size(20.dp)
+                                            )
+                                            Spacer(modifier = Modifier.width(Spacing.sm))
+                                            Text("Edit Store")
+                                        }
+                                    },
+                                    onClick = {
+                                        showMenu = false
+                                        showEditStore = true
                                     }
-                                },
-                                onClick = {
-                                    showMenu = false
-                                    showClaimStore = true
-                                }
-                            )
+                                )
+                            }
+                            // Claim Store option (only for non-owners)
+                            if (uiState.store?.isOwner != true) {
+                                DropdownMenuItem(
+                                    text = {
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            Icon(
+                                                Icons.Default.Store,
+                                                contentDescription = null,
+                                                tint = PrimaryGreen,
+                                                modifier = Modifier.size(20.dp)
+                                            )
+                                            Spacer(modifier = Modifier.width(Spacing.sm))
+                                            Text(stringResource(R.string.store_claim))
+                                        }
+                                    },
+                                    onClick = {
+                                        showMenu = false
+                                        showClaimStore = true
+                                    }
+                                )
+                            }
                             DropdownMenuItem(
                                 text = {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -223,6 +250,11 @@ fun StoreDetailsScreen(
                             ReviewCard(
                                 review = review,
                                 onUserClick = { onNavigateToUser(review.userId) },
+                                isOwner = uiState.store?.isOwner == true,
+                                onReplyClick = { reviewId ->
+                                    selectedReviewId = reviewId
+                                    showReplySheet = true
+                                },
                                 modifier = Modifier.padding(
                                     horizontal = Spacing.screenPadding,
                                     vertical = Spacing.xs
@@ -396,6 +428,61 @@ fun StoreDetailsScreen(
             }
         )
     }
+
+    // Reply Sheet for store owners
+    var replySuccess by remember { mutableStateOf(false) }
+    var replyError by remember { mutableStateOf<String?>(null) }
+
+    if (showReplySheet && selectedReviewId != null) {
+        ReplySheet(
+            isSubmitting = uiState.isSubmittingReply,
+            showSuccess = replySuccess,
+            errorMessage = replyError,
+            onDismiss = {
+                showReplySheet = false
+                selectedReviewId = null
+                replySuccess = false
+                replyError = null
+            },
+            onSubmitReply = { replyText ->
+                replyError = null
+                viewModel.createReply(
+                    reviewId = selectedReviewId!!,
+                    replyText = replyText,
+                    onSuccess = { replySuccess = true },
+                    onError = { error -> replyError = error }
+                )
+            }
+        )
+    }
+
+    // Edit Store Sheet for owners
+    var editSuccess by remember { mutableStateOf(false) }
+    var editError by remember { mutableStateOf<String?>(null) }
+
+    if (showEditStore && uiState.store != null) {
+        EditStoreSheet(
+            store = uiState.store!!,
+            isSubmitting = uiState.isUpdatingStore,
+            showSuccess = editSuccess,
+            errorMessage = editError,
+            onDismiss = {
+                showEditStore = false
+                editSuccess = false
+                editError = null
+            },
+            onUpdateStore = { description, whatsapp, phone ->
+                editError = null
+                viewModel.updateStore(
+                    description = description,
+                    whatsapp = whatsapp,
+                    phone = phone,
+                    onSuccess = { editSuccess = true },
+                    onError = { error -> editError = error }
+                )
+            }
+        )
+    }
 }
 
 @Composable
@@ -539,26 +626,31 @@ private fun SocialLinksSection(
     links: List<StoreLink>,
     onLinkClick: (String) -> Unit
 ) {
-    Column(modifier = Modifier.padding(Spacing.screenPadding)) {
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(Spacing.md)
-        ) {
-            items(links) { link ->
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.clickable { onLinkClick(link.url) }
-                ) {
-                    PlatformIconCircle(
-                        platform = link.platform,
-                        size = 60.dp
-                    )
-                    Spacer(modifier = Modifier.height(Spacing.xs))
-                    Text(
-                        text = link.platform.displayName,
-                        style = PreuvelyTypography.caption1,
-                        color = TextSecondary
-                    )
-                }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(Spacing.screenPadding),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.Top
+    ) {
+        links.forEachIndexed { index, link ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.clickable { onLinkClick(link.url) }
+            ) {
+                PlatformIconCircle(
+                    platform = link.platform,
+                    size = 60.dp
+                )
+                Spacer(modifier = Modifier.height(Spacing.xs))
+                Text(
+                    text = link.platform.displayName,
+                    style = PreuvelyTypography.caption1,
+                    color = TextSecondary
+                )
+            }
+            if (index < links.size - 1) {
+                Spacer(modifier = Modifier.width(Spacing.lg))
             }
         }
     }
@@ -1640,6 +1732,487 @@ private fun ReportStoreSheet(
                     enabled = selectedReason != null && !isSubmitting,
                     isLoading = isSubmitting
                 )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ReplySheet(
+    isSubmitting: Boolean,
+    showSuccess: Boolean,
+    errorMessage: String?,
+    onDismiss: () -> Unit,
+    onSubmitReply: (replyText: String) -> Unit
+) {
+    var replyText by remember { mutableStateOf("") }
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = BackgroundPrimary
+    ) {
+        if (showSuccess) {
+            // Success State
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Spacing.screenPadding)
+                    .padding(bottom = 32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(CircleShape)
+                        .background(SuccessGreen.copy(alpha = 0.1f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = null,
+                        tint = SuccessGreen,
+                        modifier = Modifier.size(40.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(Spacing.lg))
+
+                Text(
+                    text = "Reply Sent",
+                    style = PreuvelyTypography.title3,
+                    color = TextPrimary
+                )
+
+                Spacer(modifier = Modifier.height(Spacing.sm))
+
+                Text(
+                    text = "Your reply has been added to the review.",
+                    style = PreuvelyTypography.body,
+                    color = TextSecondary,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(Spacing.xl))
+
+                PrimaryButton(
+                    text = stringResource(R.string.done),
+                    onClick = onDismiss
+                )
+            }
+        } else {
+            // Reply Form
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 32.dp)
+            ) {
+                // Header
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            Brush.linearGradient(
+                                colors = listOf(PrimaryGreen, PrimaryGreenLight)
+                            )
+                        )
+                        .padding(Spacing.lg)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(CircleShape)
+                                .background(White.copy(alpha = 0.2f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Reply,
+                                contentDescription = null,
+                                tint = White,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(Spacing.md))
+                        Column {
+                            Text(
+                                text = "Reply to Review",
+                                style = PreuvelyTypography.title3,
+                                color = White
+                            )
+                            Text(
+                                text = "Respond to your customer",
+                                style = PreuvelyTypography.caption1,
+                                color = White.copy(alpha = 0.8f)
+                            )
+                        }
+                    }
+                }
+
+                Column(modifier = Modifier.padding(Spacing.screenPadding)) {
+                    OutlinedTextField(
+                        value = replyText,
+                        onValueChange = { if (it.length <= 500) replyText = it },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(140.dp),
+                        placeholder = {
+                            Text(
+                                text = "Write your reply...",
+                                style = PreuvelyTypography.body,
+                                color = TextTertiary
+                            )
+                        },
+                        shape = RoundedCornerShape(Spacing.radiusMedium),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = PrimaryGreen,
+                            unfocusedBorderColor = Gray4,
+                            focusedContainerColor = Gray6.copy(alpha = 0.5f),
+                            unfocusedContainerColor = Gray6.copy(alpha = 0.5f)
+                        )
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = Spacing.xs),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Text(
+                            text = "${replyText.length}/500",
+                            style = PreuvelyTypography.caption1,
+                            color = TextSecondary
+                        )
+                    }
+
+                    // Error message
+                    errorMessage?.let { error ->
+                        Spacer(modifier = Modifier.height(Spacing.md))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(Spacing.radiusMedium))
+                                .background(ErrorRed.copy(alpha = 0.1f))
+                                .padding(Spacing.md),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Error,
+                                contentDescription = null,
+                                tint = ErrorRed,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(Spacing.sm))
+                            Text(
+                                text = error,
+                                style = PreuvelyTypography.caption1,
+                                color = ErrorRed
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(Spacing.xl))
+
+                    Button(
+                        onClick = { onSubmitReply(replyText) },
+                        enabled = replyText.length >= 2 && !isSubmitting,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        shape = RoundedCornerShape(Spacing.radiusMedium),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = PrimaryGreen,
+                            disabledContainerColor = Gray4
+                        )
+                    ) {
+                        if (isSubmitting) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                color = White,
+                                strokeWidth = 2.dp
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Send,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(Spacing.sm))
+                            Text(
+                                text = "Send Reply",
+                                style = PreuvelyTypography.subheadlineBold
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun EditStoreSheet(
+    store: Store,
+    isSubmitting: Boolean,
+    showSuccess: Boolean,
+    errorMessage: String?,
+    onDismiss: () -> Unit,
+    onUpdateStore: (description: String?, whatsapp: String?, phone: String?) -> Unit
+) {
+    var description by remember { mutableStateOf(store.description ?: "") }
+    var whatsapp by remember { mutableStateOf(store.contacts?.whatsapp ?: "") }
+    var phone by remember { mutableStateOf(store.contacts?.phone ?: "") }
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = BackgroundPrimary
+    ) {
+        if (showSuccess) {
+            // Success State
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Spacing.screenPadding)
+                    .padding(bottom = 32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(CircleShape)
+                        .background(SuccessGreen.copy(alpha = 0.1f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = null,
+                        tint = SuccessGreen,
+                        modifier = Modifier.size(40.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(Spacing.lg))
+
+                Text(
+                    text = "Store Updated",
+                    style = PreuvelyTypography.title3,
+                    color = TextPrimary
+                )
+
+                Spacer(modifier = Modifier.height(Spacing.sm))
+
+                Text(
+                    text = "Your store information has been updated successfully.",
+                    style = PreuvelyTypography.body,
+                    color = TextSecondary,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(Spacing.xl))
+
+                PrimaryButton(
+                    text = stringResource(R.string.done),
+                    onClick = onDismiss
+                )
+            }
+        } else {
+            // Edit Form
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 32.dp)
+            ) {
+                // Header
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            Brush.linearGradient(
+                                colors = listOf(PrimaryGreen, PrimaryGreenLight)
+                            )
+                        )
+                        .padding(Spacing.lg)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(CircleShape)
+                                .background(White.copy(alpha = 0.2f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = null,
+                                tint = White,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(Spacing.md))
+                        Column {
+                            Text(
+                                text = "Edit Store",
+                                style = PreuvelyTypography.title3,
+                                color = White
+                            )
+                            Text(
+                                text = "Update your store information",
+                                style = PreuvelyTypography.caption1,
+                                color = White.copy(alpha = 0.8f)
+                            )
+                        }
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .padding(Spacing.screenPadding)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    // Store Name (read-only)
+                    Text(
+                        text = "Store Name",
+                        style = PreuvelyTypography.caption1,
+                        color = TextSecondary
+                    )
+                    Spacer(modifier = Modifier.height(Spacing.xs))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(Spacing.radiusMedium))
+                            .background(Gray6)
+                            .padding(Spacing.md),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = store.name,
+                            style = PreuvelyTypography.body,
+                            color = TextPrimary
+                        )
+                        if (store.isVerified) {
+                            Spacer(modifier = Modifier.width(Spacing.xs))
+                            VerifiedBadge(size = BadgeSize.SMALL)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(Spacing.lg))
+
+                    // Description
+                    Text(
+                        text = "Description",
+                        style = PreuvelyTypography.caption1,
+                        color = TextSecondary
+                    )
+                    Spacer(modifier = Modifier.height(Spacing.xs))
+                    OutlinedTextField(
+                        value = description,
+                        onValueChange = { if (it.length <= 500) description = it },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(100.dp),
+                        placeholder = {
+                            Text(
+                                text = "Describe your store...",
+                                style = PreuvelyTypography.body,
+                                color = TextTertiary
+                            )
+                        },
+                        shape = RoundedCornerShape(Spacing.radiusMedium),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = PrimaryGreen,
+                            unfocusedBorderColor = Gray4
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(Spacing.lg))
+
+                    // Contact Section Header
+                    Text(
+                        text = "Contact Information",
+                        style = PreuvelyTypography.subheadlineBold,
+                        color = TextPrimary
+                    )
+                    Spacer(modifier = Modifier.height(Spacing.sm))
+
+                    // WhatsApp
+                    OutlinedTextField(
+                        value = whatsapp,
+                        onValueChange = { whatsapp = it },
+                        label = { Text("WhatsApp Number") },
+                        leadingIcon = {
+                            Icon(Icons.Default.Chat, null, tint = WhatsAppGreen)
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = PrimaryGreen,
+                            unfocusedBorderColor = Gray4
+                        ),
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+                    )
+
+                    Spacer(modifier = Modifier.height(Spacing.md))
+
+                    // Phone
+                    OutlinedTextField(
+                        value = phone,
+                        onValueChange = { phone = it },
+                        label = { Text("Phone Number") },
+                        leadingIcon = {
+                            Icon(Icons.Default.Phone, null, tint = PrimaryGreen)
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = PrimaryGreen,
+                            unfocusedBorderColor = Gray4
+                        ),
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+                    )
+
+                    // Error message
+                    errorMessage?.let { error ->
+                        Spacer(modifier = Modifier.height(Spacing.md))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(Spacing.radiusMedium))
+                                .background(ErrorRed.copy(alpha = 0.1f))
+                                .padding(Spacing.md),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Error,
+                                contentDescription = null,
+                                tint = ErrorRed,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(Spacing.sm))
+                            Text(
+                                text = error,
+                                style = PreuvelyTypography.caption1,
+                                color = ErrorRed
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(Spacing.xl))
+
+                    PrimaryButton(
+                        text = "Save Changes",
+                        onClick = {
+                            onUpdateStore(
+                                description.ifBlank { null },
+                                whatsapp.ifBlank { null },
+                                phone.ifBlank { null }
+                            )
+                        },
+                        enabled = !isSubmitting,
+                        isLoading = isSubmitting,
+                        icon = Icons.Default.Save
+                    )
+                }
             }
         }
     }

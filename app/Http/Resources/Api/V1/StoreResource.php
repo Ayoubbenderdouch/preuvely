@@ -10,6 +10,12 @@ class StoreResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        // Check if authenticated user is owner of this store
+        $isOwner = false;
+        if ($request->user()) {
+            $isOwner = $request->user()->isOwnerOf($this->resource);
+        }
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -19,6 +25,7 @@ class StoreResource extends JsonResource
             'logo' => $this->full_logo_url,
             'status' => $this->status->value,
             'is_verified' => $this->is_verified ?? false,
+            'is_owner' => $isOwner,
             'avg_rating' => round($this->avg_rating_cache ?? 0, 1),
             'reviews_count' => $this->reviews_count_cache ?? 0,
             'is_high_risk' => $this->whenLoaded('categories', fn () => $this->isHighRisk()),

@@ -407,6 +407,132 @@ fun CompactStoreCard(
     }
 }
 
+/**
+ * GridStoreCard - Vertical card for grid layouts (like homepage)
+ * Image on top with rounded corners, info below
+ */
+@Composable
+fun GridStoreCard(
+    store: Store,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(if (isPressed) 0.95f else 1f, label = "scale")
+
+    Card(
+        modifier = modifier
+            .scale(scale)
+            .fillMaxWidth()
+            .shadow(
+                elevation = 4.dp,
+                shape = RoundedCornerShape(18.dp),
+                ambientColor = CardShadow,
+                spotColor = CardShadow
+            )
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick
+            ),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = CardBackground)
+    ) {
+        Column {
+            // Image section with rounded top corners
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp)
+                    .clip(RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp))
+                    .background(Gray6),
+                contentAlignment = Alignment.Center
+            ) {
+                if (!store.logo.isNullOrBlank()) {
+                    // Handle base64 data URL or regular URL
+                    if (store.logo!!.startsWith("data:image")) {
+                        val base64Data = store.logo!!.substringAfter("base64,")
+                        val bitmap = remember(base64Data) {
+                            try {
+                                val decodedBytes = Base64.decode(base64Data, Base64.DEFAULT)
+                                BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+                            } catch (e: Exception) {
+                                null
+                            }
+                        }
+                        bitmap?.let {
+                            Image(
+                                bitmap = it.asImageBitmap(),
+                                contentDescription = store.name,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                    } else {
+                        AsyncImage(
+                            model = store.logo,
+                            contentDescription = store.name,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.linearGradient(
+                                    listOf(
+                                        PrimaryGreen.copy(alpha = 0.15f),
+                                        PrimaryGreen.copy(alpha = 0.05f)
+                                    )
+                                )
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = store.nameInitial,
+                            style = PreuvelyTypography.title1,
+                            color = PrimaryGreen
+                        )
+                    }
+                }
+            }
+
+            // Info section
+            Column(modifier = Modifier.padding(Spacing.md)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = store.name,
+                        style = PreuvelyTypography.footnote.copy(fontWeight = FontWeight.SemiBold),
+                        color = TextPrimary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false)
+                    )
+                    if (store.isVerified) {
+                        Spacer(modifier = Modifier.width(2.dp))
+                        VerifiedBadge(size = BadgeSize.SMALL)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(Spacing.xs))
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    RatingBadge(rating = store.avgRating, size = BadgeSize.SMALL)
+                    Spacer(modifier = Modifier.width(Spacing.xs))
+                    Text(
+                        text = "${store.reviewsCount}",
+                        style = PreuvelyTypography.caption2,
+                        color = TextSecondary
+                    )
+                }
+            }
+        }
+    }
+}
+
 @Composable
 fun StoreLogoImage(
     logoUrl: String?,
@@ -496,7 +622,9 @@ fun StoreLogoImage(
 fun ReviewCard(
     review: Review,
     modifier: Modifier = Modifier,
-    onUserClick: (() -> Unit)? = null
+    onUserClick: (() -> Unit)? = null,
+    isOwner: Boolean = false,
+    onReplyClick: ((Int) -> Unit)? = null
 ) {
     Card(
         modifier = modifier
@@ -628,6 +756,33 @@ fun ReviewCard(
                             text = reply.replyText,
                             style = PreuvelyTypography.subheadline,
                             color = TextSecondary
+                        )
+                    }
+                }
+            }
+
+            // Reply button for store owners (only show if no reply yet)
+            if (isOwner && review.reply == null && onReplyClick != null) {
+                Spacer(modifier = Modifier.height(Spacing.md))
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(Spacing.radiusSmall))
+                        .background(PrimaryGreen.copy(alpha = 0.1f))
+                        .clickable { onReplyClick(review.id) }
+                        .padding(horizontal = Spacing.md, vertical = Spacing.sm)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Reply,
+                            contentDescription = null,
+                            tint = PrimaryGreen,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(Spacing.xs))
+                        Text(
+                            text = "Reply",
+                            style = PreuvelyTypography.caption1.copy(fontWeight = FontWeight.SemiBold),
+                            color = PrimaryGreen
                         )
                     }
                 }

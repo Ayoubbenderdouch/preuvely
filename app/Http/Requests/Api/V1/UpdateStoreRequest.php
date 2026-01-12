@@ -32,6 +32,9 @@ class UpdateStoreRequest extends FormRequest
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'description' => ['sometimes', 'nullable', 'string', 'max:2000'],
             'city' => ['sometimes', 'nullable', 'string', 'max:100'],
+            'contacts' => ['sometimes', 'nullable', 'array'],
+            'contacts.whatsapp' => ['sometimes', 'nullable', 'string', 'max:20'],
+            'contacts.phone' => ['sometimes', 'nullable', 'string', 'max:20'],
         ];
     }
 

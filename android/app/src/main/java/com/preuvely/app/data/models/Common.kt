@@ -93,9 +93,10 @@ data class StoreContactInput(
 )
 
 data class UpdateStoreRequest(
-    @SerializedName("name") val name: String?,
-    @SerializedName("description") val description: String?,
-    @SerializedName("city") val city: String?
+    @SerializedName("name") val name: String? = null,
+    @SerializedName("description") val description: String? = null,
+    @SerializedName("city") val city: String? = null,
+    @SerializedName("contacts") val contacts: StoreContactInput? = null
 )
 
 data class UpdateStoreLinksRequest(
