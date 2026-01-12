@@ -19,6 +19,8 @@ import com.preuvely.app.ui.screens.editstore.EditStoreScreen
 import com.preuvely.app.ui.screens.notifications.NotificationsScreen
 import com.preuvely.app.ui.screens.onboarding.OnboardingScreen
 import com.preuvely.app.ui.screens.mystores.MyStoresScreen
+import com.preuvely.app.ui.screens.profile.LegalScreen
+import com.preuvely.app.ui.screens.profile.LegalType
 
 sealed class Screen(val route: String) {
     object Onboarding : Screen("onboarding")
@@ -38,6 +40,8 @@ sealed class Screen(val route: String) {
     }
     object MyStores : Screen("my-stores")
     object Notifications : Screen("notifications")
+    object Terms : Screen("terms")
+    object Privacy : Screen("privacy")
 }
 
 @Composable
@@ -81,6 +85,12 @@ fun PreuvelyNavHost(
                 },
                 onNavigateToMyStores = {
                     navController.navigate(Screen.MyStores.route)
+                },
+                onNavigateToTerms = {
+                    navController.navigate(Screen.Terms.route)
+                },
+                onNavigateToPrivacy = {
+                    navController.navigate(Screen.Privacy.route)
                 }
             )
         }
@@ -163,6 +173,20 @@ fun PreuvelyNavHost(
                 onNavigateToStore = { slug ->
                     navController.navigate(Screen.StoreDetails.createRoute(slug))
                 }
+            )
+        }
+
+        composable(Screen.Terms.route) {
+            LegalScreen(
+                legalType = LegalType.TERMS,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Screen.Privacy.route) {
+            LegalScreen(
+                legalType = LegalType.PRIVACY,
+                onNavigateBack = { navController.popBackStack() }
             )
         }
     }

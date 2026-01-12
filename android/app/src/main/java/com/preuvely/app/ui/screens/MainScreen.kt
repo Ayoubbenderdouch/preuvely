@@ -56,7 +56,9 @@ fun MainScreen(
     onNavigateToUser: (Int) -> Unit,
     onNavigateToEditStore: (Int) -> Unit,
     onNavigateToNotifications: () -> Unit,
-    onNavigateToMyStores: () -> Unit = {}
+    onNavigateToMyStores: () -> Unit = {},
+    onNavigateToTerms: () -> Unit = {},
+    onNavigateToPrivacy: () -> Unit = {}
 ) {
     var selectedTab by remember { mutableIntStateOf(0) }
     var addButtonRotation by remember { mutableFloatStateOf(0f) }
@@ -89,7 +91,9 @@ fun MainScreen(
                 onNavigateToStore = onNavigateToStore,
                 onNavigateToUser = onNavigateToUser,
                 onNavigateToEditStore = onNavigateToEditStore,
-                onNavigateToNotifications = onNavigateToNotifications
+                onNavigateToNotifications = onNavigateToNotifications,
+                onNavigateToTerms = onNavigateToTerms,
+                onNavigateToPrivacy = onNavigateToPrivacy
             )
         }
 

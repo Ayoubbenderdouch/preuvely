@@ -1,0 +1,123 @@
+PRIVACY POLICY
+
+Last Updated: January 2026
+
+Preuvely ("we", "us", "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and protect your personal information.
+
+1. INFORMATION WE COLLECT
+
+1.1 Account Information
+When you create an account, we collect:
+- Name
+- Email address
+- Phone number (optional)
+- Profile picture (optional)
+
+1.2 Authentication Data
+If you sign in using Google or Apple, we receive:
+- Your name and email from the provider
+- A unique identifier from the authentication provider
+- Profile picture (if available)
+
+1.3 User-Generated Content
+We collect content you create, including:
+- Store reviews and ratings
+- Comments and replies
+- Uploaded images and proof of purchase
+- Store submissions
+- Store claim requests
+- Reports
+
+1.4 Device Information
+We may collect:
+- Device type and model
+- Operating system version
+- App version
+- Language preferences
+
+1.5 Usage Data
+We collect information about how you use the app:
+- Stores viewed and searched
+- Features used
+- Time spent in the app
+
+2. HOW WE USE YOUR INFORMATION
+
+We use your information to:
+- Provide and improve our services
+- Display your reviews to other users
+- Process store claims and reports
+- Send notifications about your account activity
+- Respond to your inquiries
+- Ensure platform security and prevent fraud
+- Comply with legal obligations
+
+3. INFORMATION SHARING
+
+3.1 Public Information
+The following information is publicly visible:
+- Your name (as displayed on reviews)
+- Your reviews and ratings
+- Your profile picture (if provided)
+
+3.2 Store Owners
+Store owners can see reviews written about their stores and may respond to them.
+
+3.3 Service Providers
+We may share information with trusted service providers who help us operate our platform, including:
+- Cloud hosting providers
+- Email service providers
+- Analytics services
+
+3.4 Legal Requirements
+We may disclose information if required by law or to protect our rights and the safety of users.
+
+4. DATA SECURITY
+
+We implement appropriate security measures to protect your information, including:
+- Encryption of data in transit and at rest
+- Secure authentication systems
+- Regular security assessments
+
+5. YOUR RIGHTS
+
+You have the right to:
+- Access your personal information
+- Correct inaccurate information
+- Delete your account and associated data
+- Export your data
+- Opt out of promotional communications
+
+To exercise these rights, contact us at support@preuvely.com
+
+6. DATA RETENTION
+
+We retain your information for as long as your account is active or as needed to provide services. Reviews may remain visible after account deletion to maintain platform integrity.
+
+7. CHILDREN'S PRIVACY
+
+Preuvely is not intended for users under 13 years of age. We do not knowingly collect information from children under 13.
+
+8. THIRD-PARTY LINKS
+
+Our app may contain links to third-party websites or stores. We are not responsible for the privacy practices of these external sites.
+
+9. COOKIES AND TRACKING
+
+Our mobile app does not use cookies. We may use analytics tools to understand app usage patterns.
+
+10. INTERNATIONAL DATA TRANSFERS
+
+Your information may be transferred to and processed in countries outside your country of residence. We ensure appropriate safeguards are in place.
+
+11. CHANGES TO THIS POLICY
+
+We may update this Privacy Policy from time to time. We will notify you of significant changes through the app or by email.
+
+12. CONTACT US
+
+If you have questions about this Privacy Policy, contact us at:
+- Email: support@preuvely.com
+- Instagram: @preuvely
+
+By using Preuvely, you consent to the collection and use of your information as described in this Privacy Policy.

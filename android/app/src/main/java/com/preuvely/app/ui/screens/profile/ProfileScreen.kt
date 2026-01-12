@@ -47,6 +47,8 @@ fun ProfileScreen(
     onNavigateToUser: (Int) -> Unit,
     onNavigateToEditStore: (Int) -> Unit,
     onNavigateToNotifications: () -> Unit,
+    onNavigateToTerms: () -> Unit = {},
+    onNavigateToPrivacy: () -> Unit = {},
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -68,11 +70,17 @@ fun ProfileScreen(
                     onEditProfile = { viewModel.showEditProfileSheet() },
                     onNavigateToStore = onNavigateToStore,
                     onNavigateToNotifications = onNavigateToNotifications,
+                    onNavigateToTerms = onNavigateToTerms,
+                    onNavigateToPrivacy = onNavigateToPrivacy,
                     onResendEmail = { viewModel.resendVerificationEmail() },
                     onLogout = { viewModel.logout { } }
                 )
             } else {
-                GuestContent(onSignIn = onNavigateToAuth)
+                GuestContent(
+                    onSignIn = onNavigateToAuth,
+                    onNavigateToTerms = onNavigateToTerms,
+                    onNavigateToPrivacy = onNavigateToPrivacy
+                )
             }
         }
 
@@ -90,7 +98,11 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun GuestContent(onSignIn: () -> Unit) {
+private fun GuestContent(
+    onSignIn: () -> Unit,
+    onNavigateToTerms: () -> Unit,
+    onNavigateToPrivacy: () -> Unit
+) {
     Column(modifier = Modifier.padding(Spacing.screenPadding)) {
         // Guest Header Card
         Card(
@@ -150,7 +162,10 @@ private fun GuestContent(onSignIn: () -> Unit) {
         Spacer(modifier = Modifier.height(Spacing.xl))
 
         // Settings
-        SettingsSection()
+        SettingsSection(
+            onNavigateToTerms = onNavigateToTerms,
+            onNavigateToPrivacy = onNavigateToPrivacy
+        )
 
         Spacer(modifier = Modifier.height(Spacing.xl))
 
@@ -165,6 +180,8 @@ private fun AuthenticatedContent(
     onEditProfile: () -> Unit,
     onNavigateToStore: (String) -> Unit,
     onNavigateToNotifications: () -> Unit,
+    onNavigateToTerms: () -> Unit,
+    onNavigateToPrivacy: () -> Unit,
     onResendEmail: () -> Unit,
     onLogout: () -> Unit
 ) {
@@ -370,7 +387,10 @@ private fun AuthenticatedContent(
         Spacer(modifier = Modifier.height(Spacing.xl))
 
         // Settings
-        SettingsSection()
+        SettingsSection(
+            onNavigateToTerms = onNavigateToTerms,
+            onNavigateToPrivacy = onNavigateToPrivacy
+        )
 
         Spacer(modifier = Modifier.height(Spacing.xl))
 
@@ -414,7 +434,10 @@ private fun AuthenticatedContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SettingsSection() {
+private fun SettingsSection(
+    onNavigateToTerms: () -> Unit,
+    onNavigateToPrivacy: () -> Unit
+) {
     val context = LocalContext.current
     var showLanguagePicker by remember { mutableStateOf(false) }
     var currentLanguage by remember { mutableStateOf(LocalizationManager.getSavedLanguage(context)) }
@@ -447,7 +470,7 @@ private fun SettingsSection() {
             SettingsRow(
                 icon = Icons.Outlined.Description,
                 title = stringResource(R.string.profile_terms),
-                onClick = { }
+                onClick = onNavigateToTerms
             )
             Divider(
                 modifier = Modifier.padding(start = 66.dp),
@@ -456,7 +479,7 @@ private fun SettingsSection() {
             SettingsRow(
                 icon = Icons.Outlined.PrivacyTip,
                 title = stringResource(R.string.profile_privacy),
-                onClick = { }
+                onClick = onNavigateToPrivacy
             )
         }
     }
@@ -790,7 +813,7 @@ private fun SocialMediaSection() {
                     iconRes = R.drawable.ic_instagram_color,
                     contentDescription = "Instagram",
                     onClick = {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://instagram.com/preuvely"))
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/preuvely"))
                         context.startActivity(intent)
                     }
                 )
@@ -799,7 +822,7 @@ private fun SocialMediaSection() {
                     iconRes = R.drawable.ic_facebook_color,
                     contentDescription = "Facebook",
                     onClick = {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://facebook.com/preuvely"))
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/share/1BZJbGYGY5/"))
                         context.startActivity(intent)
                     }
                 )
@@ -808,7 +831,7 @@ private fun SocialMediaSection() {
                     iconRes = R.drawable.ic_tiktok_color,
                     contentDescription = "TikTok",
                     onClick = {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://tiktok.com/@preuvely"))
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tiktok.com/@preuvely"))
                         context.startActivity(intent)
                     }
                 )

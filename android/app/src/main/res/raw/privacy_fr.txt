@@ -1,0 +1,123 @@
+POLITIQUE DE CONFIDENTIALITE
+
+Derniere mise a jour : Janvier 2026
+
+Preuvely ("nous", "notre") s'engage a proteger votre vie privee. Cette Politique de Confidentialite explique comment nous collectons, utilisons et protegeons vos informations personnelles.
+
+1. INFORMATIONS QUE NOUS COLLECTONS
+
+1.1 Informations de Compte
+Lorsque vous creez un compte, nous collectons :
+- Nom
+- Adresse email
+- Numero de telephone (optionnel)
+- Photo de profil (optionnel)
+
+1.2 Donnees d'Authentification
+Si vous vous connectez via Google ou Apple, nous recevons :
+- Votre nom et email du fournisseur
+- Un identifiant unique du fournisseur d'authentification
+- Photo de profil (si disponible)
+
+1.3 Contenu Genere par l'Utilisateur
+Nous collectons le contenu que vous creez, notamment :
+- Avis et notes sur les boutiques
+- Commentaires et reponses
+- Images telechargees et preuves d'achat
+- Soumissions de boutiques
+- Demandes de revendication de boutiques
+- Signalements
+
+1.4 Informations sur l'Appareil
+Nous pouvons collecter :
+- Type et modele d'appareil
+- Version du systeme d'exploitation
+- Version de l'application
+- Preferences linguistiques
+
+1.5 Donnees d'Utilisation
+Nous collectons des informations sur votre utilisation de l'application :
+- Boutiques consultees et recherchees
+- Fonctionnalites utilisees
+- Temps passe dans l'application
+
+2. COMMENT NOUS UTILISONS VOS INFORMATIONS
+
+Nous utilisons vos informations pour :
+- Fournir et ameliorer nos services
+- Afficher vos avis aux autres utilisateurs
+- Traiter les revendications et signalements de boutiques
+- Envoyer des notifications sur l'activite de votre compte
+- Repondre a vos demandes
+- Assurer la securite de la plateforme et prevenir la fraude
+- Respecter les obligations legales
+
+3. PARTAGE D'INFORMATIONS
+
+3.1 Informations Publiques
+Les informations suivantes sont visibles publiquement :
+- Votre nom (tel qu'affiche sur les avis)
+- Vos avis et notes
+- Votre photo de profil (si fournie)
+
+3.2 Proprietaires de Boutiques
+Les proprietaires de boutiques peuvent voir les avis ecrits sur leurs boutiques et y repondre.
+
+3.3 Prestataires de Services
+Nous pouvons partager des informations avec des prestataires de services de confiance qui nous aident a operer notre plateforme, notamment :
+- Fournisseurs d'hebergement cloud
+- Fournisseurs de services email
+- Services d'analyse
+
+3.4 Exigences Legales
+Nous pouvons divulguer des informations si la loi l'exige ou pour proteger nos droits et la securite des utilisateurs.
+
+4. SECURITE DES DONNEES
+
+Nous mettons en oeuvre des mesures de securite appropriees pour proteger vos informations, notamment :
+- Chiffrement des donnees en transit et au repos
+- Systemes d'authentification securises
+- Evaluations de securite regulieres
+
+5. VOS DROITS
+
+Vous avez le droit de :
+- Acceder a vos informations personnelles
+- Corriger les informations inexactes
+- Supprimer votre compte et les donnees associees
+- Exporter vos donnees
+- Vous desinscrire des communications promotionnelles
+
+Pour exercer ces droits, contactez-nous a support@preuvely.com
+
+6. CONSERVATION DES DONNEES
+
+Nous conservons vos informations tant que votre compte est actif ou selon les besoins pour fournir des services. Les avis peuvent rester visibles apres la suppression du compte pour maintenir l'integrite de la plateforme.
+
+7. CONFIDENTIALITE DES ENFANTS
+
+Preuvely n'est pas destine aux utilisateurs de moins de 13 ans. Nous ne collectons pas sciemment d'informations aupres d'enfants de moins de 13 ans.
+
+8. LIENS TIERS
+
+Notre application peut contenir des liens vers des sites web ou boutiques tiers. Nous ne sommes pas responsables des pratiques de confidentialite de ces sites externes.
+
+9. COOKIES ET SUIVI
+
+Notre application mobile n'utilise pas de cookies. Nous pouvons utiliser des outils d'analyse pour comprendre les habitudes d'utilisation de l'application.
+
+10. TRANSFERTS INTERNATIONAUX DE DONNEES
+
+Vos informations peuvent etre transferees et traitees dans des pays autres que votre pays de residence. Nous veillons a ce que des garanties appropriees soient en place.
+
+11. MODIFICATIONS DE CETTE POLITIQUE
+
+Nous pouvons mettre a jour cette Politique de Confidentialite de temps en temps. Nous vous informerons des changements importants via l'application ou par email.
+
+12. NOUS CONTACTER
+
+Si vous avez des questions sur cette Politique de Confidentialite, contactez-nous a :
+- Email : support@preuvely.com
+- Instagram : @preuvely
+
+En utilisant Preuvely, vous consentez a la collecte et a l'utilisation de vos informations comme decrit dans cette Politique de Confidentialite.
