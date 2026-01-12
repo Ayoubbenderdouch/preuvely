@@ -11,17 +11,19 @@ class StoreResource extends JsonResource
     public function toArray(Request $request): array
     {
         // Check if authenticated user is owner of this store
+        // Use auth('sanctum') to check even on public routes
         $isOwner = false;
-        if ($request->user()) {
-            $isOwner = $request->user()->isOwnerOf($this->resource);
+        $user = auth('sanctum')->user();
+        if ($user) {
+            $isOwner = $user->isOwnerOf($this->resource);
             // Debug log
             \Log::info('StoreResource isOwner check', [
                 'store_id' => $this->id,
                 'store_name' => $this->name,
-                'user_id' => $request->user()->id,
-                'user_name' => $request->user()->name,
+                'user_id' => $user->id,
+                'user_name' => $user->name,
                 'is_owner' => $isOwner,
-                'owned_stores' => $request->user()->ownedStores()->pluck('stores.id')->toArray(),
+                'owned_stores' => $user->ownedStores()->pluck('stores.id')->toArray(),
             ]);
         }
 
