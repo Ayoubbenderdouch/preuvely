@@ -8,6 +8,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/privacy', function () {
+    return view('legal.privacy');
+})->name('privacy');
+
+Route::get('/terms', function () {
+    return view('legal.terms');
+})->name('terms');
+
 /**
  * Serve storage files directly (fallback for when storage:link doesn't work on Laravel Cloud)
  * This handles /storage/{path} requests by serving files from storage/app/public/
