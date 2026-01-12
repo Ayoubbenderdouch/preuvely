@@ -30,6 +30,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.preuvely.app.R
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
@@ -679,10 +681,10 @@ private fun ContactsSection(
                 contentAlignment = Alignment.Center
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.Chat,
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_whatsapp_color),
                         contentDescription = null,
-                        tint = WhatsAppGreen
+                        modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(Spacing.sm))
                     Text(

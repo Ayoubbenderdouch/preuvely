@@ -130,7 +130,8 @@
       "Bash(~/Library/Android/sdk/platform-tools/adb logcat -c)",
       "Bash(~/Library/Android/sdk/platform-tools/adb logcat -s \"AddStoreViewModel:*\" \"StoreRepository:*\")",
       "Bash(./gradlew installDebug:*)",
-      "Bash(adb shell:*)"
+      "Bash(adb shell:*)",
+      "Bash(./gradlew signingReport:*)"
     ]
   }
 }

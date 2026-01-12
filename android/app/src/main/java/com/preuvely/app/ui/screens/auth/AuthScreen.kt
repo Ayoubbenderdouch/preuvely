@@ -30,8 +30,7 @@ import com.google.android.gms.common.api.ApiException
 import com.preuvely.app.ui.components.*
 import com.preuvely.app.ui.theme.*
 
-// TODO: Replace with your actual Google Web Client ID from Google Cloud Console
-private const val GOOGLE_WEB_CLIENT_ID = "YOUR_GOOGLE_WEB_CLIENT_ID.apps.googleusercontent.com"
+private const val GOOGLE_WEB_CLIENT_ID = "604729087626-711v4u6lm463o20cs21pijic34akrr03.apps.googleusercontent.com"
 
 @Composable
 fun AuthScreen(
@@ -277,10 +276,9 @@ fun AuthScreen(
             text = "Sign in with Google",
             onClick = { startGoogleSignIn() },
             icon = {
-                Icon(
-                    imageVector = Icons.Default.AccountCircle,
+                androidx.compose.foundation.Image(
+                    painter = androidx.compose.ui.res.painterResource(id = com.preuvely.app.R.drawable.ic_google_color),
                     contentDescription = null,
-                    tint = TextPrimary,
                     modifier = Modifier.size(24.dp)
                 )
             },

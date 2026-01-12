@@ -79,8 +79,25 @@ class UserResource extends Resource
                     ->label('Reviews')
                     ->counts('reviews'),
                 Tables\Columns\TextColumn::make('owned_stores_count')
-                    ->label('Stores')
+                    ->label('Owned')
                     ->counts('ownedStores'),
+                Tables\Columns\TextColumn::make('submitted_stores_count')
+                    ->label('Submitted')
+                    ->counts('submittedStores')
+                    ->color('success'),
+                Tables\Columns\TextColumn::make('providers.provider')
+                    ->label('Auth')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'google' => 'danger',
+                        'apple' => 'gray',
+                        default => 'primary',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'google' => 'Google',
+                        'apple' => 'Apple',
+                        default => ucfirst($state),
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -89,6 +106,22 @@ class UserResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('roles')
                     ->relationship('roles', 'name'),
+                Tables\Filters\SelectFilter::make('auth_provider')
+                    ->label('Auth Provider')
+                    ->options([
+                        'google' => 'Google',
+                        'apple' => 'Apple',
+                        'email' => 'Email (kein Social)',
+                    ])
+                    ->query(function ($query, array $data) {
+                        if ($data['value'] === 'email') {
+                            return $query->whereDoesntHave('providers');
+                        }
+                        if ($data['value']) {
+                            return $query->whereHas('providers', fn ($q) => $q->where('provider', $data['value']));
+                        }
+                        return $query;
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
