@@ -50,4 +50,9 @@ class StoreClaimRequest extends Model
     {
         return $this->status === ClaimStatus::Pending;
     }
+
+    public function isApproved(): bool
+    {
+        return $this->status === ClaimStatus::Approved;
+    }
 }
