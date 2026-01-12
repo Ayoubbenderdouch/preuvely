@@ -131,7 +131,13 @@
       "Bash(~/Library/Android/sdk/platform-tools/adb logcat -s \"AddStoreViewModel:*\" \"StoreRepository:*\")",
       "Bash(./gradlew installDebug:*)",
       "Bash(adb shell:*)",
-      "Bash(./gradlew signingReport:*)"
+      "Bash(./gradlew signingReport:*)",
+      "Bash(./gradlew lint:*)",
+      "Bash(./gradlew assembleRelease:*)",
+      "Bash(~/Library/Android/sdk/platform-tools/adb uninstall com.preuvely.app)",
+      "Bash(~/Library/Android/sdk/platform-tools/adb shell pm clear com.preuvely.app)",
+      "Bash(keytool:*)",
+      "Bash(./gradlew bundleRelease:*)"
     ]
   }
 }

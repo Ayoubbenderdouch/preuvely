@@ -65,30 +65,31 @@ fun OnboardingScreen(
     val pagerState = rememberPagerState(pageCount = { onboardingPages.size })
     val coroutineScope = rememberCoroutineScope()
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundPrimary)
+            .background(White)
     ) {
-        // Background image with crossfade
-        Crossfade(
-            targetState = pagerState.currentPage,
-            label = "background"
-        ) { page ->
-            Image(
-                painter = painterResource(id = onboardingPages[page].imageRes),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.5f),
-                contentScale = ContentScale.Crop
-            )
-        }
-
-        Column(
-            modifier = Modifier.fillMaxSize()
+        // Top section with image
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
         ) {
-            // Skip button
+            // Background image with crossfade
+            Crossfade(
+                targetState = pagerState.currentPage,
+                label = "background"
+            ) { page ->
+                Image(
+                    painter = painterResource(id = onboardingPages[page].imageRes),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            // Skip button overlay
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -110,62 +111,80 @@ fun OnboardingScreen(
                     }
                 }
             }
+        }
 
-            Spacer(modifier = Modifier.weight(0.4f))
-
-            // Content section
-            Column(
-                modifier = Modifier
-                    .weight(0.6f)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
-                    .background(BackgroundPrimary)
-                    .padding(Spacing.screenPadding),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.height(Spacing.lg))
-
-                // Pages
-                HorizontalPager(
-                    state = pagerState,
-                    modifier = Modifier.weight(1f)
-                ) { page ->
-                    OnboardingPageContent(page = onboardingPages[page])
-                }
-
-                // Page indicators
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
-                    modifier = Modifier.padding(bottom = Spacing.lg)
+        // Bottom section with white background
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(White)
+                .padding(horizontal = Spacing.screenPadding)
+                .padding(top = Spacing.md)
+                .navigationBarsPadding(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Pages content (title and description)
+            HorizontalPager(
+                state = pagerState
+            ) { page ->
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    repeat(onboardingPages.size) { index ->
-                        PageIndicator(isActive = index == pagerState.currentPage)
-                    }
-                }
-
-                // Buttons
-                if (pagerState.currentPage == onboardingPages.size - 1) {
-                    // Last page - Get Started button
-                    PrimaryButton(
-                        text = stringResource(R.string.onboarding_get_started),
-                        onClick = onComplete,
-                        icon = Icons.Default.ArrowForward
+                    // Title
+                    Text(
+                        text = stringResource(onboardingPages[page].titleRes),
+                        style = PreuvelyTypography.title2,
+                        color = PrimaryGreen,
+                        textAlign = TextAlign.Center
                     )
-                } else {
-                    // Continue button
-                    PrimaryButton(
-                        text = stringResource(R.string.onboarding_continue),
-                        onClick = {
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                            }
-                        },
-                        icon = Icons.Default.ArrowForward
+
+                    Spacer(modifier = Modifier.height(Spacing.sm))
+
+                    // Description
+                    Text(
+                        text = stringResource(onboardingPages[page].descriptionRes),
+                        style = PreuvelyTypography.body,
+                        color = TextSecondary,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = Spacing.md)
                     )
                 }
-
-                Spacer(modifier = Modifier.height(Spacing.xl))
             }
+
+            Spacer(modifier = Modifier.height(Spacing.md))
+
+            // Page indicators
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
+                modifier = Modifier.padding(bottom = Spacing.md)
+            ) {
+                repeat(onboardingPages.size) { index ->
+                    PageIndicator(isActive = index == pagerState.currentPage)
+                }
+            }
+
+            // Buttons
+            if (pagerState.currentPage == onboardingPages.size - 1) {
+                // Last page - Get Started button
+                PrimaryButton(
+                    text = stringResource(R.string.onboarding_get_started),
+                    onClick = onComplete,
+                    icon = Icons.Default.ArrowForward
+                )
+            } else {
+                // Continue button
+                PrimaryButton(
+                    text = stringResource(R.string.onboarding_continue),
+                    onClick = {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                        }
+                    },
+                    icon = Icons.Default.ArrowForward
+                )
+            }
+
+            Spacer(modifier = Modifier.height(Spacing.sm))
         }
     }
 }

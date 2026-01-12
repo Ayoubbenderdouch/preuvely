@@ -16,15 +16,6 @@ class StoreResource extends JsonResource
         $user = auth('sanctum')->user();
         if ($user) {
             $isOwner = $user->isOwnerOf($this->resource);
-            // Debug log
-            \Log::info('StoreResource isOwner check', [
-                'store_id' => $this->id,
-                'store_name' => $this->name,
-                'user_id' => $user->id,
-                'user_name' => $user->name,
-                'is_owner' => $isOwner,
-                'owned_stores' => $user->ownedStores()->pluck('stores.id')->toArray(),
-            ]);
         }
 
         return [

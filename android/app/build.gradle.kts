@@ -8,14 +8,14 @@ plugins {
 
 android {
     namespace = "com.preuvely.app"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.preuvely.app"
-        minSdk = 26
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0.0"
+        minSdk = 27
+        targetSdk = 35
+        versionCode = 2
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -25,9 +25,19 @@ android {
         buildConfigField("String", "API_BASE_URL", "\"https://preuvely-main-p1qmvb.laravel.cloud/api/v1/\"")
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("preuvely-release-key.jks")
+            storePassword = "preuvely123"
+            keyAlias = "preuvely"
+            keyPassword = "preuvely123"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
