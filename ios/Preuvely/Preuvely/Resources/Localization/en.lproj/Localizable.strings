@@ -382,3 +382,9 @@
 "shake_contact_whatsapp" = "Chat on WhatsApp";
 "shake_contact_close" = "Close";
 "shake_contact_message" = "Hi! I need help with the Preuvely app.";
+
+// MARK: - Delete Account
+"delete_account_button" = "Delete Account";
+"delete_account_title" = "Delete Account?";
+"delete_account_message" = "This action is permanent and cannot be undone. All your data, reviews, and store claims will be permanently deleted.";
+"delete_account_confirm" = "Delete Account";

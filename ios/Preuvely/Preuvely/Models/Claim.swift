@@ -57,9 +57,7 @@ struct Claim: Identifiable, Codable, Hashable {
 
 // MARK: - Preview Data
 
-#if DEBUG
 extension Claim {
-    static let samples: [Claim] = []
     static let sample = Claim(
         id: 1,
         storeId: 1,
@@ -72,5 +70,6 @@ extension Claim {
         rejectReason: nil,
         createdAt: Date()
     )
+
+    static let samples: [Claim] = [sample]
 }
-#endif

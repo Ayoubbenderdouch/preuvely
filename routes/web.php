@@ -20,6 +20,10 @@ Route::get('/delete-account', function () {
     return view('legal.delete-account');
 })->name('delete-account');
 
+Route::get('/support', function () {
+    return view('legal.support');
+})->name('support');
+
 /**
  * Serve storage files directly (fallback for when storage:link doesn't work on Laravel Cloud)
  * This handles /storage/{path} requests by serving files from storage/app/public/

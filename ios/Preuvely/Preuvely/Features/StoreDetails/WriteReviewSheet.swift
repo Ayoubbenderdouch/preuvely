@@ -5,6 +5,7 @@ import Combine
 struct WriteReviewSheet: View {
     let store: Store
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @StateObject private var viewModel: WriteReviewViewModel
     @State private var appearAnimation = false
     @State private var showThankYou = false
@@ -13,6 +14,11 @@ struct WriteReviewSheet: View {
     @State private var showEmailAuth = false
     @State private var pendingSubmit = false
     @State private var showSocialLoginNotAvailable = false
+
+    /// Maximum content width for iPad sheets
+    private var maxContentWidth: CGFloat {
+        horizontalSizeClass == .regular ? 550 : .infinity
+    }
 
     init(store: Store) {
         self.store = store
@@ -53,6 +59,8 @@ struct WriteReviewSheet: View {
                         Spacer(minLength: 100)
                     }
                     .padding(20)
+                    .frame(maxWidth: maxContentWidth)
+                    .frame(maxWidth: .infinity)
                 }
                 .background(
                     LinearGradient(

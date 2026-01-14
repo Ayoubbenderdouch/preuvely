@@ -4,16 +4,32 @@ struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @StateObject private var notificationViewModel = NotificationViewModel()
     @EnvironmentObject private var localizationManager: LocalizationManager
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var searchText = ""
     @State private var showSearch = false
     @State private var showAllCategories = false
     @State private var showNotifications = false
     @State private var appearAnimation = false
 
+    /// Check if we're on iPad (regular size class)
+    private var isIPad: Bool {
+        horizontalSizeClass == .regular
+    }
+
+    /// Dynamic spacing between sections
+    private var sectionSpacing: CGFloat {
+        iPadLayout.sectionSpacing(for: horizontalSizeClass)
+    }
+
+    /// Dynamic horizontal padding
+    private var horizontalPadding: CGFloat {
+        iPadLayout.horizontalPadding(for: horizontalSizeClass)
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
-                VStack(spacing: 24) {
+                VStack(spacing: sectionSpacing) {
                     // Categories Grid
                     categoriesSection
                         .offset(y: appearAnimation ? 0 : 20)
@@ -32,6 +48,8 @@ struct HomeView: View {
                     Spacer(minLength: 100)
                 }
                 .padding(.top, 10)
+                .frame(maxWidth: isIPad ? iPadLayout.maxWideContentWidth : .infinity)
+                .frame(maxWidth: .infinity) // Center on iPad
             }
             .refreshable {
                 await viewModel.loadData()
@@ -89,13 +107,13 @@ struct HomeView: View {
 
     private var topBar: some View {
         VStack(spacing: 0) {
-            HStack(spacing: 12) {
-                // App Logo - Bigger
+            HStack(spacing: isIPad ? 16 : 12) {
+                // App Logo - Bigger on iPad
                 Image("logo")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 52, height: 52)
-                    .cornerRadius(14)
+                    .frame(width: isIPad ? 60 : 52, height: isIPad ? 60 : 52)
+                    .cornerRadius(isIPad ? 16 : 14)
                     .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
 
                 // Search Field
@@ -104,21 +122,22 @@ struct HomeView: View {
                 } label: {
                     HStack(spacing: 10) {
                         Image(systemName: "magnifyingglass")
-                            .font(.system(size: 16, weight: .medium))
+                            .font(.system(size: isIPad ? 18 : 16, weight: .medium))
                             .foregroundColor(Color(.systemGray2))
 
                         Text(L10n.Home.searchPlaceholder.localized)
-                            .font(.subheadline)
+                            .font(isIPad ? .body : .subheadline)
                             .foregroundColor(Color(.systemGray2))
 
                         Spacer()
                     }
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 12)
+                    .padding(.horizontal, isIPad ? 18 : 14)
+                    .padding(.vertical, isIPad ? 14 : 12)
                     .background(Color(.systemGray6))
-                    .cornerRadius(14)
+                    .cornerRadius(isIPad ? 16 : 14)
                 }
                 .buttonStyle(.plain)
+                .frame(maxWidth: isIPad ? 500 : .infinity)
 
                 // Notification Icon
                 Button {
@@ -127,24 +146,26 @@ struct HomeView: View {
                     ZStack {
                         Circle()
                             .fill(Color(.systemGray6))
-                            .frame(width: 44, height: 44)
+                            .frame(width: isIPad ? 52 : 44, height: isIPad ? 52 : 44)
 
                         Image(systemName: "bell.fill")
-                            .font(.system(size: 18))
+                            .font(.system(size: isIPad ? 22 : 18))
                             .foregroundColor(.primary)
 
                         // Notification badge (only show if unread)
                         if notificationViewModel.hasUnreadNotifications {
                             Circle()
                                 .fill(Color.red)
-                                .frame(width: 10, height: 10)
-                                .offset(x: 10, y: -10)
+                                .frame(width: isIPad ? 12 : 10, height: isIPad ? 12 : 10)
+                                .offset(x: isIPad ? 12 : 10, y: isIPad ? -12 : -10)
                         }
                     }
                 }
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 12)
+            .padding(.horizontal, horizontalPadding)
+            .padding(.vertical, isIPad ? 16 : 12)
+            .frame(maxWidth: isIPad ? iPadLayout.maxWideContentWidth : .infinity)
+            .frame(maxWidth: .infinity) // Center on iPad
             .background(
                 Color(.systemBackground)
                     .ignoresSafeArea(edges: .top)
@@ -160,16 +181,20 @@ struct HomeView: View {
     // MARK: - Categories Section
 
     private var categoriesSection: some View {
-        VStack(spacing: 16) {
+        let columnCount = iPadLayout.categoryGridColumns(for: horizontalSizeClass)
+        let gridSpacing = iPadLayout.gridSpacing(for: horizontalSizeClass)
+        let categoryLimit = isIPad ? 12 : 8 // Show more categories on iPad
+
+        return VStack(spacing: isIPad ? 20 : 16) {
             // Section Header
             HStack {
-                HStack(spacing: 8) {
+                HStack(spacing: isIPad ? 10 : 8) {
                     Image(systemName: "square.grid.2x2.fill")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.system(size: isIPad ? 16 : 14, weight: .semibold))
                         .foregroundColor(.primaryGreen)
 
                     Text(L10n.Home.categories.localized)
-                        .font(.headline)
+                        .font(isIPad ? .title3.weight(.semibold) : .headline)
                         .foregroundColor(.primary)
                 }
 
@@ -181,39 +206,42 @@ struct HomeView: View {
                     HStack(spacing: 4) {
                         Text(L10n.Common.seeAll.localized)
                         Image(systemName: "chevron.right")
-                            .font(.system(size: 10, weight: .bold))
+                            .font(.system(size: isIPad ? 12 : 10, weight: .bold))
                     }
-                    .font(.subheadline.weight(.medium))
+                    .font(isIPad ? .body.weight(.medium) : .subheadline.weight(.medium))
                     .foregroundColor(.primaryGreen)
                 }
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, horizontalPadding)
 
-            // Categories Grid
-            let columns = Array(repeating: GridItem(.flexible(), spacing: 12), count: 4)
+            // Categories Grid - More columns on iPad
+            let columns = Array(repeating: GridItem(.flexible(), spacing: gridSpacing), count: columnCount)
 
-            LazyVGrid(columns: columns, spacing: 12) {
-                ForEach(viewModel.categories.filter { $0.shouldShowOnHome }.prefix(8)) { category in
+            LazyVGrid(columns: columns, spacing: gridSpacing) {
+                ForEach(viewModel.categories.filter { $0.shouldShowOnHome }.prefix(categoryLimit)) { category in
                     ModernCategoryTile(category: category)
                 }
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, horizontalPadding)
         }
     }
 
     // MARK: - Top Reviewed Section
 
     private var topReviewedSection: some View {
-        VStack(spacing: 16) {
+        let columnCount = iPadLayout.storeGridColumns(for: horizontalSizeClass)
+        let gridSpacing = iPadLayout.gridSpacing(for: horizontalSizeClass)
+
+        return VStack(spacing: isIPad ? 20 : 16) {
             // Section Header
             HStack {
-                HStack(spacing: 8) {
+                HStack(spacing: isIPad ? 10 : 8) {
                     Image(systemName: "star.fill")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.system(size: isIPad ? 16 : 14, weight: .semibold))
                         .foregroundColor(.starYellow)
 
                     Text(L10n.Home.topReviewed.localized)
-                        .font(.headline)
+                        .font(isIPad ? .title3.weight(.semibold) : .headline)
                         .foregroundColor(.primary)
                 }
 
@@ -225,21 +253,18 @@ struct HomeView: View {
                     HStack(spacing: 4) {
                         Text(L10n.Common.seeAll.localized)
                         Image(systemName: "chevron.right")
-                            .font(.system(size: 10, weight: .bold))
+                            .font(.system(size: isIPad ? 12 : 10, weight: .bold))
                     }
-                    .font(.subheadline.weight(.medium))
+                    .font(isIPad ? .body.weight(.medium) : .subheadline.weight(.medium))
                     .foregroundColor(.primaryGreen)
                 }
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, horizontalPadding)
 
-            // Store Cards Grid
-            let columns = [
-                GridItem(.flexible(), spacing: 14),
-                GridItem(.flexible(), spacing: 14)
-            ]
+            // Store Cards Grid - More columns on iPad
+            let columns = Array(repeating: GridItem(.flexible(), spacing: gridSpacing), count: columnCount)
 
-            LazyVGrid(columns: columns, spacing: 14) {
+            LazyVGrid(columns: columns, spacing: gridSpacing) {
                 ForEach(viewModel.topRatedStores) { store in
                     NavigationLink(value: store) {
                         ModernStoreCard(store: store)
@@ -247,7 +272,7 @@ struct HomeView: View {
                     .buttonStyle(ScaleButtonStyle())
                 }
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, horizontalPadding)
         }
     }
 }
@@ -257,26 +282,42 @@ struct HomeView: View {
 struct ModernCategoryTile: View {
     let category: Category
     @EnvironmentObject private var localizationManager: LocalizationManager
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var isPressed = false
+
+    /// Check if we're on iPad
+    private var isIPad: Bool {
+        horizontalSizeClass == .regular
+    }
+
+    /// Dynamic image size based on device
+    private var imageSize: CGFloat {
+        isIPad ? 80 : 65
+    }
+
+    /// Dynamic icon size for fallback
+    private var iconSize: CGFloat {
+        isIPad ? 54 : 44
+    }
 
     var body: some View {
         NavigationLink(value: category) {
-            VStack(spacing: 6) {
+            VStack(spacing: isIPad ? 8 : 6) {
                 // Category image - no background
                 if UIImage(named: category.localImageName) != nil {
                     Image(category.localImageName)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 65, height: 65)
+                        .frame(width: imageSize, height: imageSize)
                 } else {
                     Image(systemName: category.sfSymbol)
-                        .font(.system(size: 44, weight: .medium))
+                        .font(.system(size: iconSize, weight: .medium))
                         .foregroundColor(.primaryGreen)
-                        .frame(width: 65, height: 65)
+                        .frame(width: imageSize, height: imageSize)
                 }
 
                 Text(category.localizedName(for: localizationManager.currentLanguage))
-                    .font(.caption.weight(.medium))
+                    .font(isIPad ? .subheadline.weight(.medium) : .caption.weight(.medium))
                     .foregroundColor(.primary)
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
@@ -305,6 +346,27 @@ struct ModernCategoryTile: View {
 
 struct ModernStoreCard: View {
     let store: Store
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    /// Check if we're on iPad
+    private var isIPad: Bool {
+        horizontalSizeClass == .regular
+    }
+
+    /// Dynamic image height based on device
+    private var imageHeight: CGFloat {
+        isIPad ? 160 : 120
+    }
+
+    /// Dynamic padding based on device
+    private var cardPadding: CGFloat {
+        isIPad ? 16 : 12
+    }
+
+    /// Dynamic placeholder font size
+    private var placeholderFontSize: CGFloat {
+        isIPad ? 52 : 40
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -327,51 +389,51 @@ struct ModernStoreCard: View {
                     placeholderView
                 }
             }
-            .frame(height: 120)
+            .frame(height: imageHeight)
             .clipped()
 
             // Store Info
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: isIPad ? 8 : 6) {
                 // Store name with verified badge
-                HStack(spacing: 4) {
+                HStack(spacing: isIPad ? 6 : 4) {
                     Text(store.name)
-                        .font(.subheadline.weight(.semibold))
+                        .font(isIPad ? .body.weight(.semibold) : .subheadline.weight(.semibold))
                         .foregroundColor(.primary)
                         .lineLimit(1)
 
                     if store.isVerified {
                         Image(systemName: "checkmark.seal.fill")
-                            .font(.system(size: 12))
+                            .font(.system(size: isIPad ? 14 : 12))
                             .foregroundColor(.primaryGreen)
                     }
                 }
 
                 // Rating & Reviews
-                HStack(spacing: 6) {
-                    HStack(spacing: 3) {
+                HStack(spacing: isIPad ? 8 : 6) {
+                    HStack(spacing: isIPad ? 4 : 3) {
                         Image(systemName: "star.fill")
-                            .font(.system(size: 11))
+                            .font(.system(size: isIPad ? 13 : 11))
                             .foregroundColor(.starYellow)
 
                         Text(String(format: "%.1f", store.avgRating))
-                            .font(.caption.weight(.medium))
+                            .font(isIPad ? .subheadline.weight(.medium) : .caption.weight(.medium))
                             .foregroundColor(.primary)
                     }
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
+                    .padding(.horizontal, isIPad ? 10 : 8)
+                    .padding(.vertical, isIPad ? 6 : 4)
                     .background(Color.starYellow.opacity(0.15))
-                    .cornerRadius(8)
+                    .cornerRadius(isIPad ? 10 : 8)
 
                     Text("\(store.reviewsCount) reviews")
-                        .font(.caption)
+                        .font(isIPad ? .subheadline : .caption)
                         .foregroundColor(.secondary)
                 }
             }
-            .padding(12)
+            .padding(cardPadding)
         }
         .background(Color(.systemBackground))
-        .cornerRadius(18)
-        .shadow(color: .black.opacity(0.06), radius: 12, x: 0, y: 4)
+        .cornerRadius(isIPad ? 22 : 18)
+        .shadow(color: .black.opacity(0.06), radius: isIPad ? 16 : 12, x: 0, y: isIPad ? 6 : 4)
     }
 
     private var placeholderView: some View {
@@ -383,7 +445,7 @@ struct ModernStoreCard: View {
             )
 
             Text(store.name.prefix(1).uppercased())
-                .font(.system(size: 40, weight: .bold, design: .rounded))
+                .font(.system(size: placeholderFontSize, weight: .bold, design: .rounded))
                 .foregroundStyle(
                     LinearGradient(
                         colors: [Color.primaryGreen, Color.primaryGreen.opacity(0.6)],
@@ -411,16 +473,37 @@ struct ScaleButtonStyle: ButtonStyle {
 
 struct PromoCarouselView: View {
     let banners: [Banner]
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var currentPage = 0
 
+    /// Check if we're on iPad
+    private var isIPad: Bool {
+        horizontalSizeClass == .regular
+    }
+
+    /// Dynamic banner height based on device
+    private var bannerHeight: CGFloat {
+        iPadLayout.bannerHeight(for: horizontalSizeClass)
+    }
+
+    /// Dynamic horizontal padding
+    private var horizontalPadding: CGFloat {
+        iPadLayout.horizontalPadding(for: horizontalSizeClass)
+    }
+
+    /// Dynamic corner radius
+    private var cornerRadius: CGFloat {
+        isIPad ? 24 : 20
+    }
+
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: isIPad ? 16 : 12) {
             if banners.isEmpty {
                 // Placeholder when loading
-                RoundedRectangle(cornerRadius: 20)
+                RoundedRectangle(cornerRadius: cornerRadius)
                     .fill(Color(.systemGray5))
-                    .frame(height: 150)
-                    .padding(.horizontal, 20)
+                    .frame(height: bannerHeight)
+                    .padding(.horizontal, horizontalPadding)
                     .shimmer()
             } else {
                 TabView(selection: $currentPage) {
@@ -430,16 +513,16 @@ struct PromoCarouselView: View {
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
-                .frame(height: 150)
-                .cornerRadius(20)
-                .padding(.horizontal, 20)
+                .frame(height: bannerHeight)
+                .cornerRadius(cornerRadius)
+                .padding(.horizontal, horizontalPadding)
 
-                // Page indicators
-                HStack(spacing: 6) {
+                // Page indicators - larger on iPad
+                HStack(spacing: isIPad ? 8 : 6) {
                     ForEach(0..<banners.count, id: \.self) { index in
                         Capsule()
                             .fill(index == currentPage ? Color.primaryGreen : Color(.systemGray4))
-                            .frame(width: index == currentPage ? 20 : 6, height: 6)
+                            .frame(width: index == currentPage ? (isIPad ? 28 : 20) : (isIPad ? 8 : 6), height: isIPad ? 8 : 6)
                             .animation(.spring(response: 0.3), value: currentPage)
                     }
                 }
@@ -465,6 +548,17 @@ struct PromoCarouselView: View {
 
 struct BannerCard: View {
     let banner: Banner
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    /// Check if we're on iPad
+    private var isIPad: Bool {
+        horizontalSizeClass == .regular
+    }
+
+    /// Dynamic corner radius
+    private var cornerRadius: CGFloat {
+        isIPad ? 24 : 20
+    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -501,11 +595,11 @@ struct BannerCard: View {
 
                 // Content (only show if there's text)
                 if banner.title != nil || banner.subtitle != nil || banner.hasLink {
-                    HStack(spacing: 16) {
-                        VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: isIPad ? 20 : 16) {
+                        VStack(alignment: .leading, spacing: isIPad ? 12 : 8) {
                             if let title = banner.title, !title.isEmpty {
                                 Text(title)
-                                    .font(.title3.weight(.bold))
+                                    .font(isIPad ? .title2.weight(.bold) : .title3.weight(.bold))
                                     .foregroundColor(.white)
                                     .lineLimit(2)
                                     .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 1)
@@ -513,7 +607,7 @@ struct BannerCard: View {
 
                             if let subtitle = banner.subtitle, !subtitle.isEmpty {
                                 Text(subtitle)
-                                    .font(.subheadline)
+                                    .font(isIPad ? .body : .subheadline)
                                     .foregroundColor(.white.opacity(0.9))
                                     .lineLimit(2)
                                     .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 1)
@@ -521,27 +615,27 @@ struct BannerCard: View {
 
                             // Link indicator
                             if banner.hasLink {
-                                HStack(spacing: 4) {
+                                HStack(spacing: isIPad ? 6 : 4) {
                                     Text("home_learn_more".localized)
-                                        .font(.caption.weight(.semibold))
+                                        .font(isIPad ? .subheadline.weight(.semibold) : .caption.weight(.semibold))
                                     Image(systemName: "arrow.right")
-                                        .font(.caption)
+                                        .font(isIPad ? .subheadline : .caption)
                                 }
                                 .foregroundColor(.white)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 6)
+                                .padding(.horizontal, isIPad ? 16 : 12)
+                                .padding(.vertical, isIPad ? 8 : 6)
                                 .background(Color.white.opacity(0.2))
-                                .cornerRadius(12)
+                                .cornerRadius(isIPad ? 14 : 12)
                             }
                         }
 
                         Spacer()
                     }
-                    .padding(20)
+                    .padding(isIPad ? 28 : 20)
                 }
             }
         }
-        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
     }
 
     private var backgroundGradient: some View {
@@ -671,19 +765,43 @@ struct StoreGridCard: View {
 struct AllCategoriesSheet: View {
     let categories: [Category]
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @EnvironmentObject private var localizationManager: LocalizationManager
+
+    /// Check if we're on iPad
+    private var isIPad: Bool {
+        horizontalSizeClass == .regular
+    }
+
+    /// Dynamic column count
+    private var columnCount: Int {
+        iPadLayout.allCategoriesColumns(for: horizontalSizeClass)
+    }
+
+    /// Dynamic grid spacing
+    private var gridSpacing: CGFloat {
+        iPadLayout.gridSpacing(for: horizontalSizeClass)
+    }
+
+    /// Dynamic horizontal padding
+    private var horizontalPadding: CGFloat {
+        iPadLayout.horizontalPadding(for: horizontalSizeClass)
+    }
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                let columns = Array(repeating: GridItem(.flexible(), spacing: 12), count: 4)
+                let columns = Array(repeating: GridItem(.flexible(), spacing: gridSpacing), count: columnCount)
 
-                LazyVGrid(columns: columns, spacing: 16) {
+                LazyVGrid(columns: columns, spacing: isIPad ? 24 : 16) {
                     ForEach(categories) { category in
                         ModernCategoryTile(category: category)
                     }
                 }
-                .padding(20)
+                .padding(.horizontal, horizontalPadding)
+                .padding(.vertical, isIPad ? 28 : 20)
+                .frame(maxWidth: isIPad ? iPadLayout.maxWideContentWidth : .infinity)
+                .frame(maxWidth: .infinity) // Center on iPad
             }
             .background(
                 LinearGradient(
@@ -702,6 +820,7 @@ struct AllCategoriesSheet: View {
                     Button(L10n.Common.done.localized) {
                         dismiss()
                     }
+                    .font(isIPad ? .body.weight(.semibold) : .body)
                     .fontWeight(.semibold)
                 }
             }

@@ -8,6 +8,7 @@ struct AddStoreView: View {
     @EnvironmentObject private var localizationManager: LocalizationManager
     @EnvironmentObject private var apiClient: APIClient
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @FocusState private var focusedField: Field?
     @State private var appearAnimation = false
     @State private var showAuthSheet = false
@@ -20,6 +21,11 @@ struct AddStoreView: View {
 
     enum Field {
         case name, link, whatsapp
+    }
+
+    /// Maximum content width for iPad
+    private var maxContentWidth: CGFloat {
+        horizontalSizeClass == .regular ? 600 : .infinity
     }
 
     init(prefillName: String = "") {
@@ -73,6 +79,8 @@ struct AddStoreView: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, 10)
+            .frame(maxWidth: maxContentWidth)
+            .frame(maxWidth: .infinity)
         }
         .background(
             LinearGradient(

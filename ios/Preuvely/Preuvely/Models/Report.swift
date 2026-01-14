@@ -102,9 +102,7 @@ struct Report: Identifiable, Codable, Hashable {
 
 // MARK: - Preview Data
 
-#if DEBUG
 extension Report {
-    static let samples: [Report] = []
     static let sample = Report(
         id: 1,
         reportableType: "store",
@@ -115,5 +113,6 @@ extension Report {
         status: .open,
         createdAt: Date()
     )
+
+    static let samples: [Report] = [sample]
 }
-#endif

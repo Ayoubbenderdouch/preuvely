@@ -128,7 +128,7 @@
       "Bash(mysql:*)",
       "Bash(~/Library/Android/sdk/platform-tools/adb shell getprop sys.boot_completed)",
       "Bash(~/Library/Android/sdk/platform-tools/adb logcat -c)",
-      "Bash(~/Library/Android/sdk/platform-tools/adb logcat -s \"AddStoreViewModel:*\" \"StoreRepository:*\")",
+      "Bash(~/Library/Android/sdk/platform-tools/adb logcat *)",
       "Bash(./gradlew installDebug:*)",
       "Bash(adb shell:*)",
       "Bash(./gradlew signingReport:*)",

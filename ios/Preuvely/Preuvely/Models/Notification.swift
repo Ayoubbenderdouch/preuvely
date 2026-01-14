@@ -85,9 +85,7 @@ struct AppNotification: Identifiable, Codable, Hashable {
 
 // MARK: - Preview Data
 
-#if DEBUG
 extension AppNotification {
-    static let samples: [AppNotification] = []
     static let sample = AppNotification(
         id: 1,
         type: .reviewReceived,
@@ -98,5 +96,6 @@ extension AppNotification {
         relatedId: nil,
         userName: nil
     )
+
+    static let samples: [AppNotification] = [sample]
 }
-#endif

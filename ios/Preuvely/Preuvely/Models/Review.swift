@@ -125,10 +125,7 @@ struct Review: Identifiable, Codable, Hashable {
 
 // MARK: - Preview Data
 
-#if DEBUG
 extension Review {
-    static let samples: [Review] = []
-
     static let sample = Review(
         id: 1,
         stars: 5,
@@ -141,5 +138,6 @@ extension Review {
         store: ReviewStore(id: 1, name: "Sample Store", slug: "sample-store"),
         createdAt: Date()
     )
+
+    static let samples: [Review] = [sample]
 }
-#endif

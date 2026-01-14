@@ -4,25 +4,47 @@ import Combine
 struct ProfileView: View {
     @StateObject private var viewModel = ProfileViewModel()
     @EnvironmentObject private var localizationManager: LocalizationManager
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var showAuth = false
     @State private var showLanguagePicker = false
     @State private var showEditProfile = false
     @State private var showEmailVerification = false
+    @State private var showDeleteAccountAlert = false
     @State private var appearAnimation = false
+
+    /// Maximum content width for iPad to prevent overly stretched layouts
+    private let maxContentWidth: CGFloat = 600
+
+    /// Returns true if the device is in regular width (iPad or large iPhone landscape)
+    private var isRegularWidth: Bool {
+        horizontalSizeClass == .regular
+    }
+
+    /// Horizontal padding based on size class
+    private var horizontalPadding: CGFloat {
+        isRegularWidth ? 32 : 20
+    }
+
+    /// Spacing between sections based on size class
+    private var sectionSpacing: CGFloat {
+        isRegularWidth ? 24 : 20
+    }
 
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
-                VStack(spacing: 20) {
+                VStack(spacing: sectionSpacing) {
                     if viewModel.isAuthenticated {
                         authenticatedContent
                     } else {
                         guestContent
                     }
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 10)
+                .padding(.horizontal, horizontalPadding)
+                .padding(.top, isRegularWidth ? 20 : 10)
                 .padding(.bottom, 120)
+                .frame(maxWidth: isRegularWidth ? maxContentWidth : .infinity)
+                .frame(maxWidth: .infinity) // Centers the content
             }
             .refreshable {
                 await viewModel.loadData()
@@ -70,6 +92,16 @@ struct ProfileView: View {
             } message: {
                 Text(viewModel.errorMessage ?? "An unexpected error occurred")
             }
+            .alert("delete_account_title".localized, isPresented: $showDeleteAccountAlert) {
+                Button("common_cancel".localized, role: .cancel) { }
+                Button("delete_account_confirm".localized, role: .destructive) {
+                    Task {
+                        await viewModel.deleteAccount()
+                    }
+                }
+            } message: {
+                Text("delete_account_message".localized)
+            }
             .onAppear {
                 withAnimation(.easeOut(duration: 0.5)) {
                     appearAnimation = true
@@ -84,9 +116,9 @@ struct ProfileView: View {
     // MARK: - Guest Content
 
     private var guestContent: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: sectionSpacing) {
             // Guest Header Card
-            VStack(spacing: 16) {
+            VStack(spacing: isRegularWidth ? 20 : 16) {
                 ZStack {
                     Circle()
                         .fill(
@@ -96,10 +128,10 @@ struct ProfileView: View {
                                 endPoint: .bottomTrailing
                             )
                         )
-                        .frame(width: 90, height: 90)
+                        .frame(width: isRegularWidth ? 100 : 90, height: isRegularWidth ? 100 : 90)
 
                     Image(systemName: "person.fill")
-                        .font(.system(size: 36, weight: .medium))
+                        .font(.system(size: isRegularWidth ? 40 : 36, weight: .medium))
                         .foregroundStyle(
                             LinearGradient(
                                 colors: [Color.primaryGreen, Color.primaryGreen.opacity(0.7)],
@@ -111,11 +143,11 @@ struct ProfileView: View {
 
                 VStack(spacing: 6) {
                     Text(L10n.Profile.guest.localized)
-                        .font(.title3.weight(.bold))
+                        .font(isRegularWidth ? .title2.weight(.bold) : .title3.weight(.bold))
                         .foregroundColor(.primary)
 
                     Text(L10n.Profile.signInToAccess.localized)
-                        .font(.subheadline)
+                        .font(isRegularWidth ? .body : .subheadline)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
@@ -131,8 +163,8 @@ struct ProfileView: View {
                             .font(.headline)
                     }
                     .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
+                    .frame(maxWidth: isRegularWidth ? 280 : .infinity)
+                    .padding(.vertical, isRegularWidth ? 16 : 14)
                     .background(
                         LinearGradient(
                             colors: [Color.primaryGreen, Color.primaryGreen.opacity(0.8)],
@@ -142,13 +174,13 @@ struct ProfileView: View {
                     )
                     .cornerRadius(14)
                 }
-                .padding(.horizontal, 20)
+                .padding(.horizontal, isRegularWidth ? 40 : 20)
                 .padding(.top, 8)
             }
-            .padding(.vertical, 28)
+            .padding(.vertical, isRegularWidth ? 32 : 28)
             .frame(maxWidth: .infinity)
             .background(Color(.systemBackground))
-            .cornerRadius(24)
+            .cornerRadius(isRegularWidth ? 28 : 24)
             .shadow(color: .black.opacity(0.05), radius: 15, x: 0, y: 5)
             .offset(y: appearAnimation ? 0 : 20)
             .opacity(appearAnimation ? 1 : 0)
@@ -168,7 +200,7 @@ struct ProfileView: View {
     // MARK: - Authenticated Content
 
     private var authenticatedContent: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: sectionSpacing) {
             // User card
             userCard
                 .offset(y: appearAnimation ? 0 : 20)
@@ -205,6 +237,11 @@ struct ProfileView: View {
             logoutButton
                 .offset(y: appearAnimation ? 0 : 20)
                 .opacity(appearAnimation ? 1 : 0)
+
+            // Delete Account
+            deleteAccountButton
+                .offset(y: appearAnimation ? 0 : 20)
+                .opacity(appearAnimation ? 1 : 0)
         }
     }
 
@@ -214,23 +251,23 @@ struct ProfileView: View {
         Button {
             showEditProfile = true
         } label: {
-            HStack(spacing: 14) {
+            HStack(spacing: isRegularWidth ? 18 : 14) {
                 // Avatar with image or fallback to initials
                 userAvatarView
 
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 6) {
                         Text(viewModel.user?.name ?? "User")
-                            .font(.headline)
+                            .font(isRegularWidth ? .title3.weight(.semibold) : .headline)
                             .foregroundColor(.primary)
 
                         Text("profile_edit_hint".localized)
-                            .font(.caption)
+                            .font(isRegularWidth ? .subheadline : .caption)
                             .foregroundColor(.secondary)
                     }
 
                     Text(viewModel.user?.displayEmail ?? "")
-                        .font(.subheadline)
+                        .font(isRegularWidth ? .body : .subheadline)
                         .foregroundColor(.secondary)
                 }
 
@@ -239,16 +276,16 @@ struct ProfileView: View {
                 ZStack {
                     Circle()
                         .fill(Color(.systemGray6))
-                        .frame(width: 32, height: 32)
+                        .frame(width: isRegularWidth ? 36 : 32, height: isRegularWidth ? 36 : 32)
 
                     Image(systemName: "chevron.forward")
-                        .font(.system(size: 12, weight: .semibold))
+                        .font(.system(size: isRegularWidth ? 14 : 12, weight: .semibold))
                         .foregroundColor(.primaryGreen)
                 }
             }
-            .padding(18)
+            .padding(isRegularWidth ? 22 : 18)
             .background(Color(.systemBackground))
-            .cornerRadius(20)
+            .cornerRadius(isRegularWidth ? 24 : 20)
             .shadow(color: .black.opacity(0.04), radius: 10, x: 0, y: 4)
         }
         .buttonStyle(.plain)
@@ -256,10 +293,15 @@ struct ProfileView: View {
 
     // MARK: - User Avatar View
 
+    /// Avatar size based on device size class
+    private var avatarSize: CGFloat {
+        isRegularWidth ? 68 : 56
+    }
+
     @ViewBuilder
     private var userAvatarView: some View {
         if let avatarURL = viewModel.user?.avatar, !avatarURL.isEmpty {
-            CachedAvatarImage(urlString: avatarURL, size: 56)
+            CachedAvatarImage(urlString: avatarURL, size: avatarSize)
         } else {
             avatarFallback
         }
@@ -275,10 +317,10 @@ struct ProfileView: View {
                         endPoint: .bottomTrailing
                     )
                 )
-                .frame(width: 56, height: 56)
+                .frame(width: avatarSize, height: avatarSize)
 
             Text(viewModel.user?.initials ?? "?")
-                .font(.title3.weight(.bold))
+                .font(isRegularWidth ? .title2.weight(.bold) : .title3.weight(.bold))
                 .foregroundStyle(
                     LinearGradient(
                         colors: [Color.primaryGreen, Color.primaryGreen.opacity(0.8)],
@@ -292,46 +334,46 @@ struct ProfileView: View {
     // MARK: - Email Verification Banner
 
     private var emailVerificationBanner: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 10) {
+        VStack(alignment: .leading, spacing: isRegularWidth ? 16 : 12) {
+            HStack(spacing: isRegularWidth ? 14 : 10) {
                 ZStack {
                     Circle()
                         .fill(Color.orange.opacity(0.15))
-                        .frame(width: 36, height: 36)
+                        .frame(width: isRegularWidth ? 42 : 36, height: isRegularWidth ? 42 : 36)
 
                     Image(systemName: "envelope.badge.fill")
-                        .font(.system(size: 16))
+                        .font(.system(size: isRegularWidth ? 18 : 16))
                         .foregroundColor(.orange)
                 }
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(L10n.Auth.verifyEmail.localized)
-                        .font(.subheadline.weight(.semibold))
+                        .font(isRegularWidth ? .body.weight(.semibold) : .subheadline.weight(.semibold))
                         .foregroundColor(.primary)
 
                     Text(L10n.Auth.verifyEmailMessage.localized)
-                        .font(.caption)
+                        .font(isRegularWidth ? .subheadline : .caption)
                         .foregroundColor(.secondary)
                         .lineLimit(2)
                 }
             }
 
-            HStack(spacing: 10) {
+            HStack(spacing: isRegularWidth ? 14 : 10) {
                 // Enter Code button (primary)
                 Button {
                     showEmailVerification = true
                 } label: {
                     HStack(spacing: 6) {
                         Image(systemName: "number.square.fill")
-                            .font(.system(size: 12, weight: .semibold))
+                            .font(.system(size: isRegularWidth ? 14 : 12, weight: .semibold))
                         Text("Enter Code")
-                            .font(.subheadline.weight(.semibold))
+                            .font(isRegularWidth ? .body.weight(.semibold) : .subheadline.weight(.semibold))
                     }
                     .foregroundColor(.white)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
+                    .padding(.horizontal, isRegularWidth ? 20 : 16)
+                    .padding(.vertical, isRegularWidth ? 12 : 10)
                     .background(Color.orange)
-                    .cornerRadius(10)
+                    .cornerRadius(isRegularWidth ? 12 : 10)
                 }
 
                 // Resend button (secondary)
@@ -342,25 +384,25 @@ struct ProfileView: View {
                 } label: {
                     HStack(spacing: 6) {
                         Image(systemName: "arrow.counterclockwise")
-                            .font(.system(size: 12, weight: .semibold))
+                            .font(.system(size: isRegularWidth ? 14 : 12, weight: .semibold))
                         Text(L10n.Auth.resendEmail.localized)
-                            .font(.subheadline.weight(.semibold))
+                            .font(isRegularWidth ? .body.weight(.semibold) : .subheadline.weight(.semibold))
                     }
                     .foregroundColor(.orange)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
+                    .padding(.horizontal, isRegularWidth ? 20 : 16)
+                    .padding(.vertical, isRegularWidth ? 12 : 10)
                     .background(Color.orange.opacity(0.15))
-                    .cornerRadius(10)
+                    .cornerRadius(isRegularWidth ? 12 : 10)
                 }
             }
         }
-        .padding(16)
+        .padding(isRegularWidth ? 20 : 16)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: isRegularWidth ? 20 : 16)
                 .fill(Color.orange.opacity(0.08))
                 .overlay(
-                    RoundedRectangle(cornerRadius: 16)
+                    RoundedRectangle(cornerRadius: isRegularWidth ? 20 : 16)
                         .stroke(Color.orange.opacity(0.2), lineWidth: 1)
                 )
         )
@@ -369,27 +411,27 @@ struct ProfileView: View {
     // MARK: - My Reviews Section
 
     private var myReviewsSection: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: isRegularWidth ? 18 : 14) {
             HStack {
-                HStack(spacing: 8) {
+                HStack(spacing: isRegularWidth ? 10 : 8) {
                     Image(systemName: "star.bubble.fill")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.system(size: isRegularWidth ? 16 : 14, weight: .semibold))
                         .foregroundColor(.primaryGreen)
 
                     Text(L10n.Profile.myReviews.localized)
-                        .font(.subheadline.weight(.semibold))
+                        .font(isRegularWidth ? .body.weight(.semibold) : .subheadline.weight(.semibold))
                         .foregroundColor(.primary)
                 }
 
                 Spacer()
 
                 Text("\(viewModel.myReviews.count)")
-                    .font(.caption.weight(.medium))
+                    .font(isRegularWidth ? .subheadline.weight(.medium) : .caption.weight(.medium))
                     .foregroundColor(.white)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 4)
+                    .padding(.horizontal, isRegularWidth ? 12 : 10)
+                    .padding(.vertical, isRegularWidth ? 6 : 4)
                     .background(Color.primaryGreen)
-                    .cornerRadius(10)
+                    .cornerRadius(isRegularWidth ? 12 : 10)
             }
 
             if viewModel.myReviews.isEmpty {
@@ -398,9 +440,9 @@ struct ProfileView: View {
                     message: L10n.Profile.noReviewsYet.localized
                 )
             } else {
-                VStack(spacing: 10) {
+                VStack(spacing: isRegularWidth ? 12 : 10) {
                     ForEach(viewModel.myReviews.prefix(3)) { review in
-                        MyReviewRow(review: review)
+                        MyReviewRow(review: review, isRegularWidth: isRegularWidth)
                     }
                 }
 
@@ -411,9 +453,9 @@ struct ProfileView: View {
                         HStack(spacing: 4) {
                             Text(L10n.Profile.seeAllReviews.localized)
                             Image(systemName: "arrow.right")
-                                .font(.system(size: 10))
+                                .font(.system(size: isRegularWidth ? 12 : 10))
                         }
-                        .font(.caption.weight(.semibold))
+                        .font(isRegularWidth ? .subheadline.weight(.semibold) : .caption.weight(.semibold))
                         .foregroundColor(.primaryGreen)
                     }
                     .frame(maxWidth: .infinity, alignment: .trailing)
@@ -421,36 +463,36 @@ struct ProfileView: View {
                 }
             }
         }
-        .padding(18)
+        .padding(isRegularWidth ? 22 : 18)
         .background(Color(.systemBackground))
-        .cornerRadius(20)
+        .cornerRadius(isRegularWidth ? 24 : 20)
         .shadow(color: .black.opacity(0.04), radius: 10, x: 0, y: 4)
     }
 
     // MARK: - My Claims Section
 
     private var myClaimsSection: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: isRegularWidth ? 18 : 14) {
             HStack {
-                HStack(spacing: 8) {
+                HStack(spacing: isRegularWidth ? 10 : 8) {
                     Image(systemName: "checkmark.seal.fill")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.system(size: isRegularWidth ? 16 : 14, weight: .semibold))
                         .foregroundColor(.primaryGreen)
 
                     Text(L10n.Profile.myClaims.localized)
-                        .font(.subheadline.weight(.semibold))
+                        .font(isRegularWidth ? .body.weight(.semibold) : .subheadline.weight(.semibold))
                         .foregroundColor(.primary)
                 }
 
                 Spacer()
 
                 Text("\(viewModel.myClaims.count)")
-                    .font(.caption.weight(.medium))
+                    .font(isRegularWidth ? .subheadline.weight(.medium) : .caption.weight(.medium))
                     .foregroundColor(.white)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 4)
+                    .padding(.horizontal, isRegularWidth ? 12 : 10)
+                    .padding(.vertical, isRegularWidth ? 6 : 4)
                     .background(Color.primaryGreen)
-                    .cornerRadius(10)
+                    .cornerRadius(isRegularWidth ? 12 : 10)
             }
 
             if viewModel.myClaims.isEmpty {
@@ -459,33 +501,33 @@ struct ProfileView: View {
                     message: L10n.Profile.noClaimsYet.localized
                 )
             } else {
-                VStack(spacing: 10) {
+                VStack(spacing: isRegularWidth ? 12 : 10) {
                     ForEach(viewModel.myClaims) { claim in
-                        MyClaimRow(claim: claim)
+                        MyClaimRow(claim: claim, isRegularWidth: isRegularWidth)
                     }
                 }
             }
         }
-        .padding(18)
+        .padding(isRegularWidth ? 22 : 18)
         .background(Color(.systemBackground))
-        .cornerRadius(20)
+        .cornerRadius(isRegularWidth ? 24 : 20)
         .shadow(color: .black.opacity(0.04), radius: 10, x: 0, y: 4)
     }
 
     private func emptySection(icon: String, message: String) -> some View {
-        HStack(spacing: 10) {
+        HStack(spacing: isRegularWidth ? 12 : 10) {
             Image(systemName: icon)
-                .font(.system(size: 16))
+                .font(.system(size: isRegularWidth ? 18 : 16))
                 .foregroundColor(Color(.systemGray3))
 
             Text(message)
-                .font(.subheadline)
+                .font(isRegularWidth ? .body : .subheadline)
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 20)
+        .padding(.vertical, isRegularWidth ? 24 : 20)
         .background(Color(.systemGray6).opacity(0.5))
-        .cornerRadius(12)
+        .cornerRadius(isRegularWidth ? 14 : 12)
     }
 
     // MARK: - Settings Section
@@ -496,7 +538,8 @@ struct ProfileView: View {
                 icon: "globe",
                 iconColor: .blue,
                 title: L10n.Profile.language.localized,
-                value: localizationManager.currentLanguage.displayName
+                value: localizationManager.currentLanguage.displayName,
+                isRegularWidth: isRegularWidth
             ) {
                 showLanguagePicker = true
             }
@@ -504,7 +547,8 @@ struct ProfileView: View {
             ModernSettingsRow(
                 icon: "questionmark.circle",
                 iconColor: .purple,
-                title: L10n.Profile.support.localized
+                title: L10n.Profile.support.localized,
+                isRegularWidth: isRegularWidth
             ) {
                 openSupport()
             }
@@ -512,50 +556,52 @@ struct ProfileView: View {
             ModernSettingsRow(
                 icon: "doc.text",
                 iconColor: .orange,
-                title: L10n.Profile.terms.localized
+                title: L10n.Profile.terms.localized,
+                isRegularWidth: isRegularWidth
             ) {
-                // Open terms
+                openTermsOfService()
             }
 
             ModernSettingsRow(
                 icon: "hand.raised",
                 iconColor: .pink,
                 title: L10n.Profile.privacy.localized,
-                showDivider: false
+                showDivider: false,
+                isRegularWidth: isRegularWidth
             ) {
-                // Open privacy
+                openPrivacyPolicy()
             }
         }
         .background(Color(.systemBackground))
-        .cornerRadius(20)
+        .cornerRadius(isRegularWidth ? 24 : 20)
         .shadow(color: .black.opacity(0.04), radius: 10, x: 0, y: 4)
     }
 
     // MARK: - Social Media Section
 
     private var socialMediaSection: some View {
-        VStack(spacing: 14) {
-            HStack(spacing: 8) {
+        VStack(spacing: isRegularWidth ? 18 : 14) {
+            HStack(spacing: isRegularWidth ? 10 : 8) {
                 Image(systemName: "heart.fill")
-                    .font(.system(size: 12))
+                    .font(.system(size: isRegularWidth ? 14 : 12))
                     .foregroundColor(.primaryGreen)
 
                 Text(L10n.Profile.followUs.localized)
-                    .font(.subheadline.weight(.medium))
+                    .font(isRegularWidth ? .body.weight(.medium) : .subheadline.weight(.medium))
                     .foregroundColor(.secondary)
             }
 
-            HStack(spacing: 16) {
-                ModernSocialButton(iconName: "Instagram", url: "https://instagram.com/preuvely")
-                ModernSocialButton(iconName: "facebook", url: "https://facebook.com/preuvely")
-                ModernSocialButton(iconName: "Tiktok", url: "https://tiktok.com/@preuvely")
-                ModernSocialButton(iconName: "Whatsapp", url: "https://wa.me/213555123456")
+            HStack(spacing: isRegularWidth ? 24 : 16) {
+                ModernSocialButton(iconName: "Instagram", url: "https://www.instagram.com/preuvely", isRegularWidth: isRegularWidth)
+                ModernSocialButton(iconName: "facebook", url: "https://www.facebook.com/share/1BZJbGYGY5/", isRegularWidth: isRegularWidth)
+                ModernSocialButton(iconName: "Tiktok", url: "https://www.tiktok.com/@preuvely", isRegularWidth: isRegularWidth)
+                ModernSocialButton(iconName: "Whatsapp", url: "", isRegularWidth: isRegularWidth)
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(20)
+        .padding(isRegularWidth ? 24 : 20)
         .background(Color(.systemBackground))
-        .cornerRadius(20)
+        .cornerRadius(isRegularWidth ? 24 : 20)
         .shadow(color: .black.opacity(0.04), radius: 10, x: 0, y: 4)
     }
 
@@ -567,26 +613,59 @@ struct ProfileView: View {
                 await viewModel.logout()
             }
         } label: {
-            HStack(spacing: 8) {
+            HStack(spacing: isRegularWidth ? 10 : 8) {
                 Image(systemName: "rectangle.portrait.and.arrow.right")
-                    .font(.system(size: 16))
+                    .font(.system(size: isRegularWidth ? 18 : 16))
                 Text(L10n.Auth.logout.localized)
-                    .font(.subheadline.weight(.medium))
+                    .font(isRegularWidth ? .body.weight(.medium) : .subheadline.weight(.medium))
             }
             .foregroundColor(.red)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 14)
+            .frame(maxWidth: isRegularWidth ? 320 : .infinity)
+            .padding(.vertical, isRegularWidth ? 16 : 14)
             .background(Color.red.opacity(0.08))
-            .cornerRadius(14)
+            .cornerRadius(isRegularWidth ? 16 : 14)
             .overlay(
-                RoundedRectangle(cornerRadius: 14)
+                RoundedRectangle(cornerRadius: isRegularWidth ? 16 : 14)
                     .stroke(Color.red.opacity(0.2), lineWidth: 1)
             )
         }
     }
 
+    // MARK: - Delete Account Button
+
+    private var deleteAccountButton: some View {
+        Button {
+            showDeleteAccountAlert = true
+        } label: {
+            HStack(spacing: isRegularWidth ? 10 : 8) {
+                Image(systemName: "trash")
+                    .font(.system(size: isRegularWidth ? 18 : 16))
+                Text("delete_account_button".localized)
+                    .font(isRegularWidth ? .body.weight(.medium) : .subheadline.weight(.medium))
+            }
+            .foregroundColor(.red.opacity(0.7))
+            .frame(maxWidth: isRegularWidth ? 320 : .infinity)
+            .padding(.vertical, isRegularWidth ? 16 : 14)
+            .background(Color.clear)
+            .cornerRadius(isRegularWidth ? 16 : 14)
+            .overlay(
+                RoundedRectangle(cornerRadius: isRegularWidth ? 16 : 14)
+                    .stroke(Color.red.opacity(0.15), lineWidth: 1)
+            )
+        }
+    }
+
     private func openSupport() {
-        guard let url = URL(string: "https://wa.me/213555123456") else { return }
+        // TODO: Add support contact
+    }
+
+    private func openTermsOfService() {
+        guard let url = URL(string: "https://preuvely-main-p1qmvb.laravel.cloud/terms") else { return }
+        UIApplication.shared.open(url)
+    }
+
+    private func openPrivacyPolicy() {
+        guard let url = URL(string: "https://preuvely-main-p1qmvb.laravel.cloud/privacy") else { return }
         UIApplication.shared.open(url)
     }
 }
@@ -595,29 +674,30 @@ struct ProfileView: View {
 
 struct MyReviewRow: View {
     let review: Review
+    var isRegularWidth: Bool = false
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: isRegularWidth ? 16 : 12) {
             ZStack {
                 Circle()
                     .fill(Color.starYellow.opacity(0.15))
-                    .frame(width: 40, height: 40)
+                    .frame(width: isRegularWidth ? 48 : 40, height: isRegularWidth ? 48 : 40)
 
                 Text("\(review.stars)")
-                    .font(.subheadline.weight(.bold))
+                    .font(isRegularWidth ? .body.weight(.bold) : .subheadline.weight(.bold))
                     .foregroundColor(.starYellow)
             }
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(review.store?.name ?? "Store")
-                    .font(.subheadline.weight(.medium))
+                    .font(isRegularWidth ? .body.weight(.medium) : .subheadline.weight(.medium))
                     .foregroundColor(.primary)
                     .lineLimit(1)
 
-                HStack(spacing: 2) {
+                HStack(spacing: isRegularWidth ? 3 : 2) {
                     ForEach(1...5, id: \.self) { star in
                         Image(systemName: star <= review.stars ? "star.fill" : "star")
-                            .font(.system(size: 10))
+                            .font(.system(size: isRegularWidth ? 12 : 10))
                             .foregroundColor(star <= review.stars ? .starYellow : Color(.systemGray4))
                     }
                 }
@@ -627,9 +707,9 @@ struct MyReviewRow: View {
 
             StatusBadge(status: review.status.rawValue.capitalized, color: review.status == .approved ? .green : .orange)
         }
-        .padding(12)
+        .padding(isRegularWidth ? 16 : 12)
         .background(Color(.systemGray6).opacity(0.5))
-        .cornerRadius(12)
+        .cornerRadius(isRegularWidth ? 14 : 12)
     }
 }
 
@@ -637,31 +717,32 @@ struct MyReviewRow: View {
 
 struct MyClaimRow: View {
     let claim: Claim
+    var isRegularWidth: Bool = false
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: isRegularWidth ? 16 : 12) {
             ZStack {
                 Circle()
                     .fill(Color.primaryGreen.opacity(0.15))
-                    .frame(width: 40, height: 40)
+                    .frame(width: isRegularWidth ? 48 : 40, height: isRegularWidth ? 48 : 40)
 
                 Image(systemName: "storefront")
-                    .font(.system(size: 14, weight: .medium))
+                    .font(.system(size: isRegularWidth ? 16 : 14, weight: .medium))
                     .foregroundColor(.primaryGreen)
             }
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(claim.displayStoreName)
-                    .font(.subheadline.weight(.medium))
+                    .font(isRegularWidth ? .body.weight(.medium) : .subheadline.weight(.medium))
                     .foregroundColor(.primary)
 
                 Text(claim.formattedDate)
-                    .font(.caption)
+                    .font(isRegularWidth ? .subheadline : .caption)
                     .foregroundColor(.secondary)
 
                 if let rejectReason = claim.rejectReason, claim.status == .rejected {
                     Text(rejectReason)
-                        .font(.caption2)
+                        .font(isRegularWidth ? .caption : .caption2)
                         .foregroundColor(.red)
                         .lineLimit(1)
                 }
@@ -671,9 +752,9 @@ struct MyClaimRow: View {
 
             StatusBadge(claimStatus: claim.status)
         }
-        .padding(12)
+        .padding(isRegularWidth ? 16 : 12)
         .background(Color(.systemGray6).opacity(0.5))
-        .cornerRadius(12)
+        .cornerRadius(isRegularWidth ? 14 : 12)
     }
 }
 
@@ -685,46 +766,48 @@ struct ModernSettingsRow: View {
     let title: String
     var value: String? = nil
     var showDivider: Bool = true
+    var isRegularWidth: Bool = false
     let action: () -> Void
 
     var body: some View {
         VStack(spacing: 0) {
             Button(action: action) {
-                HStack(spacing: 14) {
+                HStack(spacing: isRegularWidth ? 18 : 14) {
                     ZStack {
-                        RoundedRectangle(cornerRadius: 10)
+                        RoundedRectangle(cornerRadius: isRegularWidth ? 12 : 10)
                             .fill(iconColor.opacity(0.12))
-                            .frame(width: 36, height: 36)
+                            .frame(width: isRegularWidth ? 42 : 36, height: isRegularWidth ? 42 : 36)
 
                         Image(systemName: icon)
-                            .font(.system(size: 16, weight: .medium))
+                            .font(.system(size: isRegularWidth ? 18 : 16, weight: .medium))
                             .foregroundColor(iconColor)
                     }
 
                     Text(title)
-                        .font(.subheadline.weight(.medium))
+                        .font(isRegularWidth ? .body.weight(.medium) : .subheadline.weight(.medium))
                         .foregroundColor(.primary)
 
                     Spacer()
 
                     if let value = value {
                         Text(value)
-                            .font(.subheadline)
+                            .font(isRegularWidth ? .body : .subheadline)
                             .foregroundColor(.secondary)
                     }
 
                     Image(systemName: "chevron.forward")
-                        .font(.system(size: 12, weight: .medium))
+                        .font(.system(size: isRegularWidth ? 14 : 12, weight: .medium))
                         .foregroundColor(Color(.systemGray3))
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 14)
+                .padding(.horizontal, isRegularWidth ? 20 : 16)
+                .padding(.vertical, isRegularWidth ? 18 : 14)
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
 
             if showDivider {
                 Divider()
-                    .padding(.leading, 66)
+                    .padding(.leading, isRegularWidth ? 80 : 66)
             }
         }
     }
@@ -735,8 +818,17 @@ struct ModernSettingsRow: View {
 struct ModernSocialButton: View {
     let iconName: String
     let url: String
+    var isRegularWidth: Bool = false
 
     @State private var isPressed = false
+
+    private var buttonSize: CGFloat {
+        isRegularWidth ? 60 : 52
+    }
+
+    private var iconSize: CGFloat {
+        isRegularWidth ? 30 : 26
+    }
 
     var body: some View {
         Button {
@@ -753,13 +845,13 @@ struct ModernSocialButton: View {
                             endPoint: .bottom
                         )
                     )
-                    .frame(width: 52, height: 52)
+                    .frame(width: buttonSize, height: buttonSize)
                     .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
 
                 Image(iconName)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 26, height: 26)
+                    .frame(width: iconSize, height: iconSize)
             }
             .scaleEffect(isPressed ? 0.92 : 1.0)
         }
@@ -1103,6 +1195,21 @@ final class ProfileViewModel: ObservableObject {
         } catch {
             // Ignore logout errors - user is already logged out locally
             print("[Logout] Server logout failed: \(error.localizedDescription)")
+        }
+    }
+
+    func deleteAccount() async {
+        do {
+            try await apiClient.deleteAccount()
+            // Clear local state after successful deletion
+            user = nil
+            myReviews = []
+            myClaims = []
+            showError = false
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
+            showError = true
         }
     }
 }

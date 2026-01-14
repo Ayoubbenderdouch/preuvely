@@ -651,6 +651,11 @@ extension APIClient: AuthServiceProtocol {
         clearAuthToken()
     }
 
+    func deleteAccount() async throws {
+        try await delete(.deleteAccount)
+        clearAuthToken()
+    }
+
     func getCurrentUser() async throws -> User? {
         guard authToken != nil else { return nil }
 

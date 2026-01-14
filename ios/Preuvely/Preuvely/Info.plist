@@ -27,8 +27,6 @@
     </dict>
     <key>UIApplicationSupportsIndirectInputEvents</key>
     <true/>
-    <key>UILaunchScreen</key>
-    <dict/>
     <key>UISupportedInterfaceOrientations</key>
     <array>
         <string>UIInterfaceOrientationPortrait</string>
@@ -56,5 +54,25 @@
         <string>tiktok</string>
         <string>whatsapp</string>
     </array>
+
+    <!-- Privacy Usage Descriptions -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Preuvely needs access to your photo library to upload profile pictures, store logos, and proof images for reviews.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Preuvely needs camera access to take photos for your profile, store logos, and review proof images.</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>Preuvely needs permission to save photos to your library.</string>
+
+    <!-- App Store Additional Info -->
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
+
+    <!-- Launch Screen Configuration -->
+    <key>UILaunchStoryboardName</key>
+    <string>LaunchScreen</string>
+
+    <!-- iPad Full Screen Support -->
+    <key>UIRequiresFullScreen</key>
+    <false/>
 </dict>
 </plist>

@@ -4,7 +4,13 @@ import Combine
 struct ClaimStoreSheet: View {
     let store: Store
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @StateObject private var viewModel: ClaimStoreViewModel
+
+    /// Maximum content width for iPad sheets
+    private var maxContentWidth: CGFloat {
+        horizontalSizeClass == .regular ? 500 : .infinity
+    }
 
     init(store: Store) {
         self.store = store
@@ -20,6 +26,7 @@ struct ClaimStoreSheet: View {
                     formContent
                 }
             }
+            .frame(maxWidth: .infinity)
             .background(Color(.secondarySystemBackground))
             .navigationTitle(viewModel.showSuccess ? "" : L10n.Claim.title.localized)
             .navigationBarTitleDisplayMode(.inline)
@@ -65,6 +72,8 @@ struct ClaimStoreSheet: View {
                 submitButton
             }
             .padding(Spacing.screenPadding)
+            .frame(maxWidth: maxContentWidth)
+            .frame(maxWidth: .infinity)
         }
     }
 
@@ -116,6 +125,7 @@ struct ClaimStoreSheet: View {
             .padding(.horizontal, Spacing.screenPadding)
             .padding(.bottom, Spacing.xl)
         }
+        .frame(maxWidth: maxContentWidth)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(
             LinearGradient(

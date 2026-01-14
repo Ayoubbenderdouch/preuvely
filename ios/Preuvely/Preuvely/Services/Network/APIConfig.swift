@@ -66,6 +66,7 @@ enum APIEndpoint {
     case resendVerification
     case verifyEmailCode
     case socialLogin(provider: String)
+    case deleteAccount
 
     // Categories
     case categories
@@ -138,6 +139,8 @@ enum APIEndpoint {
             return "/auth/email/verify-code"
         case .socialLogin(let provider):
             return "/auth/social/\(provider)/callback"
+        case .deleteAccount:
+            return "/auth/account"
 
         // Categories
         case .categories:

@@ -7,6 +7,35 @@ struct SearchView: View {
     @State private var showAddStore = false
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isPresented) private var isPresented
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    // MARK: - iPad Layout Constants
+
+    /// Maximum content width for iPad to prevent overly wide content
+    private var maxContentWidth: CGFloat {
+        horizontalSizeClass == .regular ? 900 : .infinity
+    }
+
+    /// Maximum search bar width for iPad
+    private var maxSearchBarWidth: CGFloat {
+        horizontalSizeClass == .regular ? 700 : .infinity
+    }
+
+    /// Number of grid columns based on device
+    private var gridColumns: [GridItem] {
+        if horizontalSizeClass == .regular {
+            // iPad: 3-4 columns depending on orientation
+            return Array(repeating: GridItem(.flexible(), spacing: Spacing.md), count: 3)
+        } else {
+            // iPhone: Single column (list view)
+            return [GridItem(.flexible())]
+        }
+    }
+
+    /// Horizontal padding for centering content on iPad
+    private var contentPadding: CGFloat {
+        horizontalSizeClass == .regular ? Spacing.xl : Spacing.screenPadding
+    }
 
     var body: some View {
         NavigationStack {
@@ -88,8 +117,10 @@ struct SearchView: View {
                     .cornerRadius(Spacing.radiusMedium)
             }
         }
-        .padding(.horizontal, Spacing.screenPadding)
+        .frame(maxWidth: maxSearchBarWidth)
+        .padding(.horizontal, contentPadding)
         .padding(.vertical, Spacing.md)
+        .frame(maxWidth: .infinity)
         .background(Color(.systemBackground))
     }
 
@@ -127,8 +158,10 @@ struct SearchView: View {
                             showFilters = true
                         }
                     }
-                    .padding(.horizontal, Spacing.screenPadding)
+                    .frame(maxWidth: maxContentWidth, alignment: .leading)
+                    .padding(.horizontal, contentPadding)
                 }
+                .frame(maxWidth: .infinity)
                 .padding(.vertical, Spacing.sm)
                 .background(Color(.systemBackground))
             }
@@ -139,20 +172,24 @@ struct SearchView: View {
 
     private var resultsListView: some View {
         ScrollView {
-            LazyVStack(spacing: Spacing.md) {
+            LazyVGrid(columns: gridColumns, spacing: Spacing.md) {
                 ForEach(viewModel.stores) { store in
                     NavigationLink(value: store) {
-                        StoreCard(store: store)
+                        StoreCard(store: store, isCompact: horizontalSizeClass == .regular)
+                            .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.plain)
                 }
-
-                if viewModel.isLoading {
-                    ProgressView()
-                        .padding()
-                }
             }
-            .padding(Spacing.screenPadding)
+            .frame(maxWidth: maxContentWidth)
+            .padding(.horizontal, contentPadding)
+            .padding(.vertical, Spacing.screenPadding)
+            .frame(maxWidth: .infinity)
+
+            if viewModel.isLoading {
+                ProgressView()
+                    .padding()
+            }
         }
         .refreshable {
             await viewModel.search()
@@ -180,24 +217,25 @@ struct SearchView: View {
                 Spacer(minLength: Spacing.xl)
 
                 Image(systemName: "magnifyingglass")
-                    .font(.system(size: 50))
+                    .font(.system(size: horizontalSizeClass == .regular ? 60 : 50))
                     .foregroundColor(Color(.systemGray3))
 
                 Text(L10n.Search.searchForStores.localized)
-                    .font(.title3)
+                    .font(horizontalSizeClass == .regular ? .title2 : .title3)
                     .foregroundColor(.secondary)
 
                 Text(L10n.Search.findStoresByName.localized)
                     .font(.body)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal)
+                    .padding(.horizontal, contentPadding)
 
                 // Search Hints Section
                 searchHintsSection
 
                 Spacer(minLength: Spacing.xl)
             }
+            .frame(maxWidth: maxContentWidth)
             .frame(maxWidth: .infinity)
         }
     }
@@ -209,7 +247,7 @@ struct SearchView: View {
             Text(L10n.Search.hintTitle.localized)
                 .font(.subheadline.weight(.semibold))
                 .foregroundColor(.secondary)
-                .padding(.horizontal, Spacing.screenPadding)
+                .padding(.horizontal, contentPadding)
 
             // Wrapping flow layout for chips
             FlowLayout(spacing: Spacing.sm) {
@@ -241,7 +279,7 @@ struct SearchView: View {
                     viewModel.searchQuery = "https://"
                 }
             }
-            .padding(.horizontal, Spacing.screenPadding)
+            .padding(.horizontal, contentPadding)
         }
         .padding(.top, Spacing.lg)
     }
@@ -424,8 +462,23 @@ struct FilterChip: View {
 struct SearchFiltersSheet: View {
     @ObservedObject var viewModel: SearchViewModel
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @EnvironmentObject private var localizationManager: LocalizationManager
     @State private var showCategoryPicker = false
+
+    /// Maximum content width for iPad filters sheet
+    private var maxSheetContentWidth: CGFloat {
+        horizontalSizeClass == .regular ? 600 : .infinity
+    }
+
+    /// Number of category columns based on device
+    private var categoryColumns: [GridItem] {
+        if horizontalSizeClass == .regular {
+            return Array(repeating: GridItem(.flexible()), count: 4)
+        } else {
+            return Array(repeating: GridItem(.flexible()), count: 3)
+        }
+    }
 
     var body: some View {
         NavigationStack {
@@ -444,13 +497,7 @@ struct SearchFiltersSheet: View {
                         }
 
                         // Category Grid
-                        let columns = [
-                            GridItem(.flexible()),
-                            GridItem(.flexible()),
-                            GridItem(.flexible())
-                        ]
-
-                        LazyVGrid(columns: columns, spacing: 10) {
+                        LazyVGrid(columns: categoryColumns, spacing: 10) {
                             // All Categories Option
                             FilterCategoryButton(
                                 icon: "square.grid.2x2",
@@ -536,7 +583,9 @@ struct SearchFiltersSheet: View {
                     .background(Color(.systemBackground))
                     .cornerRadius(16)
                 }
+                .frame(maxWidth: maxSheetContentWidth)
                 .padding(20)
+                .frame(maxWidth: .infinity)
             }
             .background(Color(.systemGray6))
             .navigationTitle(L10n.Search.filters.localized)

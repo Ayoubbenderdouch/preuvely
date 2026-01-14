@@ -136,7 +136,6 @@ struct OwnedStore: Identifiable, Codable, Hashable {
 
 // MARK: - Preview Data
 
-#if DEBUG
 extension OwnedStore {
     static let sample = OwnedStore(
         id: 1,
@@ -158,4 +157,3 @@ extension OwnedStore {
 
     static let samples: [OwnedStore] = [sample]
 }
-#endif

@@ -6,6 +6,7 @@ struct EditStoreView: View {
     let store: Store
     @ObservedObject var viewModel: MyStoreViewModel
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @EnvironmentObject private var localizationManager: LocalizationManager
 
     @State private var showEditLinks = false
@@ -13,6 +14,11 @@ struct EditStoreView: View {
     @State private var showCameraSheet = false
     @State private var imagePickerSourceType: UIImagePickerController.SourceType = .photoLibrary
     @State private var appearAnimation = false
+
+    /// Maximum content width for iPad
+    private var maxContentWidth: CGFloat {
+        horizontalSizeClass == .regular ? 600 : .infinity
+    }
 
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -35,6 +41,8 @@ struct EditStoreView: View {
                 Spacer(minLength: 100)
             }
             .padding(Spacing.screenPadding)
+            .frame(maxWidth: maxContentWidth)
+            .frame(maxWidth: .infinity)
         }
         .background(
             LinearGradient(

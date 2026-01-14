@@ -4,7 +4,13 @@ import Combine
 struct NotificationView: View {
     @StateObject private var viewModel = NotificationViewModel()
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var appearAnimation = false
+
+    /// Maximum content width for iPad
+    private var maxContentWidth: CGFloat {
+        horizontalSizeClass == .regular ? 700 : .infinity
+    }
 
     var body: some View {
         NavigationStack {
@@ -25,6 +31,7 @@ struct NotificationView: View {
                     notificationsList
                 }
             }
+            .frame(maxWidth: .infinity)
             .navigationTitle(L10n.Notification.title.localized)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -148,6 +155,8 @@ struct NotificationView: View {
                 }
             }
             .padding(.bottom, Spacing.xxxl)
+            .frame(maxWidth: maxContentWidth)
+            .frame(maxWidth: .infinity)
         }
         .refreshable {
             await viewModel.refresh()

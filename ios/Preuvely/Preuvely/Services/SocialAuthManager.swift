@@ -91,7 +91,7 @@ final class SocialAuthManager: NSObject, ObservableObject {
     /// - Returns: The Apple identity token string.
     /// - Throws: SocialAuthError if sign-in fails.
     func signInWithApple() async throws -> String {
-        let nonce = randomNonceString()
+        let nonce = try randomNonceString()
         currentNonce = nonce
 
         let appleIDProvider = ASAuthorizationAppleIDProvider()
@@ -111,12 +111,13 @@ final class SocialAuthManager: NSObject, ObservableObject {
     // MARK: - Helper Methods
 
     /// Generates a random nonce string for Apple Sign-In.
-    private func randomNonceString(length: Int = 32) -> String {
+    /// - Throws: SocialAuthError.nonceGenerationFailed if SecRandomCopyBytes fails
+    private func randomNonceString(length: Int = 32) throws -> String {
         precondition(length > 0)
         var randomBytes = [UInt8](repeating: 0, count: length)
         let errorCode = SecRandomCopyBytes(kSecRandomDefault, randomBytes.count, &randomBytes)
         if errorCode != errSecSuccess {
-            fatalError("Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)")
+            throw SocialAuthError.nonceGenerationFailed(status: errorCode)
         }
 
         let charset: [Character] = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
@@ -210,6 +211,7 @@ enum SocialAuthError: LocalizedError {
     case userCancelled
     case googleSignInFailed(Error)
     case appleSignInFailed(Error)
+    case nonceGenerationFailed(status: OSStatus)
 
     var errorDescription: String? {
         switch self {
@@ -235,6 +237,8 @@ enum SocialAuthError: LocalizedError {
             return "Google Sign-In failed: \(error.localizedDescription)"
         case .appleSignInFailed(let error):
             return "Apple Sign-In failed: \(error.localizedDescription)"
+        case .nonceGenerationFailed(let status):
+            return "Failed to generate secure nonce (OSStatus: \(status))"
         }
     }
 }

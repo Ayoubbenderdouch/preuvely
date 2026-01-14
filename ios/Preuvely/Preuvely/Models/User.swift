@@ -66,7 +66,6 @@ enum AuthState: Equatable {
 
 // MARK: - Preview Data
 
-#if DEBUG
 extension User {
     static let sample = User(
         id: 1,
@@ -78,4 +77,3 @@ extension User {
         createdAt: Date()
     )
 }
-#endif

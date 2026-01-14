@@ -7,7 +7,13 @@ struct ReportSheet: View {
     let reportableName: String
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @StateObject private var viewModel = ReportViewModel()
+
+    /// Maximum content width for iPad sheets
+    private var maxContentWidth: CGFloat {
+        horizontalSizeClass == .regular ? 500 : .infinity
+    }
 
     var body: some View {
         NavigationStack {
@@ -21,6 +27,7 @@ struct ReportSheet: View {
                 }
             }
             .animation(.easeInOut(duration: 0.3), value: viewModel.showSuccess)
+            .frame(maxWidth: .infinity)
             .background(Color(.secondarySystemBackground))
             .navigationTitle(viewModel.showSuccess ? "" : L10n.Report.title.localized)
             .navigationBarTitleDisplayMode(.inline)
@@ -69,6 +76,8 @@ struct ReportSheet: View {
                 submitButton
             }
             .padding(Spacing.screenPadding)
+            .frame(maxWidth: maxContentWidth)
+            .frame(maxWidth: .infinity)
         }
     }
 
@@ -105,6 +114,8 @@ struct ReportSheet: View {
             .padding(.horizontal, Spacing.screenPadding)
             .padding(.bottom, Spacing.xl)
         }
+        .frame(maxWidth: maxContentWidth)
+        .frame(maxWidth: .infinity)
     }
 
     // MARK: - Reporting Header

@@ -11,6 +11,7 @@ struct ReviewAuthSheet: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     // MARK: - Animation States
     @State private var headerAppeared = false
@@ -18,6 +19,11 @@ struct ReviewAuthSheet: View {
     @State private var buttonsAppeared = false
     @State private var floatingIconsVisible = false
     @State private var pulseAnimation = false
+
+    /// Maximum content width for iPad sheets
+    private var maxContentWidth: CGFloat {
+        horizontalSizeClass == .regular ? 500 : .infinity
+    }
 
     var body: some View {
         ZStack {
@@ -56,6 +62,8 @@ struct ReviewAuthSheet: View {
                 }
                 .padding(.horizontal, Spacing.screenPadding)
                 .padding(.top, Spacing.md)
+                .frame(maxWidth: maxContentWidth)
+                .frame(maxWidth: .infinity)
             }
         }
         .onAppear {

@@ -75,7 +75,8 @@ struct StoreSubmitter: Identifiable, Codable, Hashable {
     }
 }
 
-#if DEBUG
+// MARK: - StoreSubmitter Preview Data
+
 extension StoreSubmitter {
     static let sample = StoreSubmitter(
         id: 1,
@@ -85,7 +86,6 @@ extension StoreSubmitter {
         reviewsCount: 12
     )
 }
-#endif
 
 // MARK: - Store
 
@@ -235,9 +235,8 @@ struct RatingBreakdown: Codable {
     }
 }
 
-// MARK: - Preview Data (minimal, for SwiftUI Previews only)
+// MARK: - Preview Data
 
-#if DEBUG
 extension Store {
     static let sample = Store(
         id: 1,
@@ -255,7 +254,7 @@ extension Store {
         createdAt: Date()
     )
 
-    static let samples: [Store] = []
+    static let samples: [Store] = [sample]
 }
 
 extension StoreSummary {
@@ -267,4 +266,3 @@ extension StoreSummary {
         proofBadge: false
     )
 }
-#endif

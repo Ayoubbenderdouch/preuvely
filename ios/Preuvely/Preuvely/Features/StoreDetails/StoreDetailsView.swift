@@ -7,6 +7,22 @@ struct StoreDetailsView: View {
     @State private var showClaimStore = false
     @State private var showReportStore = false
 
+    // MARK: - iPad Layout Support
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    /// Maximum content width for iPad (regular size class)
+    private let maxContentWidth: CGFloat = 700
+
+    /// Whether we're on iPad (regular width)
+    private var isRegularWidth: Bool {
+        horizontalSizeClass == .regular
+    }
+
+    /// Number of columns for reviews grid on iPad
+    private var reviewColumns: Int {
+        isRegularWidth ? 2 : 1
+    }
+
     /// Initialize with a store from search results
     init(store: Store) {
         self._viewModel = StateObject(wrappedValue: StoreDetailsViewModel(store: store))
@@ -43,6 +59,8 @@ struct StoreDetailsView: View {
                 // Reviews
                 reviewsSection
             }
+            .frame(maxWidth: isRegularWidth ? maxContentWidth : .infinity)
+            .frame(maxWidth: .infinity) // Center within scroll view
         }
         .refreshable {
             await viewModel.loadData()
@@ -90,16 +108,21 @@ struct StoreDetailsView: View {
 
     // MARK: - Header Section
 
+    /// Logo size based on device size class
+    private var logoSize: CGFloat {
+        isRegularWidth ? 140 : 100
+    }
+
     private var headerSection: some View {
-        VStack(spacing: Spacing.lg) {
+        VStack(spacing: isRegularWidth ? Spacing.xl : Spacing.lg) {
             // Store Logo
             storeLogoView
 
-            VStack(alignment: .center, spacing: Spacing.md) {
+            VStack(alignment: .center, spacing: isRegularWidth ? Spacing.lg : Spacing.md) {
                 // Name and badges
                 HStack(spacing: Spacing.sm) {
                     Text(store.name)
-                        .font(.title2.weight(.bold))
+                        .font(isRegularWidth ? .title.weight(.bold) : .title2.weight(.bold))
                         .foregroundColor(.primary)
 
                     if store.isVerified {
@@ -114,9 +137,10 @@ struct StoreDetailsView: View {
                 // Description
                 if let description = store.description {
                     Text(description)
-                        .font(.body)
+                        .font(isRegularWidth ? .title3 : .body)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
+                        .frame(maxWidth: isRegularWidth ? 500 : .infinity)
                 }
 
                 // Categories
@@ -131,17 +155,23 @@ struct StoreDetailsView: View {
                 // City
                 if let city = store.city {
                     Label(city, systemImage: "mappin.circle.fill")
-                        .font(.subheadline)
+                        .font(isRegularWidth ? .body : .subheadline)
                         .foregroundColor(.secondary)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .center)
         }
-        .padding(Spacing.screenPadding)
+        .padding(isRegularWidth ? Spacing.xxl : Spacing.screenPadding)
+        .padding(.vertical, isRegularWidth ? Spacing.lg : 0)
         .background(Color(.systemBackground))
     }
 
     // MARK: - Store Logo View
+
+    /// Corner radius for logo based on size
+    private var logoCornerRadius: CGFloat {
+        isRegularWidth ? 28 : 20
+    }
 
     private var storeLogoView: some View {
         Group {
@@ -152,14 +182,14 @@ struct StoreDetailsView: View {
                         image
                             .resizable()
                             .scaledToFill()
-                            .frame(width: 100, height: 100)
-                            .clipShape(RoundedRectangle(cornerRadius: 20))
-                            .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+                            .frame(width: logoSize, height: logoSize)
+                            .clipShape(RoundedRectangle(cornerRadius: logoCornerRadius))
+                            .shadow(color: .black.opacity(0.1), radius: isRegularWidth ? 12 : 8, x: 0, y: 4)
                     case .failure:
                         storeLogoFallback
                     case .empty:
                         ProgressView()
-                            .frame(width: 100, height: 100)
+                            .frame(width: logoSize, height: logoSize)
                     @unknown default:
                         storeLogoFallback
                     }
@@ -174,7 +204,7 @@ struct StoreDetailsView: View {
     /// Fallback view when no logo is available
     private var storeLogoFallback: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 20)
+            RoundedRectangle(cornerRadius: logoCornerRadius)
                 .fill(
                     LinearGradient(
                         colors: [Color.primaryGreen.opacity(0.2), Color.primaryGreen.opacity(0.1)],
@@ -182,10 +212,10 @@ struct StoreDetailsView: View {
                         endPoint: .bottomTrailing
                     )
                 )
-                .frame(width: 100, height: 100)
+                .frame(width: logoSize, height: logoSize)
 
             Text(store.name.prefix(1).uppercased())
-                .font(.system(size: 42, weight: .bold))
+                .font(.system(size: isRegularWidth ? 56 : 42, weight: .bold))
                 .foregroundStyle(
                     LinearGradient(
                         colors: [Color.primaryGreen, Color.primaryGreen.opacity(0.7)],
@@ -194,7 +224,7 @@ struct StoreDetailsView: View {
                     )
                 )
         }
-        .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+        .shadow(color: .black.opacity(0.1), radius: isRegularWidth ? 12 : 8, x: 0, y: 4)
     }
 
     // MARK: - Social Media Section
@@ -341,6 +371,18 @@ struct StoreDetailsView: View {
 
     // MARK: - Reviews Section
 
+    /// Grid columns for reviews on iPad
+    private var reviewGridColumns: [GridItem] {
+        if isRegularWidth {
+            return [
+                GridItem(.flexible(), spacing: Spacing.md),
+                GridItem(.flexible(), spacing: Spacing.md)
+            ]
+        } else {
+            return [GridItem(.flexible())]
+        }
+    }
+
     private var reviewsSection: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             HStack {
@@ -358,8 +400,9 @@ struct StoreDetailsView: View {
             .padding(.horizontal, Spacing.screenPadding)
 
             if viewModel.isLoadingReviews && viewModel.reviews.isEmpty {
-                VStack(spacing: Spacing.md) {
-                    ForEach(0..<3, id: \.self) { _ in
+                // Loading skeleton - show in grid on iPad
+                LazyVGrid(columns: reviewGridColumns, spacing: Spacing.md) {
+                    ForEach(0..<(isRegularWidth ? 4 : 3), id: \.self) { _ in
                         ReviewCardSkeleton()
                     }
                 }
@@ -368,36 +411,39 @@ struct StoreDetailsView: View {
                 EmptyReviewsView()
                     .padding(.horizontal, Spacing.screenPadding)
             } else {
-                LazyVStack(spacing: Spacing.md) {
+                // Reviews grid/list
+                LazyVGrid(columns: reviewGridColumns, alignment: .leading, spacing: Spacing.md) {
                     ForEach(viewModel.reviews) { review in
                         ReviewCard(review: review, showUserLink: false)
-                    }
-
-                    // Load more reviews button
-                    if viewModel.hasMoreReviews {
-                        Button {
-                            Task {
-                                await viewModel.loadMoreReviews()
-                            }
-                        } label: {
-                            if viewModel.isLoadingMoreReviews {
-                                ProgressView()
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                            } else {
-                                Text("load_more_reviews".localized)
-                                    .font(.subheadline.weight(.medium))
-                                    .foregroundColor(.primaryGreen)
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(Color.primaryGreen.opacity(0.1))
-                                    .cornerRadius(Spacing.radiusMedium)
-                            }
-                        }
-                        .disabled(viewModel.isLoadingMoreReviews)
+                            .frame(maxWidth: .infinity, alignment: .top)
                     }
                 }
                 .padding(.horizontal, Spacing.screenPadding)
+
+                // Load more reviews button
+                if viewModel.hasMoreReviews {
+                    Button {
+                        Task {
+                            await viewModel.loadMoreReviews()
+                        }
+                    } label: {
+                        if viewModel.isLoadingMoreReviews {
+                            ProgressView()
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                        } else {
+                            Text("load_more_reviews".localized)
+                                .font(.subheadline.weight(.medium))
+                                .foregroundColor(.primaryGreen)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.primaryGreen.opacity(0.1))
+                                .cornerRadius(Spacing.radiusMedium)
+                        }
+                    }
+                    .disabled(viewModel.isLoadingMoreReviews)
+                    .padding(.horizontal, Spacing.screenPadding)
+                }
             }
         }
         .padding(.top, Spacing.sectionSpacing)

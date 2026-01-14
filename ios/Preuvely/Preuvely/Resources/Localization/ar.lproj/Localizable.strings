@@ -383,3 +383,9 @@
 "shake_contact_whatsapp" = "الدردشة عبر واتساب";
 "shake_contact_close" = "اغلاق";
 "shake_contact_message" = "مرحبا! احتاج مساعدة في تطبيق Preuvely.";
+
+// MARK: - Delete Account
+"delete_account_button" = "حذف الحساب";
+"delete_account_title" = "حذف الحساب؟";
+"delete_account_message" = "هذا الإجراء دائم ولا يمكن التراجع عنه. سيتم حذف جميع بياناتك ومراجعاتك ومطالباتك بشكل نهائي.";
+"delete_account_confirm" = "حذف";
