@@ -146,12 +146,15 @@
         .logo-icon {
             width: 48px;
             height: 48px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            overflow: hidden;
             box-shadow: 0 10px 40px rgba(0, 166, 126, 0.3);
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .logo-text {
@@ -1023,9 +1026,7 @@
             <div class="nav-container">
                 <a href="/" class="logo">
                     <div class="logo-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
+                        <img src="/logo.png" alt="Preuvely Logo">
                     </div>
                     <span class="logo-text">Preuvely</span>
                 </a>
@@ -1308,9 +1309,7 @@
                     <div class="footer-brand">
                         <a href="/" class="logo">
                             <div class="logo-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
+                                <img src="/logo.png" alt="Preuvely Logo">
                             </div>
                             <span class="logo-text">Preuvely</span>
                         </a>
