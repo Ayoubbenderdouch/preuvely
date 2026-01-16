@@ -150,6 +150,10 @@ class SocialAuthController extends Controller
         ]);
 
         if (!$response->successful()) {
+            \Log::error('Google token verification failed', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
             return null;
         }
 
@@ -161,7 +165,16 @@ class SocialAuthController extends Controller
             config('services.google.ios_client_id'),
         ];
 
+        \Log::info('Google token verification', [
+            'token_aud' => $data['aud'] ?? 'not set',
+            'valid_client_ids' => $validClientIds,
+        ]);
+
         if (!in_array($data['aud'] ?? '', array_filter($validClientIds))) {
+            \Log::warning('Google token audience mismatch', [
+                'token_aud' => $data['aud'] ?? 'not set',
+                'expected' => array_filter($validClientIds),
+            ]);
             return null;
         }
 
@@ -184,6 +197,7 @@ class SocialAuthController extends Controller
             $response = Http::get('https://appleid.apple.com/auth/keys');
 
             if (!$response->successful()) {
+                \Log::error('Apple keys fetch failed', ['status' => $response->status()]);
                 return null;
             }
 
@@ -198,12 +212,24 @@ class SocialAuthController extends Controller
                 config('services.apple.bundle_id'),
             ];
 
+            \Log::info('Apple token verification', [
+                'token_aud' => $decoded->aud ?? 'not set',
+                'valid_audiences' => array_filter($validAudiences),
+            ]);
+
             if (!in_array($decoded->aud ?? '', array_filter($validAudiences))) {
+                \Log::warning('Apple token audience mismatch', [
+                    'token_aud' => $decoded->aud ?? 'not set',
+                    'expected' => array_filter($validAudiences),
+                ]);
                 return null;
             }
 
             // Verify issuer
             if (($decoded->iss ?? '') !== 'https://appleid.apple.com') {
+                \Log::warning('Apple token issuer mismatch', [
+                    'token_iss' => $decoded->iss ?? 'not set',
+                ]);
                 return null;
             }
 
@@ -215,6 +241,9 @@ class SocialAuthController extends Controller
                 'email_verified' => ($decoded->email_verified ?? false) === true || ($decoded->email_verified ?? '') === 'true',
             ];
         } catch (\Exception $e) {
+            \Log::error('Apple token verification exception', [
+                'message' => $e->getMessage(),
+            ]);
             report($e);
             return null;
         }
@@ -242,21 +271,29 @@ class SocialAuthController extends Controller
                     ],
                 ]);
 
+                // For social auth, email should always be considered verified
+                // Update email_verified_at if it's null (user registered via social auth should be auto-verified)
+                $user = $existingProvider->user;
+                if (!$user->email_verified_at && $email) {
+                    $user->update(['email_verified_at' => now()]);
+                    $user->refresh();
+                }
+
                 return [
-                    'user' => $existingProvider->user,
+                    'user' => $user,
                     'is_new_user' => false,
                 ];
             }
 
-            // Check if a user with the same verified email exists
+            // Check if a user with the same email exists (verified or not)
+            // For social auth, we trust the provider's email verification
             $existingUser = null;
             if ($email) {
-                $existingUser = User::where('email', $email)
-                    ->whereNotNull('email_verified_at')
-                    ->first();
+                $existingUser = User::where('email', $email)->first();
             }
 
             if ($existingUser) {
+                // Link the social provider to the existing user
                 UserProvider::create([
                     'user_id' => $existingUser->id,
                     'provider' => $provider,
@@ -267,6 +304,12 @@ class SocialAuthController extends Controller
                         'email_verified' => $userData['email_verified'] ?? false,
                     ],
                 ]);
+
+                // Auto-verify email for social auth users (provider already verified the email)
+                if (!$existingUser->email_verified_at) {
+                    $existingUser->update(['email_verified_at' => now()]);
+                    $existingUser->refresh();
+                }
 
                 return [
                     'user' => $existingUser,
@@ -355,18 +398,24 @@ class SocialAuthController extends Controller
                     'meta_json' => $this->buildMetaJson($socialUser, $provider),
                 ]);
 
+                // For social auth, email should always be considered verified
+                $user = $existingProvider->user;
+                if (!$user->email_verified_at && $email) {
+                    $user->update(['email_verified_at' => now()]);
+                    $user->refresh();
+                }
+
                 return [
-                    'user' => $existingProvider->user,
+                    'user' => $user,
                     'is_new_user' => false,
                 ];
             }
 
-            // Check if a user with the same verified email exists
+            // Check if a user with the same email exists (verified or not)
+            // For social auth, we trust the provider's email verification
             $existingUser = null;
             if ($email) {
-                $existingUser = User::where('email', $email)
-                    ->whereNotNull('email_verified_at')
-                    ->first();
+                $existingUser = User::where('email', $email)->first();
             }
 
             if ($existingUser) {
@@ -377,6 +426,12 @@ class SocialAuthController extends Controller
                     'email' => $email,
                     'meta_json' => $this->buildMetaJson($socialUser, $provider),
                 ]);
+
+                // Auto-verify email for social auth users
+                if (!$existingUser->email_verified_at) {
+                    $existingUser->update(['email_verified_at' => now()]);
+                    $existingUser->refresh();
+                }
 
                 return [
                     'user' => $existingUser,
